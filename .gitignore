@@ -1,0 +1,4 @@
+venv/
+*/migrations/
+.idea/
+*/__pycache__/
