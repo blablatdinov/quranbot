@@ -9,7 +9,8 @@ from .models import *
 
 token = DJANGO_TELEGRAMBOT['BOTS'][0]['TOKEN']
 tbot = telebot.TeleBot(token)
-# tbot.set_webhook('https://9ea1e9e3.ngrok.io/705810219:AAHwIwmLT7P3ffdP5fV6OFy2kWvBSDERGNk')
+tbot.remove_webhook()
+tbot.set_webhook('https://blablatdinov.ru/705810219:AAHwIwmLT7P3ffdP5fV6OFy2kWvBSDERGNk')
 
 
 def bot(request):
