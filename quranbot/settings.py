@@ -84,6 +84,12 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        #'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        #'NAME': 'quranbot_db',
+        #'USER': 'quranbot_user',
+        #'PASSWORD': 'quranbot_user',
+        #'HOST': 'localhost',
+        #'PORT': '',
     }
 }
 
@@ -140,7 +146,7 @@ DJANGO_TELEGRAMBOT = {
 import djcelery
 
 
-BROKER_URL = 'redis://localhost:6379/1'
+CELERY_BROKER_URL = 'redis://localhost:6379/1'
 
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASKS_SERIALIZER = 'json'

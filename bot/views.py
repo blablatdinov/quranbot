@@ -3,6 +3,7 @@ from django.core.exceptions import PermissionDenied
 from django.views.decorators.csrf import csrf_exempt
 import telebot
 from quranbot.settings import DJANGO_TELEGRAMBOT
+from billiard.pool import MaybeEncodingError
 
 from .models import *
 
@@ -30,11 +31,10 @@ def bot(request):
 def start_handler(message):
     try:
         s = Subscribers.objects.get(telegram_chat_id=message.chat.id)
-        content = QuranOneDayContent.objects.get(pk=1)
+        content = QuranOneDayContent.objects.get(pk=2)
         tbot.send_message(message.chat.id, 'Вы уже зарегистрированы')
-    except:
-        day_content = QuranOneDayContent.objects.get(pk=1)
-        subscriber = Subscribers(telegram_chat_id=message.chat.id)
+    except MaybeEncodingError:
+        day_content = QuranOneDayContent.objects.get(pk=2)
+        subscriber = Subscribers(telegram_chat_id=message.chat.id, day=1)
         subscriber.save()
-        day_content.subscribers.add(subscriber)
         tbot.send_message(message.chat.id, day_content.content)
