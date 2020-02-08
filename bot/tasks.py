@@ -1,8 +1,9 @@
 from __future__ import absolute_import, unicode_literals
 from celery import shared_task
+from telebot.apihelper import ApiException
 
 from celery.task import periodic_task
-from .models import Subscribers, QuranOneDayContent
+from .models import Subscribers, QuranOneDayContent, QuranAyat
 from celery.schedules import crontab
 from datetime import timedelta
 from .views import tbot
@@ -10,17 +11,24 @@ from .views import tbot
 
 # celery worker -A quranbot --loglevel=info
 # celery -A quranbot beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
-@periodic_task(run_every=timedelta(seconds=5), name='mailing')
+# @periodic_task(run_every=timedelta(seconds=5), name='mailing')
+@periodic_task(run_every=(crontab(hour='7')), name='mailing')
 # @shared_task
 def mailing():
     subs = Subscribers.objects.filter(status=True)  # Получаем подписчиков
+    print(subs)
     for sub in subs:  # Проходимся по подписчикам
-        content = QuranOneDayContent.objects.filter(day=sub.day)  # Получаем контент для подписчика
+        print(sub)
+        content = QuranOneDayContent.objects.get(day=sub.day).content + '\n\n'  # Получаем контент для подписчика
+        quran_qs = QuranAyat.objects.filter(one_day_content__day=sub.day)
+        for q in quran_qs:
+            content += f'*{q.sura}:{q.ayat})* {q.content}\n'
         try:
-            tbot.send_message(chat_id=sub.telegram_chat_id, text=content)
+            tbot.send_message(chat_id=sub.telegram_chat_id, text=content, parse_mode='Markdown')
             sub.day += 1
+            print(sub.day)
             sub.save()
-        except:
+        except ApiException:
             sub.status = False
             sub.save()
 
