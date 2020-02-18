@@ -4,3 +4,5 @@ venv/
 */__pycache__/
 gunicorn.conf.py
 static/
+*.json
+db.sqlite3
