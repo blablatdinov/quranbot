@@ -11,28 +11,17 @@ from .views import tbot
 
 # celery worker -A quranbot --loglevel=info
 # celery -A quranbot beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
-# @periodic_task(run_every=timedelta(seconds=5), name='mailing')
 @periodic_task(run_every=(crontab(hour=7, minute=0)), name='mailing')
-# @shared_task
 def mailing():
     subs = Subscribers.objects.filter(status=True)  # Получаем подписчиков
     print(subs)
     for sub in subs:  # Проходимся по подписчикам
         print(sub)
-        content = QuranOneDayContent.objects.get(day=sub.day).content + '\n\n'  # Получаем контент для подписчика
-        quran_qs = QuranAyat.objects.filter(one_day_content__day=sub.day)
-        for q in quran_qs:
-            content += f'*{q.sura}:{q.ayat})* {q.content}\n'
+        content = QuranOneDayContent.objects.get(day=sub.day).content_for_day()
         try:
             tbot.send_message(chat_id=sub.telegram_chat_id, text=content, parse_mode='Markdown')
             sub.day += 1
-            print(sub.day)
             sub.save()
         except ApiException:
             sub.status = False
             sub.save()
-
-
-@shared_task
-def add(x, y):
-    return x + y
