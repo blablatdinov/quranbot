@@ -39,7 +39,7 @@ def start_handler(message):
         else:
             s.status = True
             s.save()
-            tbot.send_message(message.chat.id, f'Ваш статус "*Активен*", вы проддолжите с дня {s.day}',
+            tbot.send_message(message.chat.id, f'Ваш статус "*Активен*", вы продолжите с дня {s.day}',
                               parse_mode='Markdown')
     except:
         day_content = QuranOneDayContent.objects.get(day=1)
