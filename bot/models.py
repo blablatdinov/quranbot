@@ -9,10 +9,18 @@ class QuranOneDayContent(models.Model):
     def __str__(self):
         return f'{self.day} день'
 
+    def content_for_day(self):
+        quran_qs = QuranAyat.objects.filter(one_day_content__day=sub.day)
+        result = ''
+        if self.content is not '':
+            result += f'{self.content}\n\n'
+        for q in quran_qs:
+            result += f'*{q.sura}:{q.ayat})* {q.content}\n'
+        return result
+
     class Meta:
         verbose_name = 'Ежедневный контент для пользователей:'
         verbose_name_plural = 'Ежедневный контент для пользователей:'
-
 
 
 class QuranAyat(models.Model):
@@ -32,7 +40,6 @@ class QuranAyat(models.Model):
     class Meta:
         verbose_name = 'Аят Священного Корана:'
         verbose_name_plural = 'Аяты Священного Корана:'
-
 
 
 class Subscribers(models.Model):
