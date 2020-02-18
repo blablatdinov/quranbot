@@ -32,7 +32,7 @@ class QuranAyat(models.Model):
     sura = models.IntegerField(blank=True, null=True)
     ayat = models.CharField(max_length=5, blank=True)
     html = models.TextField(blank=True)
-    one_day_content = models.ForeignKey(QuranOneDayContent, related_name='quran_ayats', blank=True, null=True, on_delete=models.PROTECT)
+    one_day_content = models.ForeignKey(QuranOneDayContent, blank=True, null=True, on_delete=models.CASCADE)
 
     def __str__(self):
         return f'{self.sura}:{self.ayat}'

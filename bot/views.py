@@ -4,6 +4,7 @@ import telebot
 import random
 from telebot import types
 from quranbot.settings import DJANGO_TELEGRAMBOT
+from billiard.pool import MaybeEncodingError
 
 from .models import *
 
@@ -46,6 +47,7 @@ def audio(message):
 def start_handler(message):
     try:
         s = Subscribers.objects.get(telegram_chat_id=message.chat.id)
+<<<<<<< HEAD
         if s.status:
             tbot.send_message(message.chat.id, 'Вы уже зарегистрированы',
                               reply_markup=markup)
@@ -56,6 +58,12 @@ def start_handler(message):
                               parse_mode='Markdown', reply_markup=markup)
     except:
         day_content = QuranOneDayContent.objects.get(day=1)
+=======
+        content = QuranOneDayContent.objects.get(pk=2)
+        tbot.send_message(message.chat.id, 'Вы уже зарегистрированы')
+    except MaybeEncodingError:
+        day_content = QuranOneDayContent.objects.get(pk=2)
+>>>>>>> parent of 80520f5... 10.02.2020 dont work mailing
         subscriber = Subscribers(telegram_chat_id=message.chat.id, day=1)
         subscriber.save()
         tbot.send_message(message.chat.id, day_content.content)
