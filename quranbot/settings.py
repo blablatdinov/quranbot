@@ -131,13 +131,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = '/home/www/code/quranbot/static'
+# STATIC_ROOT = '/home/www/code/quranbot/static'
 
 DJANGO_TELEGRAMBOT = {
-    'WEBHOOK_SITE': 'https://74788f8d.ngrok.io',
+    'WEBHOOK_SITE': 'https://600fd97b.ngrok.io',
     'BOTS': [
         {
-            'TOKEN': '705810219:AAHwIwmLT7P3ffdP5fV6OFy2kWvBSDERGNk'
+            'TOKEN': '452230948:AAGgl86AHCdTCXf8XGD6lkj9rQhoV4xrf5E'
         },
     ],
 

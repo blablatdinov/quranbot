@@ -2,15 +2,19 @@ from django.http import HttpResponse
 from django.core.exceptions import PermissionDenied
 from django.views.decorators.csrf import csrf_exempt
 import telebot
+from telebot import types
 from quranbot.settings import DJANGO_TELEGRAMBOT
 
 from .models import *
 
 
 token = DJANGO_TELEGRAMBOT['BOTS'][0]['TOKEN']
+webhook_url = DJANGO_TELEGRAMBOT['WEBHOOK_SITE']
+print(token)
 tbot = telebot.TeleBot(token)
 tbot.remove_webhook()
-tbot.set_webhook('https://blablatdinov.ru/705810219:AAHwIwmLT7P3ffdP5fV6OFy2kWvBSDERGNk')
+tbot.set_webhook(f'{webhook_url}/{token}')
+print(f'{webhook_url}/{token}')
 
 
 def bot(request):
@@ -28,6 +32,7 @@ def bot(request):
 
 @tbot.message_handler(commands=['start'])
 def start_handler(message):
+    print('good')
     try:
         s = Subscribers.objects.get(telegram_chat_id=message.chat.id)
         content = QuranOneDayContent.objects.get(pk=2)
@@ -37,3 +42,11 @@ def start_handler(message):
         subscriber = Subscribers(telegram_chat_id=message.chat.id, day=1)
         subscriber.save()
         tbot.send_message(message.chat.id, day_content.content)
+
+
+@tbot.message_handler(commands=['audio'])
+def audio(message):
+    markup = types.ReplyKeyboardMarkup()
+    item = types.KeyboardButton('/start')
+    markup.row(item)
+    tbot.send_message(message.chat.id, "Choose one letter:", reply_markup=markup)
