@@ -34,7 +34,13 @@ def bot(request):
 def start_handler(message):
     try:
         s = Subscribers.objects.get(telegram_chat_id=message.chat.id)
-        tbot.send_message(message.chat.id, 'Вы уже зарегистрированы')
+        if s.status:
+            tbot.send_message(message.chat.id, 'Вы уже зарегистрированы')
+        else:
+            s.status = True
+            s.save()
+            tbot.send_message(message.chat.id, f'Ваш статус "*Активен*", вы проддолжите с дня {s.day}',
+                              parse_mode='Markdown')
     except:
         day_content = QuranOneDayContent.objects.get(day=1)
         subscriber = Subscribers(telegram_chat_id=message.chat.id, day=1)
