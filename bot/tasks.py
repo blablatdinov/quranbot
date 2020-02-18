@@ -11,13 +11,7 @@ from .views import tbot
 
 # celery worker -A quranbot --loglevel=info
 # celery -A quranbot beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
-<<<<<<< HEAD
 @periodic_task(run_every=(crontab(hour=7, minute=0)), name='mailing')
-=======
-# @periodic_task(run_every=timedelta(seconds=5), name='mailing')
-@periodic_task(run_every=(crontab(hour='7')), name='mailing')
-# @shared_task
->>>>>>> parent of 80520f5... 10.02.2020 dont work mailing
 def mailing():
     subs = Subscribers.objects.filter(status=True)  # Получаем подписчиков
     print(subs)
