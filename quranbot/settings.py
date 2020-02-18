@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '=sz@3fkwt!=mnfkl(he+b0neftn*9qc69vv38q2q*s54)vhmz!'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -134,7 +134,7 @@ STATIC_URL = '/static/'
 # STATIC_ROOT = '/home/www/code/quranbot/static'
 
 DJANGO_TELEGRAMBOT = {
-    'WEBHOOK_SITE': 'https://600fd97b.ngrok.io',
+    'WEBHOOK_SITE': 'https://7010c3c2.ngrok.io',
     'BOTS': [
         {
             'TOKEN': '452230948:AAGgl86AHCdTCXf8XGD6lkj9rQhoV4xrf5E'
