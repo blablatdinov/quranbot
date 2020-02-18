@@ -1,3 +1,18 @@
+def write_audio(audio_title, audio_link):
+    import csv
+    from bot.models import Audio
+
+    n = 0
+    with open('audio.csv', 'r', encoding='utf-8') as f:
+        data = csv.reader(f)
+        for row in data:
+            if n % 2 == 0:
+                a = Audio.objects.create(title=row[0], audio_link=row[1])
+                a.save()
+                print(n/2)
+            n += 1
+
+
 def write_ayats():
     from .models import QuranAyat
     with open('output.txt', 'r', encoding='utf-8') as f:
