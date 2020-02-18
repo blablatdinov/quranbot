@@ -32,21 +32,19 @@ def bot(request):
 
 @tbot.message_handler(commands=['start'])
 def start_handler(message):
-    print('good')
     try:
         s = Subscribers.objects.get(telegram_chat_id=message.chat.id)
-        content = QuranOneDayContent.objects.get(pk=2)
         tbot.send_message(message.chat.id, 'Вы уже зарегистрированы')
     except:
-        day_content = QuranOneDayContent.objects.get(pk=2)
+        day_content = QuranOneDayContent.objects.get(day=1)
         subscriber = Subscribers(telegram_chat_id=message.chat.id, day=1)
         subscriber.save()
         tbot.send_message(message.chat.id, day_content.content)
 
 
-@tbot.message_handler(commands=['audio'])
-def audio(message):
-    markup = types.ReplyKeyboardMarkup()
-    item = types.KeyboardButton('/start')
-    markup.row(item)
-    tbot.send_message(message.chat.id, "Choose one letter:", reply_markup=markup)
+# @tbot.message_handler(commands=['audio'])
+# def audio(message):
+#     markup = types.ReplyKeyboardMarkup()
+#     item = types.KeyboardButton('/start')
+#     markup.row(item)
+#     tbot.send_message(message.chat.id, "Choose one letter:", reply_markup=markup)
