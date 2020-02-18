@@ -9,10 +9,18 @@ class QuranOneDayContent(models.Model):
     def __str__(self):
         return f'{self.day} день'
 
+    def content_for_day(self):
+        quran_qs = QuranAyat.objects.filter(one_day_content__day=sub.day)
+        result = ''
+        if self.content is not '':
+            result += f'{self.content}\n\n'
+        for q in quran_qs:
+            result += f'*{q.sura}:{q.ayat})* {q.content}\n'
+        return result
+
     class Meta:
         verbose_name = 'Ежедневный контент для пользователей:'
         verbose_name_plural = 'Ежедневный контент для пользователей:'
-
 
 
 class QuranAyat(models.Model):
@@ -34,7 +42,6 @@ class QuranAyat(models.Model):
         verbose_name_plural = 'Аяты Священного Корана:'
 
 
-
 class Subscribers(models.Model):
     telegram_chat_id = models.IntegerField()
     day = models.IntegerField()
@@ -46,3 +53,17 @@ class Subscribers(models.Model):
     class Meta:
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
+
+
+class Audio(models.Model):
+    """Модель для аудио подкаста"""
+    title = models.CharField(max_length=128)
+    audio_link = models.CharField(max_length=512)
+    tg_audio_link = models.CharField(max_length=512)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = 'Аудио подкаст'
+        verbose_name_plural = 'Аудио подкасты'
