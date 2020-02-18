@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.core.exceptions import PermissionDenied
-from django.views.decorators.csrf import csrf_exempt
 import telebot
+import random
 from telebot import types
 from quranbot.settings import DJANGO_TELEGRAMBOT
 
@@ -17,6 +17,11 @@ tbot.set_webhook(f'{webhook_url}/{token}')
 print(f'{webhook_url}/{token}')
 
 
+markup = types.ReplyKeyboardMarkup()
+item = types.KeyboardButton('Подкасты')
+markup.row(item)
+
+
 def bot(request):
 
     if request.content_type == 'application/json':
@@ -30,17 +35,25 @@ def bot(request):
         raise PermissionDenied
 
 
+@tbot.message_handler(content_types=['text'])
+def audio(message):
+    if message.text == 'Подкасты':
+        audio = Audio.objects.get(id=random.randint(1, 1866))
+        tbot.send_message(message.chat.id, audio.audio_link)
+
+
 @tbot.message_handler(commands=['start'])
 def start_handler(message):
     try:
         s = Subscribers.objects.get(telegram_chat_id=message.chat.id)
         if s.status:
-            tbot.send_message(message.chat.id, 'Вы уже зарегистрированы')
+            tbot.send_message(message.chat.id, 'Вы уже зарегистрированы',
+                              reply_markup=markup)
         else:
             s.status = True
             s.save()
             tbot.send_message(message.chat.id, f'Ваш статус "*Активен*", вы продолжите с дня {s.day}',
-                              parse_mode='Markdown')
+                              parse_mode='Markdown', reply_markup=markup)
     except:
         day_content = QuranOneDayContent.objects.get(day=1)
         subscriber = Subscribers(telegram_chat_id=message.chat.id, day=1)
@@ -50,7 +63,5 @@ def start_handler(message):
 
 # @tbot.message_handler(commands=['audio'])
 # def audio(message):
-#     markup = types.ReplyKeyboardMarkup()
-#     item = types.KeyboardButton('/start')
-#     markup.row(item)
-#     tbot.send_message(message.chat.id, "Choose one letter:", reply_markup=markup)
+
+#     tbot.send_message(message.chat.id, "Choose one letter:")

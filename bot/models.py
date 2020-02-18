@@ -53,3 +53,17 @@ class Subscribers(models.Model):
     class Meta:
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
+
+
+class Audio(models.Model):
+    """Модель для аудио подкаста"""
+    title = models.CharField(max_length=128)
+    audio_link = models.CharField(max_length=512)
+    tg_audio_link = models.CharField(max_length=512)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = 'Аудио подкаст'
+        verbose_name_plural = 'Аудио подкасты'
