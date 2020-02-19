@@ -24,30 +24,23 @@ markup.row(item)
 
 
 def bot(request):
-
+    print(3)
     if request.content_type == 'application/json':
         json_data = request.body.decode('utf-8')
         update = telebot.types.Update.de_json(json_data)
         tbot.process_new_updates([update])
-
+        print(2)
         return HttpResponse('')
 
     else:
         raise PermissionDenied
 
 
-@tbot.message_handler(content_types=['text'])
-def audio(message):
-    if message.text == 'Подкасты':
-        audio = Audio.objects.get(id=random.randint(1, 1866))
-        tbot.send_message(message.chat.id, audio.audio_link)
-
-
 @tbot.message_handler(commands=['start'])
 def start_handler(message):
+    print(1)
     try:
         s = Subscribers.objects.get(telegram_chat_id=message.chat.id)
-<<<<<<< HEAD
         if s.status:
             tbot.send_message(message.chat.id, 'Вы уже зарегистрированы',
                               reply_markup=markup)
@@ -58,16 +51,18 @@ def start_handler(message):
                               parse_mode='Markdown', reply_markup=markup)
     except:
         day_content = QuranOneDayContent.objects.get(day=1)
-=======
-        content = QuranOneDayContent.objects.get(pk=2)
-        tbot.send_message(message.chat.id, 'Вы уже зарегистрированы')
-    except MaybeEncodingError:
-        day_content = QuranOneDayContent.objects.get(pk=2)
->>>>>>> parent of 80520f5... 10.02.2020 dont work mailing
         subscriber = Subscribers(telegram_chat_id=message.chat.id, day=1)
         subscriber.save()
-        tbot.send_message(message.chat.id, day_content.content)
+        tbot.send_message(message.chat.id, day_content.content_for_day(), parse_mode='Markdown', reply_markup=markup)
 
+
+
+
+@tbot.message_handler(content_types=['text'])
+def audio(message):
+    if message.text == 'Подкасты':
+        audio = Audio.objects.get(id=random.randint(1, 1866))
+        tbot.send_message(message.chat.id, audio.audio_link)
 
 # @tbot.message_handler(commands=['audio'])
 # def audio(message):
