@@ -24,11 +24,17 @@ DATABASES = {
     }
 }
 
+
+if DEBUG:
+    TOKEN = '452230948:AAGgl86AHCdTCXf8XGD6lkj9rQhoV4xrf5E'
+else:
+    TOKEN = '705810219:AAHwIwmLT7P3ffdP5fV6OFy2kWvBSDERGNk'
+
 DJANGO_TELEGRAMBOT = {
     'WEBHOOK_SITE': 'https://blablatdinov.ru',
     'BOTS': [
         {
-            'TOKEN': '705810219:AAHwIwmLT7P3ffdP5fV6OFy2kWvBSDERGNk'
+            'TOKEN': TOKEN
         },
     ],
 
