@@ -64,8 +64,31 @@ def audio(message):
             tbot.send_audio(message.chat.id, audio.tg_audio_link)
         else:
             tbot.send_message(message.chat.id, audio.audio_link)
-
-# @tbot.message_handler(commands=['audio'])
-# def audio(message):
-
-#     tbot.send_message(message.chat.id, "Choose one letter:")
+    elif ':' in message.text:
+        sura = int(message.text.split(':')[0])
+        if 1 > sura > 114:
+            tbot.send_message(message.chat.id, 'Сура не найдена')
+            return False
+        ayat = int(message.text.split(':')[1])
+        sura_ayats = QuranAyat.objects.filter(sura=sura)
+        for sa in sura_ayats:
+            sa_str = sa.__str__()
+            sa_str_ayats = sa_str.split(':')[1]
+            if '-' in sa_str:
+                first_range_ayat = int(sa_str_ayats.split('-')[0])
+                second_range_ayat = int(sa_str_ayats.split('-')[1])
+                if ayat in range(first_range_ayat, second_range_ayat + 1):
+                    tbot.send_message(message.chat.id, sa.get_content(), parse_mode='Markdown')
+                    print(sa_str)
+                    return True
+            elif ',' in sa_str_ayats:
+                s = [int(x) for x in sa_str_ayats.split(',')]
+                if ayat in s:
+                    print(s)
+                    return True
+                #print(sa_str_ayats)
+            elif int(sa.ayat) == ayat:
+                tbot.send_message(message.chat.id, sa.get_content(), parse_mode='Markdown')
+                return True
+        tbot.send_message(message.chat.id, 'Аят не найден')
+        return False

@@ -34,6 +34,10 @@ class QuranAyat(models.Model):
     html = models.TextField(blank=True)
     one_day_content = models.ForeignKey(QuranOneDayContent, blank=True, null=True, on_delete=models.CASCADE)
 
+    def get_content(self):
+        return f'*({self.sura}:{self.ayat})*\n{self.arab_text}\n\n{self.content}\n\n**{self.trans}**\n\n' \
+               f'Скоро будет аудио...'
+
     def __str__(self):
         return f'{self.sura}:{self.ayat}'
 
