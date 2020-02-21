@@ -55,3 +55,25 @@ def pars_ayatss():
         #q.ayat = h3[1]
         q.save()
 
+
+def save_mp3():
+    from bot.models import Audio
+    from bot.views import tbot
+    import requests
+    import sys
+    audios = Audio.objects.all()[554:]
+    for audio in audios:
+        #try:
+        r = requests.get(audio.audio_link)
+        if sys.getsizeof(r.content) < 50 * 1024 * 1024:
+            msg = tbot.send_audio(358610865, r.content, timeout=180, title=audio.title, performer='Шамиль Аялутдинов')
+            audio.tg_audio_link = msg.audio.file_id
+            print(f'{audio.pk}: {audio.title}')
+            print(audio.tg_audio_link)
+            audio.save()
+            tbot.delete_message(358610865, msg.message_id)
+        else:
+            pass
+        #except:
+        #print(f'problem with audion\npk: {audio.pk}\ntitle: {audio.title}')
+
