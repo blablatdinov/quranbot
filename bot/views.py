@@ -11,11 +11,9 @@ from .models import *
 
 token = DJANGO_TELEGRAMBOT['BOTS'][0]['TOKEN']
 webhook_url = DJANGO_TELEGRAMBOT['WEBHOOK_SITE']
-print(token)
 tbot = telebot.TeleBot(token)
 tbot.remove_webhook()
 tbot.set_webhook(f'{webhook_url}/{token}')
-print(f'{webhook_url}/{token}')
 
 
 markup = types.ReplyKeyboardMarkup()
@@ -62,7 +60,10 @@ def start_handler(message):
 def audio(message):
     if message.text == 'Подкасты':
         audio = Audio.objects.get(id=random.randint(1, 1866))
-        tbot.send_message(message.chat.id, audio.audio_link)
+        if audio.tg_audio_link != '':
+            tbot.send_audio(message.chat.id, audio.tg_audio_link)
+        else:
+            tbot.send_message(message.chat.id, audio.audio_link)
 
 # @tbot.message_handler(commands=['audio'])
 # def audio(message):
