@@ -6,3 +6,4 @@ gunicorn.conf.py
 static/
 *.json
 db.sqlite3
+quranbot/settings.py
