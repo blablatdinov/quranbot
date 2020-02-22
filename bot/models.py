@@ -27,8 +27,8 @@ class QuranAyat(models.Model):
     content = models.TextField(blank=True)
     arab_text = models.TextField(blank=True)
     trans = models.TextField(blank=True)
-    audio_link = ...
-    tg_audio_link = ...
+    audio_link = models.CharField(max_length=512) 
+    tg_audio_link = models.CharField(max_length=512)
     sura = models.IntegerField(blank=True, null=True)
     ayat = models.CharField(max_length=5, blank=True)
     html = models.TextField(blank=True)
