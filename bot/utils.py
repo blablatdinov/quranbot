@@ -36,6 +36,10 @@ def get_trans(soup):
     return soup.find('div', class_='transcription').text
 
 
+def get_audio(soup):
+    return soup.find('div', class_='quran-speaker')['data-audio']
+
+
 def pars_ayatss():
     from .models import QuranAyat
     from bs4 import BeautifulSoup
@@ -46,14 +50,16 @@ def pars_ayatss():
         soup = BeautifulSoup(html, 'lxml')
         #q.content = soup.find('div', class_='text').find('p').text
         h3 = soup.find('h3').text.split(':')
-        print(h3)
+        #print(get_audio(soup))
+        #print(h3)
         #q.arab_text = get_arab_text(soup)
-        q.trans = get_trans(soup)
-        print(q.trans)
+        #q.trans = get_trans(soup)
+        q.audio_link = get_audio(soup)
         #print(q.arab_text)
         #q.sura = h3[0]
         #q.ayat = h3[1]
         q.save()
+        print(h3)
 
 
 def save_mp3():
@@ -76,4 +82,19 @@ def save_mp3():
             pass
         #except:
         #print(f'problem with audion\npk: {audio.pk}\ntitle: {audio.title}')
+
+
+def save_ayat_audio():
+    from bot.models import QuranAyat
+    from bot.views import tbot
+    import requests
+    ayats = QuranAyat.objects.all()
+    for ayat in ayats:
+        r = requests.get(ayat.audio_link)
+        msg = tbot.send_audio(358610865, r.content, title=f'{ayat.sura}:{ayat.ayat}', performer='umma.ru')
+        ayat.tg_audio_link = msg.audio.file_id
+        print(f'{ayat.pk}) {ayat.sura}:{ayat.ayat}')
+        print(ayat.tg_audio_link)
+        ayat.save()
+        tbot.delete_message(358610865, msg.message_id)
 
