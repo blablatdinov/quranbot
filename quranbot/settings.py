@@ -23,13 +23,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '=sz@3fkwt!=mnfkl(he+b0neftn*9qc69vv38q2q*s54)vhmz!'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True 
 
 ALLOWED_HOSTS = [
-    'blablatdinov.ru',
-    'blablatdinov.ru:80',
-    '66.55.70.132:80',
-    '66.55.70.132',
+    '*',
 ]
 
 
@@ -139,10 +136,12 @@ STATIC_URL = '/static/'
 # STATIC_ROOT = '/home/www/code/quranbot/static'
 
 DJANGO_TELEGRAMBOT = {
-    'WEBHOOK_SITE': 'https://blablatdinov.ru',
+    #'WEBHOOK_SITE': 'https://blablatdinov.ru',
+    'WEBHOOK_SITE': 'https://almaz-wwv6.localhost.run',
     'BOTS': [
         {
-            'TOKEN': '705810219:AAHwIwmLT7P3ffdP5fV6OFy2kWvBSDERGNk'
+            #'TOKEN': '705810219:AAHwIwmLT7P3ffdP5fV6OFy2kWvBSDERGNk'
+            'TOKEN': '452230948:AAGgl86AHCdTCXf8XGD6lkj9rQhoV4xrf5E'
         },
     ],
 
