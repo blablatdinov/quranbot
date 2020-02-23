@@ -35,8 +35,7 @@ class QuranAyat(models.Model):
     one_day_content = models.ForeignKey(QuranOneDayContent, blank=True, null=True, on_delete=models.CASCADE)
 
     def get_content(self):
-        return f'*({self.sura}:{self.ayat})*\n{self.arab_text}\n\n{self.content}\n\n**{self.trans}**\n\n' \
-               f'Скоро будет аудио...'
+        return f'*({self.sura}:{self.ayat})*\n{self.arab_text}\n\n{self.content}\n\n**{self.trans}**\n\n'
 
     def __str__(self):
         return f'{self.sura}:{self.ayat}'
@@ -50,6 +49,7 @@ class Subscribers(models.Model):
     telegram_chat_id = models.IntegerField()
     day = models.IntegerField()
     status = models.BooleanField(default=True)
+    comment = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return str(self.telegram_chat_id)
