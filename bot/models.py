@@ -30,7 +30,7 @@ class QuranAyat(models.Model):
     audio_link = models.CharField(max_length=512) 
     tg_audio_link = models.CharField(max_length=512)
     sura = models.IntegerField(blank=True, null=True)
-    ayat = models.CharField(max_length=5, blank=True)
+    ayat = models.CharField(max_length=16, blank=True)
     html = models.TextField(blank=True)
     one_day_content = models.ForeignKey(QuranOneDayContent, blank=True, null=True, on_delete=models.CASCADE)
 
