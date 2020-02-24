@@ -23,10 +23,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '=sz@3fkwt!=mnfkl(he+b0neftn*9qc69vv38q2q*s54)vhmz!'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True 
+DEBUG = False
 
 ALLOWED_HOSTS = [
-    '*',
+    'blablatdinov.ru',
+    'blablatdinov.ru:80',
+    '66.55.70.132:80',
+    '66.55.70.132',
 ]
 
 
@@ -84,14 +87,14 @@ WSGI_APPLICATION = 'quranbot.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        #'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        #'NAME': 'quranbot_db',
-        #'USER': 'quranbot_user',
-        #'PASSWORD': 'quranbot_user',
-        #'HOST': 'localhost',
-        #'PORT': '',
+        #'ENGINE': 'django.db.backends.sqlite3',
+        #'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'quranbot_db',
+        'USER': 'quranbot_user',
+        'PASSWORD': 'quranbot_user',
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
 
@@ -136,12 +139,10 @@ STATIC_URL = '/static/'
 # STATIC_ROOT = '/home/www/code/quranbot/static'
 
 DJANGO_TELEGRAMBOT = {
-    #'WEBHOOK_SITE': 'https://blablatdinov.ru',
-    'WEBHOOK_SITE': 'https://almaz-wwv6.localhost.run',
+    'WEBHOOK_SITE': 'https://blablatdinov.ru',
     'BOTS': [
         {
-            #'TOKEN': '705810219:AAHwIwmLT7P3ffdP5fV6OFy2kWvBSDERGNk'
-            'TOKEN': '452230948:AAGgl86AHCdTCXf8XGD6lkj9rQhoV4xrf5E'
+            'TOKEN': '705810219:AAHwIwmLT7P3ffdP5fV6OFy2kWvBSDERGNk'
         },
     ],
 
