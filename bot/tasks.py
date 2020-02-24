@@ -25,3 +25,4 @@ def mailing():
         except ApiException:
             sub.status = False
             sub.save()
+
