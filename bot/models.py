@@ -115,11 +115,11 @@ class Message(models.Model):
     from_user_id = models.IntegerField()
     message_id = models.IntegerField()
     chat_id = models.IntegerField()
-    text = models.TextField()
+    text = models.TextField(blank=True, null=True)
     json = models.TextField()
 
     def __str__(self):
-        if self.from_user_id == 452230948:
+        if self.from_user_id == 705810219:
             return 'From bot'
         else:
             return 'To bot'
