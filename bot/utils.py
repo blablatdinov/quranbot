@@ -8,7 +8,7 @@ def save_message(msg):
     message_id = msg.message_id
     chat_id = msg.chat.id
     text = msg.text
-    json = json.dumps(msg.json, indent=2, ensure_ascii=False)
+    json = json.dumps(eval(msg.__str__()), indent=2, ensure_ascii=False)
     Message.objects.create(date=date, from_user_id=from_user_id, message_id=message_id,
                            chat_id=chat_id, text=text, json=json)
 
