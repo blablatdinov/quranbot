@@ -111,9 +111,15 @@ class Audio(models.Model):
 
 class Message(models.Model):
     """ Модель для хранения сообщеинй """
-    date = ...
-    from_user = ...
-    message_id = ...
-    chat_id = ...
-    text = ...
-    json = ...
+    date = models.DateTimeField(blank=True, null=True)
+    from_user_id = models.IntegerField()
+    message_id = models.IntegerField()
+    chat_id = models.IntegerField()
+    text = models.TextField()
+    json = models.TextField()
+
+    def __str__(self):
+        if self.from_user_id == 452230948:
+            return 'From bot'
+        else:
+            return 'To bot'

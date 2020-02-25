@@ -7,6 +7,7 @@ from .models import Subscribers, QuranOneDayContent, QuranAyat
 from celery.schedules import crontab
 from datetime import timedelta
 from .views import tbot
+from .utils import save_message
 
 
 # celery worker -A quranbot --loglevel=info
@@ -21,7 +22,8 @@ def mailing():
         print(sub)
         content = QuranOneDayContent.objects.get(day=sub.day).content_for_day()
         try:
-            tbot.send_message(chat_id=sub.telegram_chat_id, text=content, parse_mode='Markdown')
+            msg = tbot.send_message(chat_id=sub.telegram_chat_id, text=content, parse_mode='Markdown')
+            save_message(msg)
             sub.day += 1
             sub.save()
         except ApiException:
