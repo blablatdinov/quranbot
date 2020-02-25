@@ -1,6 +1,40 @@
 from django.db import models
 
 
+class QuranAyatManager(models.Manager):
+
+    def get_ayat(self, mes):
+        sura = int(mes.split(':')[0])
+        if 1 > sura > 114:
+            return 'Сура не найдена'
+        ayat = int(mes.split(':')[1])
+        sura_ayats = self.filter(sura=sura)
+        for sa in sura_ayats:
+            sa_str = sa.__str__()
+            sa_str_ayats = sa_str.split(':')[1]
+            if '-' in sa_str:
+                first_range_ayat = int(sa_str_ayats.split('-')[0])
+                second_range_ayat = int(sa_str_ayats.split('-')[1])
+                if ayat in range(first_range_ayat, second_range_ayat + 1):
+                    # tbot.send_message(message.chat.id, sa.get_content(), parse_mode='Markdown', reply_markup=markup)
+                    # tbot.send_audio(message.chat.id, sa.tg_audio_link, title=f'{sa.sura}:{sa.ayat}', performer='umma.ru')
+                    print(sa_str)
+                    return sa
+            elif ',' in sa_str_ayats:
+                s = [int(x) for x in sa_str_ayats.split(',')]
+                if ayat in s:
+                    print(s)
+                    # tbot.send_message(message.chat.id, sa.get_content(), parse_mode='Markdown')
+                    # tbot.send_audio(message.chat.id, sa.tg_audio_link, title=f'{sa.sura}:{sa.ayat}', performer='umma.ru')
+                    return sa
+            elif int(sa.ayat) == ayat:
+                # tbot.send_message(message.chat.id, sa.get_content(), parse_mode='Markdown', reply_markup=markup)
+                # tbot.send_audio(message.chat.id, sa.tg_audio_link, title=f'{sa.sura}:{sa.ayat}', performer='umma.ru')
+                return sa
+        # tbot.send_message(message.chat.id, 'Аят не найден', reply_markup=markup)
+        return 'Аят не найден'
+
+
 class QuranOneDayContent(models.Model):
     content = models.TextField(blank=True)
     #sura_ayat = models.ForeignKey(QuranAyat, blank=True, on_delete=models.CASCADE)
@@ -27,12 +61,14 @@ class QuranAyat(models.Model):
     content = models.TextField(blank=True)
     arab_text = models.TextField(blank=True)
     trans = models.TextField(blank=True)
-    audio_link = models.CharField(max_length=512) 
+    audio_link = models.CharField(max_length=512)
     tg_audio_link = models.CharField(max_length=512)
     sura = models.IntegerField(blank=True, null=True)
     ayat = models.CharField(max_length=16, blank=True)
     html = models.TextField(blank=True)
     one_day_content = models.ForeignKey(QuranOneDayContent, blank=True, null=True, on_delete=models.CASCADE)
+
+    objects = QuranAyatManager()
 
     def get_content(self):
         return f'*({self.sura}:{self.ayat})*\n{self.arab_text}\n\n{self.content}\n\n**{self.trans}**\n\n'
@@ -71,3 +107,13 @@ class Audio(models.Model):
     class Meta:
         verbose_name = 'Аудио подкаст'
         verbose_name_plural = 'Аудио подкасты'
+
+
+class Message(models.Model):
+    """ Модель для хранения сообщеинй """
+    date = ...
+    from_user = ...
+    message_id = ...
+    chat_id = ...
+    text = ...
+    json = ...

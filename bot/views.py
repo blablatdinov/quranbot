@@ -76,7 +76,7 @@ def audio(message):
                 second_range_ayat = int(sa_str_ayats.split('-')[1])
                 if ayat in range(first_range_ayat, second_range_ayat + 1):
                     tbot.send_message(message.chat.id, sa.get_content(), parse_mode='Markdown', reply_markup=markup)
-                    tbot.send_audio(message.chat.id, sa.tg_audio_link, title=f'{sa.sura}:{sa.ayat}', performer='umma.ru') 
+                    tbot.send_audio(message.chat.id, sa.tg_audio_link, title=f'{sa.sura}:{sa.ayat}', performer='umma.ru')
                     print(sa_str)
                     return True
             elif ',' in sa_str_ayats:
