@@ -43,18 +43,21 @@ def start_handler(message):
     try:
         s = Subscribers.objects.get(telegram_chat_id=message.chat.id)
         if s.status:
-            tbot.send_message(message.chat.id, 'Вы уже зарегистрированы',
+            msg = tbot.send_message(message.chat.id, 'Вы уже зарегистрированы',
                               reply_markup=markup)
+            save_message(msg)
         else:
             s.status = True
             s.save()
-            tbot.send_message(message.chat.id, f'Ваш статус "*Активен*", вы продолжите с дня {s.day}',
+            msg = tbot.send_message(message.chat.id, f'Ваш статус "*Активен*", вы продолжите с дня {s.day}',
                               parse_mode='Markdown', reply_markup=markup)
+            save_message(msg)
     except:
         day_content = QuranOneDayContent.objects.get(day=1)
         subscriber = Subscribers(telegram_chat_id=message.chat.id, day=1)
         subscriber.save()
-        tbot.send_message(message.chat.id, day_content.content_for_day(), parse_mode='Markdown', reply_markup=markup)
+        msg = tbot.send_message(message.chat.id, day_content.content_for_day(), parse_mode='Markdown', reply_markup=markup)
+        save_message(msg)
 
 
 
