@@ -80,5 +80,5 @@ def text(message):
         else:
             msg = tbot.send_message(message.chat.id, sa.get_content(), parse_mode='Markdown')
             save_message(msg)
-            msg = tbot.send_message(message.chat.id, sa.tg_audio_link)
+            msg = tbot.send_audio(message.chat.id, sa.tg_audio_link)
             save_message(msg)
