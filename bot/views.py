@@ -60,8 +60,6 @@ def start_handler(message):
         save_message(msg)
 
 
-
-
 @tbot.message_handler(content_types=['text'])
 def text(message):
     save_message(message)
@@ -74,41 +72,13 @@ def text(message):
             msg = tbot.send_message(message.chat.id, audio.audio_link, reply_markup=markup)
             save_message(msg)
     elif ':' in message.text:
-        sura = int(message.text.split(':')[0])
-        if 1 > sura > 114:
-            msg = tbot.send_message(message.chat.id, 'Сура не найдена', reply_markup=markup)
+        sa = QuranAyat.objects.get_ayat(message.text)
+        print(type(sa))
+        if type(sa) == str:
+            msg = tbot.send_message(message.chat.id, sa, parse_mode='Markdown')
             save_message(msg)
-            return False
-        ayat = int(message.text.split(':')[1])
-        sura_ayats = QuranAyat.objects.filter(sura=sura)
-        for sa in sura_ayats:
-            sa_str = sa.__str__()
-            sa_str_ayats = sa_str.split(':')[1]
-            if '-' in sa_str:
-                first_range_ayat = int(sa_str_ayats.split('-')[0])
-                second_range_ayat = int(sa_str_ayats.split('-')[1])
-                if ayat in range(first_range_ayat, second_range_ayat + 1):
-                    msg = tbot.send_message(message.chat.id, sa.get_content(), parse_mode='Markdown', reply_markup=markup)
-                    save_message(msg)
-                    msg = tbot.send_audio(message.chat.id, sa.tg_audio_link, title=f'{sa.sura}:{sa.ayat}', performer='umma.ru')
-                    save_message(msg)
-                    print(sa_str)
-                    return True
-            elif ',' in sa_str_ayats:
-                s = [int(x) for x in sa_str_ayats.split(',')]
-                if ayat in s:
-                    print(s)
-                    msg = tbot.send_message(message.chat.id, sa.get_content(), parse_mode='Markdown')
-                    save_message(msg)
-                    msg = tbot.send_audio(message.chat.id, sa.tg_audio_link, title=f'{sa.sura}:{sa.ayat}', performer='umma.ru')
-                    save_message(msg)
-                    return True
-            elif int(sa.ayat) == ayat:
-                msg = tbot.send_message(message.chat.id, sa.get_content(), parse_mode='Markdown', reply_markup=markup)
-                save_message(msg)
-                msg = tbot.send_audio(message.chat.id, sa.tg_audio_link, title=f'{sa.sura}:{sa.ayat}', performer='umma.ru')
-                save_message(msg)
-                return True
-        msg = tbot.send_message(message.chat.id, 'Аят не найден', reply_markup=markup)
-        save_message(msg)
-        return False
+        else:
+            msg = tbot.send_message(message.chat.id, sa.get_content(), parse_mode='Markdown')
+            save_message(msg)
+            msg = tbot.send_message(message.chat.id, sa.tg_audio_link)
+            save_message(msg)
