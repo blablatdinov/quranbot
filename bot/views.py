@@ -60,6 +60,13 @@ def start_handler(message):
         save_message(msg)
 
 
+@tbot.message_handler(commands=['dev'])
+def to_dev(message):
+    msg = tbot.send_message(358610865, message.text[4:])
+    save_message(message)
+    save_message(msg)
+
+
 @tbot.message_handler(content_types=['text'])
 def text(message):
     save_message(message)
