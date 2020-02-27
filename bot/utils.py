@@ -3,12 +3,17 @@ def save_message(msg):
     from django.utils.timezone import make_aware
     from bot.models import Message
     import json
+    from pprint import pprint
     date = make_aware(datetime.fromtimestamp(msg.date))
     from_user_id = msg.from_user.id
     message_id = msg.message_id
     chat_id = msg.chat.id
     text = msg.text
-    json = json.dumps(eval(msg.__str__()), indent=2, ensure_ascii=False)
+    try:
+        json_str = eval(msg.__str__())
+    except:
+        json_str = msg.__str__()
+    json = json.dumps(json_str, indent=2, ensure_ascii=False)
     Message.objects.create(date=date, from_user_id=from_user_id, message_id=message_id,
                            chat_id=chat_id, text=text, json=json)
 
