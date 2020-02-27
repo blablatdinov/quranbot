@@ -16,28 +16,20 @@ class QuranAyatManager(models.Manager):
                 first_range_ayat = int(sa_str_ayats.split('-')[0])
                 second_range_ayat = int(sa_str_ayats.split('-')[1])
                 if ayat in range(first_range_ayat, second_range_ayat + 1):
-                    # tbot.send_message(message.chat.id, sa.get_content(), parse_mode='Markdown', reply_markup=markup)
-                    # tbot.send_audio(message.chat.id, sa.tg_audio_link, title=f'{sa.sura}:{sa.ayat}', performer='umma.ru')
                     print(sa_str)
                     return sa
             elif ',' in sa_str_ayats:
                 s = [int(x) for x in sa_str_ayats.split(',')]
                 if ayat in s:
                     print(s)
-                    # tbot.send_message(message.chat.id, sa.get_content(), parse_mode='Markdown')
-                    # tbot.send_audio(message.chat.id, sa.tg_audio_link, title=f'{sa.sura}:{sa.ayat}', performer='umma.ru')
                     return sa
             elif int(sa.ayat) == ayat:
-                # tbot.send_message(message.chat.id, sa.get_content(), parse_mode='Markdown', reply_markup=markup)
-                # tbot.send_audio(message.chat.id, sa.tg_audio_link, title=f'{sa.sura}:{sa.ayat}', performer='umma.ru')
                 return sa
-        # tbot.send_message(message.chat.id, 'Аят не найден', reply_markup=markup)
         return 'Аят не найден'
 
 
 class QuranOneDayContent(models.Model):
     content = models.TextField(blank=True)
-    #sura_ayat = models.ForeignKey(QuranAyat, blank=True, on_delete=models.CASCADE)
     day = models.IntegerField()
 
     def __str__(self):
