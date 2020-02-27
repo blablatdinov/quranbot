@@ -44,7 +44,7 @@ class QuranOneDayContent(models.Model):
         return f'{self.day} день'
 
     def content_for_day(self):
-        quran_qs = QuranAyat.objects.filter(one_day_content__day=self.day)
+        quran_qs = QuranAyat.objects.filter(one_day_content__day=self.day).order_by('pk')
         result = ''
         if self.content is not '':
             result += f'{self.content}\n\n'
