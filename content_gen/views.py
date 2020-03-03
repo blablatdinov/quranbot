@@ -27,14 +27,15 @@ def content_gen(request):
 
 def send_content(request):
     data = request.POST
-    for key in data:
-        print(data[key])
-    taken_content_day = data['content_day']
-    taken_sura = data['ayats[]'].split(':')[0]
-    taken_ayat = data['ayats[]']
-    # print(taken_ayat)
-    # print('asdf', taken_sura, taken_ayat)
-    content_day = QuranOneDayContent.objects.get_or_create(day=taken_content_day)
-    content_day = QuranOneDayContent.objects.get_or_create(day=taken_content_day)
-    # print(content_day, ayats)
+    taken_ayats = data.getlist('ayat[]')
+    taken_day = data.get('content_day')
+    content_day = QuranOneDayContent.objects.get_or_create(day=taken_day)[0]
+    for i in range(len(taken_ayats)):
+        taken_sura = taken_ayats[i].split(':')[0]
+        taken_ayat = taken_ayats[i].split(':')[1]
+        ayat = QuranAyat.objects.filter(sura=taken_sura, ayat=taken_ayat)[0]
+        print(ayat)
+        ayat.one_day_content = content_day
+        p = ayat.save()
+        print(p)
     return JsonResponse({'ok': 'true'})
