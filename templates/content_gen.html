@@ -19,7 +19,7 @@
 <div class="row">
 <div class="col-3">
 
-     Введите день<input type="text">
+     Введите день<input type="text" id='content-day'>
     <button id="send">Отправить</button>
     <div id="box"></div>
 
@@ -43,7 +43,6 @@
     takeButton = $('#take');
     sendButton = $('#send');
     box = $('#box');
-    print(box);
 
     takeButton.click(function () {
         var sura = $('#sura').val();
@@ -59,26 +58,35 @@
                     box.append(`<input class='ayats' type=\"checkbox\" id="ayat${i}">
                                 <label for="ayat${[i]}">${response.data[i].sura}:${response.data[i].ayat}</label>
                         </br>`);
-                    print(1)
                 }
             },
             error: function (data) {
-                print(data)
+                print('error')
             }
         });
     });
     sendButton.click(function() {
         var checkBoxes = $('.ayats');
+        var contentDay   = $('#content-day').val();
+        var ayatsFromLabel = [];
         for (var i = 0; i < checkBoxes.length; i++) {
             if (checkBoxes[i].checked === true) {
-                print(checkBoxes[i]);
                 var ayat = $(checkBoxes[i]);
-                var ayat_id = ayat.attr('id');
-                {#print(ayat.labels());#}
-                print($(`[for = ${ayat_id}]`).attr(''));
-                print($(`[for = ayat1]`).attr(''))
+                var ayat_id = ayat.prop('id');
+                // print(ayat.labels());
+                ayatsFromLabel.push($(`[for = ${ayat_id}]`).text());
             }
         }
+        print(contentDay)
+        print(ayatsFromLabel);
+        $.ajax({
+          url: 'http://localhost:8000/content/send',
+          method: 'POST',
+          data: {
+            'content_day': contentDay,
+            'ayat': ayatsFromLabel
+          }
+        })
     })
 
 
