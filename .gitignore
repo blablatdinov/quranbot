@@ -1,9 +1,10 @@
 venv/
 */migrations/
 .idea/
-*/__pycache__/
+*__pycache__/
 gunicorn.conf.py
 static/
 *.json
 db.sqlite3
-quranbot/settings.py
+*settings.py
+celerybeat*

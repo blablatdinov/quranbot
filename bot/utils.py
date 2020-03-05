@@ -60,15 +60,20 @@ def save_mp3():
     from bot.views import tbot
     import requests
     import sys
-    audios = Audio.objects.all()[554:]
-    for audio in audios:
+    import json
+    import progressbar
+    with open('audio.json', 'r') as f:
+        data = json.load(f)[994:]
+    #audios = Audio.objects.all()[554:]
+    #for audio in audios:
+    for i in progressbar.progressbar(range(len(data))):
+        link = data[i]['audio_link']
+        audio = Audio(title=data[i]['title'])
         #try:
-        r = requests.get(audio.audio_link)
+        r = requests.get(link)
         if sys.getsizeof(r.content) < 50 * 1024 * 1024:
-            msg = tbot.send_audio(358610865, r.content, timeout=180, title=audio.title, performer='Шамиль Аялутдинов')
+            msg = tbot.send_audio(358610865, r.content, timeout=180, title=audio.title, performer='Шамиль Аляутдинов')
             audio.tg_audio_link = msg.audio.file_id
-            print(f'{audio.pk}: {audio.title}')
-            print(audio.tg_audio_link)
             audio.save()
             tbot.delete_message(358610865, msg.message_id)
         else:
