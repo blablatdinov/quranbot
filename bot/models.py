@@ -42,6 +42,8 @@ class QuranOneDayContent(models.Model):
             result += f'{self.content}\n\n'
         for q in quran_qs:
             result += f'*{q.sura}:{q.ayat})* {q.content}\n'
+        if result != '':
+            result += f'\nСсылка на источник: {quran_qs[0].link_to_source}'
         return result
 
     class Meta:
@@ -59,6 +61,7 @@ class QuranAyat(models.Model):
     ayat = models.CharField(max_length=16, blank=True)
     html = models.TextField(blank=True)
     one_day_content = models.ForeignKey(QuranOneDayContent, blank=True, null=True, on_delete=models.CASCADE)
+    link_to_source = models.CharField(max_length=512, blank=True, null=True)
 
     objects = QuranAyatManager()
 

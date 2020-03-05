@@ -1,4 +1,5 @@
 from time import sleep
+import random
 
 from django.http import HttpResponse
 from django.core.exceptions import PermissionDenied
@@ -37,10 +38,10 @@ def bot(request):
         raise PermissionDenied
 
 
-@tbot.message_handler(commands=['start'])
+@tbot.message_handler(commands=['start'])  # Обработчик команды страрт
 def start_handler(message):
     save_message(message)
-    try:
+    try:  # Если пользователь уже есть в нашей базе выполняется следующий код 
         s = Subscribers.objects.get(telegram_chat_id=message.chat.id)
         if s.status:
             msg = tbot.send_message(message.chat.id, 'Вы уже зарегистрированы',
@@ -52,7 +53,7 @@ def start_handler(message):
             msg = tbot.send_message(message.chat.id, f'Ваш статус "*Активен*", вы продолжите с дня {s.day}',
                               parse_mode='Markdown', reply_markup=markup)
             save_message(msg)
-    except:
+    except:  # Если пользователь отправил команду /start впервые
         day_content = QuranOneDayContent.objects.get(day=1)
         subscriber = Subscribers(telegram_chat_id=message.chat.id, day=1)
         subscriber.save()
@@ -60,24 +61,22 @@ def start_handler(message):
         save_message(msg)
 
 
-@tbot.message_handler(commands=['dev'])
+@tbot.message_handler(commands=['dev'])  # Обработчик команды /dev
 def to_dev(message):
-    msg = tbot.send_message(358610865, message.text[4:])
-    save_message(message)
-    save_message(msg)
+    text = f'*Сообщение для разработчика:*\n\n{message.text[4:]}'
+    msg = tbot.send_message(358610865, text, parse_mode='Markdown')
 
 
-@tbot.message_handler(content_types=['text'])
+@tbot.message_handler(content_types=['text'])  # обработчик всех текстовых сообщений
 def text(message):
     save_message(message)
     if message.text == '🎧Подкасты':
-        audio = Audio.objects.get(id=random.randint(1, 1866))
-        if audio.tg_audio_link != '':
-            msg = tbot.send_audio(message.chat.id, audio.tg_audio_link, reply_markup=markup)
-            save_message(msg)
-        else:
+        audio = random.choice(Audio.objects.all())
+        if audio.tg_audio_link == '':
             msg = tbot.send_message(message.chat.id, audio.audio_link, reply_markup=markup)
-            save_message(msg)
+        else:
+            msg = tbot.send_audio(message.chat.id, audio.tg_audio_link, reply_markup=markup, performer='Шамиль Аляутдинов')
+        save_message(msg)
     elif ':' in message.text:
         sa = QuranAyat.objects.get_ayat(message.text)
         print(type(sa))
@@ -89,3 +88,4 @@ def text(message):
             save_message(msg)
             msg = tbot.send_audio(message.chat.id, sa.tg_audio_link)
             save_message(msg)
+

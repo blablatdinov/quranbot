@@ -47,7 +47,7 @@
     takeButton.click(function () {
         var sura = $('#sura').val();
         $.ajax({
-            url: 'http://localhost:8000/content',
+            url: 'https://blablatdinov.ru/content',
             method: 'POST',
             data: {'sura': sura},
             success: function (response) {
@@ -80,7 +80,7 @@
         print(contentDay)
         print(ayatsFromLabel);
         $.ajax({
-          url: 'http://localhost:8000/content/send',
+          url: 'https://blablatdinov.ru/content/send',
           method: 'POST',
           data: {
             content_day: contentDay,

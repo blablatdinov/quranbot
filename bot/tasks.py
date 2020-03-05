@@ -12,6 +12,7 @@ from .utils import save_message
 import lxml
 from bs4 import BeautifulSoup as bs
 import requests
+import time
 
 
 
@@ -34,6 +35,7 @@ def mailing():
         except ApiException:
             sub.status = False
             sub.save()
+        time.sleep(0.1)
 
 
 @periodic_task(run_every=(crontab(hour=3, minute=0)), name='prayer-time')
