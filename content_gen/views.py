@@ -5,7 +5,7 @@ from bot.models import *
 
 def content_gen(request):
     if request.method == 'GET':
-        qs = QuranOneDayContent.objects.all().order_by('-pk')
+        qs = QuranOneDayContent.objects.all().order_by('-day')
         context = {
             'qs': qs
         }

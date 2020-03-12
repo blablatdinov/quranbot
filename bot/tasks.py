@@ -16,11 +16,7 @@ import time
 
 
 
-# celery worker -A quranbot --loglevel=info
-# celery -A quranbot beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
-#@periodic_task(run_every=(timedelta(seconds=5)), name='mailing')
 @periodic_task(run_every=(crontab(hour=4, minute=0)), name='mailing')
-#@periodic_task(name='mailing')
 def mailing():
     subs = Subscribers.objects.filter(status=True)  # Получаем подписчиков
     print(subs)
@@ -44,14 +40,12 @@ def pr_time():
     soup = bs(requests.get('https://umma.ru/raspisanie-namaza/kazan').text, 'lxml')
     block = soup.find('tr', class_='current')
     columns = block.find_all('td')
-    res = f"Иртәнге: {columns[2].text}\n"\
-    f"Восход: {columns[3].text}\n"\
-    f"Өйлә: {columns[4].text}\n" \
-    f"Икенде: {columns[5].text}\n" \
-    f"Ахшам: {columns[6].text}\n" \
-    f"Ястү: {columns[7].text}"
+    res = f"Иртәнге: {columns[1].text}\n"\
+    f"Восход: {columns[2].text}\n"\
+    f"Өйлә: {columns[3].text}\n" \
+    f"Икенде: {columns[4].text}\n" \
+    f"Ахшам: {columns[5].text}\n" \
+    f"Ястү: {columns[6].text}"
     msg = tbot.send_message(sub, res)
     save_message(msg)
-
-
 
