@@ -5,7 +5,10 @@ import sys
 
 
 def main():
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'quranbot.settings')
+    if os.environ.get('DJANGO_DEVELOPMENT') is not None:
+        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'quranbot.settings.dev')
+    else:
+        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'quranbot.settings.prod')
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
