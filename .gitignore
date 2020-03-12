@@ -1,4 +1,6 @@
 venv/
+flask-env/
+
 */migrations/
 .idea/
 *__pycache__/
