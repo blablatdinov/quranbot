@@ -60,7 +60,7 @@ class QuranAyat(models.Model):
     sura = models.IntegerField(blank=True, null=True)
     ayat = models.CharField(max_length=16, blank=True)
     html = models.TextField(blank=True)
-    one_day_content = models.ForeignKey(QuranOneDayContent, blank=True, null=True, on_delete=models.CASCADE)
+    one_day_content = models.ForeignKey(QuranOneDayContent, blank=True, null=True, on_delete=models.SET_NULL)
     link_to_source = models.CharField(max_length=512, blank=True, null=True)
 
     objects = QuranAyatManager()
@@ -74,7 +74,6 @@ class QuranAyat(models.Model):
     class Meta:
         verbose_name = 'Аят Священного Корана:'
         verbose_name_plural = 'Аяты Священного Корана:'
-
 
 class Subscribers(models.Model):
     telegram_chat_id = models.IntegerField()
