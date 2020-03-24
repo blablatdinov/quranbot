@@ -27,7 +27,10 @@ DATABASES = {
 
 STATIC_ROOT = '/home/www/code/quranbot/static'
 
-# TG_BOT_TOKEN = '705810219:AAHwIwmLT7P3ffdP5fV6OFy2kWvBSDERGNk'
+TG_BOT_TOKEN = '705810219:AAHwIwmLT7P3ffdP5fV6OFy2kWvBSDERGNk'
+
+
+
 
 DJANGO_TELEGRAMBOT = {
     'WEBHOOK_SITE': 'https://quranbot.blablatdinov.ru',

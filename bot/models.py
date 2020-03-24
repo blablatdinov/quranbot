@@ -117,3 +117,14 @@ class Message(models.Model):
             return 'From bot'
         else:
             return 'To bot'
+
+
+class AdminMessage(models.Model):
+    """ Административные сообщения """
+    title = models.CharField(max_length=128)
+    text = models.TextField()
+    key = models.CharField(max_length=128)
+
+    def __str__(self):
+        return self.title
+
