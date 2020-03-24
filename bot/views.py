@@ -38,7 +38,7 @@ def bot(request):
         raise PermissionDenied
 
 
-@tbot.message_handler(commands=['start'])  # Обработчик команды страрт
+@tbot.message_handler(commands=['start'])  # Обработчик команды старт
 def start_handler(message):
     save_message(message)
     try:  # Если пользователь уже есть в нашей базе выполняется следующий код 
@@ -54,11 +54,21 @@ def start_handler(message):
                               parse_mode='Markdown', reply_markup=markup)
             save_message(msg)
     except:  # Если пользователь отправил команду /start впервые
+        start_mes = AdminMessage.objects.get(key='help').text
+        msg = tbot.send_message(message.chat.id, start_mes, parse_mode='Markdown')
+        save_message(start_mes)
         day_content = QuranOneDayContent.objects.get(day=1)
         subscriber = Subscribers(telegram_chat_id=message.chat.id, day=1)
         subscriber.save()
         msg = tbot.send_message(message.chat.id, day_content.content_for_day(), parse_mode='Markdown', reply_markup=markup)
         save_message(msg)
+
+
+@tbot.message_handler(commands=['help'])
+def help_handler(message):
+    help_mes = AdminMessage.objects.get(key='help').text
+    msg = tbot.send_message(message.chat.id, help_mes, parse_mode='Markdown')
+    save_message(msg)
 
 
 @tbot.message_handler(commands=['dev'])  # Обработчик команды /dev
