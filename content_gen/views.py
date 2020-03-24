@@ -5,6 +5,7 @@ from bot.models import *
 
 def content_gen(request):
     if request.method == 'GET':
+        print(request.user.is_superuser)
         qs = QuranOneDayContent.objects.all().order_by('-day')
         context = {
             'qs': qs
@@ -12,7 +13,7 @@ def content_gen(request):
         return render(request, 'content_gen.html', context)
     else:
         sura = request.POST['sura']
-        qs = QuranAyat.objects.filter(sura=sura)
+        qs = QuranAyat.objects.filter(sura=sura).order_by('pk')
         data = []
         for q in qs:
             data.append({
@@ -38,4 +39,13 @@ def send_content(request):
         ayat.one_day_content = content_day
         p = ayat.save()
         print(p)
-    return JsonResponse({'ok': 'true'})
+    q = ayat
+    print(q)
+    data = {'data': []}
+    #for q in qs:
+    data['data'].append({
+                'day': q.day,
+                'content': q.content_for_day()
+                        })
+    return JsonResponse(data)
+

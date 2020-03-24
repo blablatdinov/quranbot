@@ -14,6 +14,7 @@
             crossorigin="anonymous"></script>
 </head>
 <body>
+    {% if user.is_superuser %}
 Введи номер суры: <input type="text" id="sura">
 <button id="take">Получить</button>
 <div class="row">
@@ -25,7 +26,7 @@
 
 </div>
 
-    <div class="col-9">
+    <div class="col-9" id='content'>
         {% for content in qs %}
             <b>{{ content.day }} день) </b>{{ content.content_for_day }}<br><br>
         {% endfor %}
@@ -47,7 +48,7 @@
     takeButton.click(function () {
         var sura = $('#sura').val();
         $.ajax({
-            url: 'https://blablatdinov.ru/content',
+            url: 'https://quranbot.blablatdinov.ru/content',
             method: 'POST',
             data: {'sura': sura},
             success: function (response) {
@@ -80,17 +81,31 @@
         print(contentDay)
         print(ayatsFromLabel);
         $.ajax({
-          url: 'https://blablatdinov.ru/content/send',
+          url: 'https://quranbot.blablatdinov.ru/content/send',
           method: 'POST',
           data: {
             content_day: contentDay,
             ayat: ayatsFromLabel
           }
         })
+        $.ajax({
+            url: 'https://quranbot.blablatdinov.ru/content?action=get_content',
+            method: 'GET',
+            success: function(response){
+                var data = response.data
+                var content_box = $('#content')
+                content_box.empty()
+                for (var i = 0; i < data.length; i++) {
+                    content_box.append(`<p><b>${data[i].day}</b>)${data[i].content}</p>`) 
+                }
+            }
+        })
     })
 
 
 </script>
-
+{% else %}
+<h1>У вас нет доступа</h1>
+{% endif %}
 </body>
 </html>
