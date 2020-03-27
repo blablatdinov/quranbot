@@ -4,6 +4,7 @@ from django.db import models
 class QuranAyatManager(models.Manager):
 
     def get_ayat(self, mes):
+        print(mes.split(':'))
         sura = int(mes.split(':')[0])
         if 1 > sura > 114:
             return 'Сура не найдена'
