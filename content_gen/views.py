@@ -5,13 +5,15 @@ from bot.models import *
 
 def content_gen(request):
     if request.method == 'GET':
-        print(request.user.is_superuser)
+        # print(request.user)
         qs = QuranOneDayContent.objects.all().order_by('-day')
         context = {
             'qs': qs
         }
         return render(request, 'content_gen.html', context)
     else:
+        # print(request.POST)
+        # print(request.method)
         sura = request.POST['sura']
         qs = QuranAyat.objects.filter(sura=sura).order_by('pk')
         data = []
@@ -35,17 +37,13 @@ def send_content(request):
         taken_sura = taken_ayats[i].split(':')[0]
         taken_ayat = taken_ayats[i].split(':')[1]
         ayat = QuranAyat.objects.filter(sura=taken_sura, ayat=taken_ayat)[0]
-        print(ayat)
+        # print(ayat)
         ayat.one_day_content = content_day
         p = ayat.save()
-        print(p)
-    q = ayat
-    print(q)
-    data = {'data': []}
-    #for q in qs:
-    data['data'].append({
+        # print(p)
+    q = QuranOneDayContent.objects.last()
+    return JsonResponse({
                 'day': q.day,
                 'content': q.content_for_day()
                         })
-    return JsonResponse(data)
 
