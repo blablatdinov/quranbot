@@ -1,6 +1,8 @@
 from time import sleep
 import random
 
+from quranbot.settings import DEBUG
+
 from django.http import HttpResponse
 from django.core.exceptions import PermissionDenied
 import telebot
@@ -14,6 +16,8 @@ from .models import *
 from .utils import save_message
 
 
+if DEBUG:
+    r = telebot.apihelper.proxy = {'https': 'socks5://sockduser:ehodof21@66.55.70.132:7777'}
 token = DJANGO_TELEGRAMBOT['BOTS'][0]['TOKEN']
 webhook_url = DJANGO_TELEGRAMBOT['WEBHOOK_SITE']
 tbot = telebot.TeleBot(token)
@@ -79,22 +83,36 @@ def to_dev(message):
     msg = tbot.send_message(358610865, text, parse_mode='HTML')
 
 
-def send_ayats(sura_ayat):
-    sa = QuranAyat.objects.get_ayat(message.text)
+def send_ayats(tg_id, text):
+    sa = QuranAyat.objects.get_ayat(text)
     print(sa.pk)
     if type(sa) == str:
         msg = tbot.send_message(message.chat.id, sa, parse_mode='HTML')
         save_message(msg)
     else:
         keyboard = types.InlineKeyboardMarkup()
+        if sa.pk == 1:
+            next_ayat = QuranAyat.objects.get(pk=sa.pk+1)
+            button =types.InlineKeyboardButton(text=next_ayat.__str__(), callback_data=next_ayat.__str__())
+            keyboard.add(button)
+            msg = tbot.send_message(tg_id, sa.get_content(), parse_mode='HTML', reply_markup=keyboard)
+            save_message(msg)
+            return ''
+        if sa.pk == 5737:
+            pres_ayat = QuranAyat.objects.get(pk=sa.pk-1)
+            button =types.InlineKeyboardButton(text=pres_ayat.__str__(), callback_data=pres_ayat.__str__())
+            keyboard.add(button)
+            msg = tbot.send_message(tg_id, sa.get_content(), parse_mode='HTML', reply_markup=keyboard)
+            save_message(msg)
+            return ''
         pres_ayat = QuranAyat.objects.get(pk=sa.pk-1)
         next_ayat = QuranAyat.objects.get(pk=sa.pk+1)
         first_button = types.InlineKeyboardButton(text=pres_ayat.__str__(), callback_data=pres_ayat.__str__())
         second_button = types.InlineKeyboardButton(text=next_ayat.__str__(), callback_data=next_ayat.__str__())
         keyboard.add(first_button, second_button)
-        msg = tbot.send_message(message.chat.id, sa.get_content(), parse_mode='HTML', reply_markup=keyboard)
+        msg = tbot.send_message(tg_id, sa.get_content(), parse_mode='HTML', reply_markup=keyboard)
         save_message(msg)
-        #msg = tbot.send_audio(message.chat.id, sa.tg_audio_link)
+        #msg = tbot.send_audio(tg_id, sa.tg_audio_link)
         save_message(msg)
   
 
@@ -114,7 +132,13 @@ def text(message):
 
 @tbot.callback_query_handler(func=lambda call: True)
 def handle_query(call):
-    from pprint import pprint
-    pprint(call)
-    send_ayat(call.data)
-    print(call.data)
+    import re
+    chat_id = call.from_user.id
+    text = call.data
+    print(text)
+    regexp = r':\d+'
+    sura = text.split(':')[0]
+    ayat = re.match(regexp, text)
+    print(ayat)
+    print(ayat.group(0))
+    #send_ayats(chat_id, )
