@@ -45,7 +45,7 @@
     sendButton = $('#send');
     box = $('#box');
 
-    takeButton.click(function () {
+    takeButton.click(function () { // Получить аяты
         var sura = $('#sura').val();
         $.ajax({
             url: 'https://quranbot.blablatdinov.ru/content',
@@ -68,11 +68,15 @@
     });
     sendButton.click(function() {
         var checkBoxes = $('.ayats');
+        var labels = $('label');
         var contentDay   = $('#content-day').val();
         var ayatsFromLabel = [];
         for (var i = 0; i < checkBoxes.length; i++) {
             if (checkBoxes[i].checked === true) {
                 var ayat = $(checkBoxes[i]);
+                var label = $(labels[i])
+                ayat.click()
+                ayat.hide()
                 var ayat_id = ayat.prop('id');
                 // print(ayat.labels());
                 ayatsFromLabel.push($(`[for = ${ayat_id}]`).text());
@@ -86,19 +90,13 @@
           data: {
             content_day: contentDay,
             ayat: ayatsFromLabel
+          },
+          success: function(response) {
+            console.log(response)
+            var block = $('#content')
+            block.prepend(`<b>${response.day} день) </b>${response.content}<br><br>
+`)
           }
-        })
-        $.ajax({
-            url: 'https://quranbot.blablatdinov.ru/content?action=get_content',
-            method: 'GET',
-            success: function(response){
-                var data = response.data
-                var content_box = $('#content')
-                content_box.empty()
-                for (var i = 0; i < data.length; i++) {
-                    content_box.append(`<p><b>${data[i].day}</b>)${data[i].content}</p>`) 
-                }
-            }
         })
     })
 
