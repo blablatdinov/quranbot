@@ -41,7 +41,7 @@ class QuranOneDayContent(models.Model):
         if self.content is not '':
             result += f'{self.content}\n\n'
         for q in quran_qs:
-            result += f'*{q.sura}:{q.ayat})* {q.content}\n'
+            result += f'<b>{q.sura}:{q.ayat})</b> {q.content}\n'
         if result != '':
             result += f'\nСсылка на источник: {quran_qs[0].link_to_source}'
         return result
@@ -66,7 +66,7 @@ class QuranAyat(models.Model):
     objects = QuranAyatManager()
 
     def get_content(self):
-        return f'*({self.sura}:{self.ayat})*\n{self.arab_text}\n\n{self.content}\n\n**{self.trans}**\n\n'
+        return f'<b>({self.sura}:{self.ayat})</b>\n{self.arab_text}\n\n{self.content}\n\n<i>{self.trans}</i>\n\n'
 
     def __str__(self):
         return f'{self.sura}:{self.ayat}'

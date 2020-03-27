@@ -50,31 +50,33 @@ def start_handler(message):
         else:
             s.status = True
             s.save()
-            msg = tbot.send_message(message.chat.id, f'Ваш статус "*Активен*", вы продолжите с дня {s.day}',
-                              parse_mode='Markdown', reply_markup=markup)
+            msg = tbot.send_message(message.chat.id, f'Ваш статус "<b>Активен</b>", вы продолжите с дня {s.day}',
+                              parse_mode='HTML', reply_markup=markup)
             save_message(msg)
     except:  # Если пользователь отправил команду /start впервые
         start_mes = AdminMessage.objects.get(key='help').text
-        msg = tbot.send_message(message.chat.id, start_mes, parse_mode='Markdown')
-        save_message(start_mes)
+        msg = tbot.send_message(message.chat.id, start_mes, parse_mode='HTML')
+        save_message(msg)
         day_content = QuranOneDayContent.objects.get(day=1)
         subscriber = Subscribers(telegram_chat_id=message.chat.id, day=1)
         subscriber.save()
-        msg = tbot.send_message(message.chat.id, day_content.content_for_day(), parse_mode='Markdown', reply_markup=markup)
+        msg = tbot.send_message(message.chat.id, day_content.content_for_day(), parse_mode='HTML', reply_markup=markup)
         save_message(msg)
+        msg = tbot.send_message(358610865, 'Зарегестрировался новый пользователь')
 
 
 @tbot.message_handler(commands=['help'])
 def help_handler(message):
+    save_message(message)
     help_mes = AdminMessage.objects.get(key='help').text
-    msg = tbot.send_message(message.chat.id, help_mes, parse_mode='Markdown')
+    msg = tbot.send_message(message.chat.id, help_mes, parse_mode='HTML', reply_markup=markup)
     save_message(msg)
 
 
 @tbot.message_handler(commands=['dev'])  # Обработчик команды /dev
 def to_dev(message):
-    text = f'*Сообщение для разработчика:*\n\n{message.text[4:]}'
-    msg = tbot.send_message(358610865, text, parse_mode='Markdown')
+    text = f'<b>Сообщение для разработчика:</b>\n\n{message.text[4:]}'
+    msg = tbot.send_message(358610865, text, parse_mode='HTML')
 
 
 @tbot.message_handler(content_types=['text'])  # обработчик всех текстовых сообщений
@@ -91,10 +93,10 @@ def text(message):
         sa = QuranAyat.objects.get_ayat(message.text)
         print(type(sa))
         if type(sa) == str:
-            msg = tbot.send_message(message.chat.id, sa, parse_mode='Markdown')
+            msg = tbot.send_message(message.chat.id, sa, parse_mode='HTML')
             save_message(msg)
         else:
-            msg = tbot.send_message(message.chat.id, sa.get_content(), parse_mode='Markdown')
+            msg = tbot.send_message(message.chat.id, sa.get_content(), parse_mode='HTML')
             save_message(msg)
             msg = tbot.send_audio(message.chat.id, sa.tg_audio_link)
             save_message(msg)

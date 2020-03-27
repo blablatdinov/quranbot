@@ -19,12 +19,10 @@ import time
 @periodic_task(run_every=(crontab(hour=4, minute=0)), name='mailing')
 def mailing():
     subs = Subscribers.objects.filter(status=True)  # Получаем подписчиков
-    print(subs)
     for sub in subs:  # Проходимся по подписчикам
-        print(sub)
         content = QuranOneDayContent.objects.get(day=sub.day).content_for_day()
         try:
-            msg = tbot.send_message(chat_id=sub.telegram_chat_id, text=content, parse_mode='Markdown')
+            msg = tbot.send_message(chat_id=sub.telegram_chat_id, text=content, parse_mode='HTML')
             save_message(msg)
             sub.day += 1
             sub.save()
