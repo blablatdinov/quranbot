@@ -67,6 +67,7 @@ def start_handler(message):
         msg = tbot.send_message(message.chat.id, day_content.content_for_day(), parse_mode='HTML', reply_markup=markup)
         save_message(msg)
         msg = tbot.send_message(358610865, 'Зарегестрировался новый пользователь')
+        save_message(msg)
 
 
 @tbot.message_handler(commands=['help'])
@@ -87,7 +88,7 @@ def send_ayats(tg_id, text):
     sa = QuranAyat.objects.get_ayat(text)
     print(sa.pk)
     if type(sa) == str:
-        msg = tbot.send_message(message.chat.id, sa, parse_mode='HTML')
+        msg = tbot.send_message(tg_id, sa, parse_mode='HTML')
         save_message(msg)
     else:
         keyboard = types.InlineKeyboardMarkup()
@@ -135,10 +136,9 @@ def handle_query(call):
     import re
     chat_id = call.from_user.id
     text = call.data
-    print(text)
     regexp = r':\d+'
     sura = text.split(':')[0]
-    ayat = re.match(regexp, text)
-    print(ayat)
-    print(ayat.group(0))
-    #send_ayats(chat_id, )
+    ayats_range = text[text.find(':'):]
+    ayat_with_colon = re.match(regexp, ayats_range)
+    ayat = ayat_with_colon.group(0)[1:]
+    send_ayats(chat_id, f'{sura}:{ayat}')
