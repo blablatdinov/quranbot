@@ -4,7 +4,7 @@ from django.db import models
 class QuranAyatManager(models.Manager):
 
     def get_ayat(self, mes):
-        print(mes.split(':'))
+        #print(mes.split(':'))
         sura = int(mes.split(':')[0])
         if 1 > sura > 114:
             return 'Сура не найдена'
@@ -17,12 +17,12 @@ class QuranAyatManager(models.Manager):
                 first_range_ayat = int(sa_str_ayats.split('-')[0])
                 second_range_ayat = int(sa_str_ayats.split('-')[1])
                 if ayat in range(first_range_ayat, second_range_ayat + 1):
-                    print(sa_str)
+                    #print(sa_str)
                     return sa
             elif ',' in sa_str_ayats:
                 s = [int(x) for x in sa_str_ayats.split(',')]
                 if ayat in s:
-                    print(s)
+                    #print(s)
                     return sa
             elif int(sa.ayat) == ayat:
                 return sa
@@ -39,7 +39,7 @@ class QuranOneDayContent(models.Model):
     def content_for_day(self):
         quran_qs = QuranAyat.objects.filter(one_day_content__day=self.day).order_by('pk')
         result = ''
-        if self.content is not '':
+        if self.content != '':
             result += f'{self.content}\n\n'
         for q in quran_qs:
             result += f'<b>{q.sura}:{q.ayat})</b> {q.content}\n'
