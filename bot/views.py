@@ -1,15 +1,15 @@
+# Импорт стандартных модулей python
 from time import sleep
 import random
-
+# Импорт данных из настроек
 from quranbot.settings import DEBUG
-
+from quranbot.settings import DJANGO_TELEGRAMBOT
+# Импорт доп. библиотек 
+import telebot
+from telebot import types
+# Импорт модулей django
 from django.http import HttpResponse
 from django.core.exceptions import PermissionDenied
-import telebot
-import random
-from telebot import types
-from quranbot.settings import DJANGO_TELEGRAMBOT
-from billiard.pool import MaybeEncodingError
 
 from .models import *
 
@@ -86,7 +86,7 @@ def to_dev(message):
 
 def send_ayats(tg_id, text):
     sa = QuranAyat.objects.get_ayat(text)
-    print(sa.pk)
+    #print(sa.pk)
     if type(sa) == str:
         msg = tbot.send_message(tg_id, sa, parse_mode='HTML')
         save_message(msg)
@@ -113,14 +113,14 @@ def send_ayats(tg_id, text):
         keyboard.add(first_button, second_button)
         msg = tbot.send_message(tg_id, sa.get_content(), parse_mode='HTML', reply_markup=keyboard)
         save_message(msg)
-        #msg = tbot.send_audio(tg_id, sa.tg_audio_link)
+        msg = tbot.send_audio(tg_id, sa.tg_audio_link)
         save_message(msg)
-  
+
 
 @tbot.message_handler(content_types=['text'])  # обработчик всех текстовых сообщений
 def text(message):
     save_message(message)
-    if message.text == '🎧Подкасты':
+    if message.text == 'подкасты' or message.text == 'Подкасты' or message.text == '🎧Подкасты':
         audio = random.choice(Audio.objects.all())
         if audio.tg_audio_link == '':
             msg = tbot.send_message(message.chat.id, audio.audio_link, reply_markup=markup)
