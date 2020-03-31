@@ -76,11 +76,13 @@ class QuranAyat(models.Model):
         verbose_name = 'Аят Священного Корана:'
         verbose_name_plural = 'Аяты Священного Корана:'
 
+
 class Subscribers(models.Model):
     telegram_chat_id = models.IntegerField()
     day = models.IntegerField()
     status = models.BooleanField(default=True)
     comment = models.TextField(blank=True, null=True)
+    favorit_ayats = models.ManyToManyField(QuranAyat, related_name='favorit_ayats')
 
     def __str__(self):
         return str(self.telegram_chat_id)
