@@ -7,7 +7,7 @@ class MessageAdmin(admin.ModelAdmin):
 
 
 class SubsAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'status', 'comment')
+    list_display = ('__str__', 'status', 'comment', 'day')
 
 admin.site.register(QuranAyat)
 admin.site.register(QuranOneDayContent)

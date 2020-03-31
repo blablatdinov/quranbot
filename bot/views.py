@@ -29,6 +29,8 @@ tbot.set_webhook(f'{webhook_url}/{token}')
 markup = types.ReplyKeyboardMarkup()
 item = types.KeyboardButton('🎧Подкасты')
 markup.row(item)
+item = types.KeyboardButton('🌟Избранное')
+markup.row(item)
 
 
 def bot(request):
@@ -84,6 +86,12 @@ def to_dev(message):
     msg = tbot.send_message(358610865, text, parse_mode='HTML')
 
 
+def add_to_favorit(chat_id, ayat_pk):
+    sub = Subscribers.objects.get(telegram_chat_id=int(chat_id))
+    ayat = QuranAyat.objects.get(pk=ayat_pk)
+    sub.favorit_ayats.add(ayat)
+
+
 def send_ayats(tg_id, text):
     sa = QuranAyat.objects.get_ayat(text)
     #print(sa.pk)
@@ -106,11 +114,15 @@ def send_ayats(tg_id, text):
             msg = tbot.send_message(tg_id, sa.get_content(), parse_mode='HTML', reply_markup=keyboard)
             save_message(msg)
             return ''
+
         pres_ayat = QuranAyat.objects.get(pk=sa.pk-1)
         next_ayat = QuranAyat.objects.get(pk=sa.pk+1)
         first_button = types.InlineKeyboardButton(text=pres_ayat.__str__(), callback_data=pres_ayat.__str__())
         second_button = types.InlineKeyboardButton(text=next_ayat.__str__(), callback_data=next_ayat.__str__())
+        add_to_favorit_btn = types.InlineKeyboardButton(text='Добавить в избранное', callback_data=f'addToFav:pk={sa.pk}')
         keyboard.add(first_button, second_button)
+        keyboard.add(add_to_favorit_btn)
+
         msg = tbot.send_message(tg_id, sa.get_content(), parse_mode='HTML', reply_markup=keyboard)
         save_message(msg)
         msg = tbot.send_audio(tg_id, sa.tg_audio_link)
@@ -127,6 +139,14 @@ def text(message):
         else:
             msg = tbot.send_audio(message.chat.id, audio.tg_audio_link, reply_markup=markup, performer='Шамиль Аляутдинов')
         save_message(msg)
+    elif 'Избранное' in message.text:
+        s = Subscribers.objects.get(telegram_chat_id=message.chat.id)
+        ayats = s.favorit_ayats.all()
+        response = ''
+        for a in ayats:
+            response += f'{a.sura}:{a.ayat}\n'
+        msg = tbot.send_message(message.chat.id, response, reply_markup=markup)
+        save_message(msg)
     elif ':' in message.text:
         send_ayats(message.chat.id, message.text)
 
@@ -136,9 +156,13 @@ def handle_query(call):
     import re
     chat_id = call.from_user.id
     text = call.data
-    regexp = r':\d+'
-    sura = text.split(':')[0]
-    ayats_range = text[text.find(':'):]
-    ayat_with_colon = re.match(regexp, ayats_range)
-    ayat = ayat_with_colon.group(0)[1:]
-    send_ayats(chat_id, f'{sura}:{ayat}')
+    if 'addToFav' in text:
+        ayat_pk = int(text[12:])
+        add_to_favorit(chat_id, ayat_pk)
+    else:
+        regexp = r':\d+'
+        sura = text.split(':')[0]
+        ayats_range = text[text.find(':'):]
+        ayat_with_colon = re.match(regexp, ayats_range)
+        ayat = ayat_with_colon.group(0)[1:]
+        send_ayats(chat_id, f'{sura}:{ayat}')
