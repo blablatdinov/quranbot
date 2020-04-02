@@ -10,7 +10,7 @@ def save_message(msg):
     chat_id = msg.chat.id
     text = msg.text
     try:
-        json_str = eval(msg.__str__())
+        json_str = msg.json
     except:
         json_str = msg.__str__()
     json = json.dumps(json_str, indent=2, ensure_ascii=False)

@@ -82,7 +82,7 @@ class Subscribers(models.Model):
     day = models.IntegerField()
     status = models.BooleanField(default=True)
     comment = models.TextField(blank=True, null=True)
-    favorit_ayats = models.ManyToManyField(QuranAyat, related_name='favorit_ayats')
+    favorit_ayats = models.ManyToManyField(QuranAyat, related_name='favorit_ayats', blank=True, null=True)
 
     def __str__(self):
         return str(self.telegram_chat_id)
@@ -121,6 +121,10 @@ class Message(models.Model):
         else:
             return 'To bot'
 
+    class Meta:
+        verbose_name = 'Сообщеие'
+        verbose_name_plural = 'Сообщения'
+
 
 class AdminMessage(models.Model):
     """ Административные сообщения """
@@ -130,4 +134,8 @@ class AdminMessage(models.Model):
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        verbose_name = 'Админитративное сообщение'
+        verbose_name_plural = 'Админитративное сообщения'
 
