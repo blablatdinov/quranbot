@@ -64,11 +64,11 @@ def start_handler(message):
         msg = tbot.send_message(message.chat.id, start_mes, parse_mode='HTML')
         save_message(msg)
         day_content = QuranOneDayContent.objects.get(day=1)
-        subscriber = Subscribers(telegram_chat_id=message.chat.id, day=1)
+        subscriber = Subscribers(telegram_chat_id=message.chat.id, day=2)
         subscriber.save()
         msg = tbot.send_message(message.chat.id, day_content.content_for_day(), parse_mode='HTML', reply_markup=markup)
         save_message(msg)
-        msg = tbot.send_message(358610865, 'Зарегестрировался новый пользователь')
+        msg = tbot.send_message(358610865, f'Зарегестрировался новый пользователь - {message.chat.id}')
         save_message(msg)
 
 
