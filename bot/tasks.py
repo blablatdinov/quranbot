@@ -3,7 +3,7 @@ from celery import shared_task
 from telebot.apihelper import ApiException
 
 from celery.task import periodic_task
-from .models import Subscribers, QuranOneDayContent, QuranAyat
+from .models import Subscribers, QuranOneDayContent, QuranAyat, Audio
 from celery.schedules import crontab
 from datetime import timedelta
 from .views import tbot
