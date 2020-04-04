@@ -25,7 +25,7 @@ TG_BOT_TOKEN = '452230948:AAGgl86AHCdTCXf8XGD6lkj9rQhoV4xrf5E'
 
 
 DJANGO_TELEGRAMBOT = {
-    'WEBHOOK_SITE': 'https://95173c1d.ngrok.io',
+    'WEBHOOK_SITE': 'https://34a97bd5.ngrok.io',
     #'WEBHOOK_SITE': 'https://almaz-8a231f20.localhost.run',
     'BOTS': [
         {

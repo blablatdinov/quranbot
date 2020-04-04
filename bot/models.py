@@ -96,7 +96,7 @@ class Audio(models.Model):
     """Модель для аудио подкаста"""
     title = models.CharField(max_length=128)
     audio_link = models.CharField(max_length=512)
-    tg_audio_link = models.CharField(max_length=512)
+    tg_audio_link = models.CharField(max_length=512, blank=True, null=True)
 
     def __str__(self):
         return self.title
