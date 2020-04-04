@@ -50,3 +50,47 @@ def pr_time():
     msg = tbot.send_message(sub, res)
     save_message(msg)
 
+
+def audio_parser():
+    from bot.models import Audio
+    import sys
+    counter = 1
+    pag_pages = ['https://umma.ru/audlo/shamil-alyautdinov/']
+    # last_audio_in_db_link = Audio.objects.last().audio_link
+    last_audio_in_db_link = 'https://umma.ru/uploads/audio/ous97eldud.mp3'
+    print(last_audio_in_db_link)
+    breakFlag = False
+    while True:
+        print(pag_pages[-1])
+        soup = bs(requests.get(pag_pages[-1]).text, 'lxml')
+        article_blocks = soup.find_all('article')
+        for block in article_blocks:
+            link = 'https://umma.ru' + block.find('div', class_='main').find('a')['href']
+            soup = bs(requests.get(link).text, 'lxml')
+            audio_link = soup.find('audio').find('a')['href']
+            title = soup.find('h1').text[42:-37]
+            print(audio_link)
+            if audio_link == last_audio_in_db_link:
+                breakFlag = True
+                break
+            else:
+                print(title)
+                r = requests.get(audio_link)
+                print(r)
+                if sys.getsizeof(r.content) < 50 * 1024 * 1024:
+                    print('upload to telegram')
+                    msg = tbot.send_audio(358610685, r.content, timeout=180,
+                                          title=title, performer='Шамиль Аляутдинов')
+                    save_message(msg)
+                    print('add to db')
+                    Audio.objects.create(title=title, audio_link=audio_link,
+                                         tg_audio_link=msg.audio.file_id)
+                    tbot.delete_message(358610685, msg.message)
+                else:
+                    Audio.objects.create(title=title, audio_link=audio_link)
+        if breakFlag:
+            break
+
+        # Генерируем ссылки для следующей итерации while
+        counter += 1
+        pag_pages.append(f'https://umma.ru/audlo/shamil-alyautdinov/page/{counter}')
