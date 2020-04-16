@@ -16,7 +16,7 @@ import time
 
 
 
-@periodic_task(run_every=(crontab(hour=4, minute=0)), name='mailing')
+@periodic_task(run_every=(crontab(hour=7, minute=0)), name='mailing')
 def mailing():
     subs = Subscribers.objects.filter(status=True)  # Получаем подписчиков
     for sub in subs:  # Проходимся по подписчикам
@@ -34,7 +34,7 @@ def mailing():
             save_message(msg)
 
 
-@periodic_task(run_every=(crontab(hour=3, minute=0)), name='prayer-time')
+@periodic_task(run_every=(crontab(hour=6, minute=0)), name='prayer-time')
 def pr_time():
     sub = Subscribers.objects.get(telegram_chat_id=358610865)
     soup = bs(requests.get('https://umma.ru/raspisanie-namaza/kazan').text, 'lxml')
@@ -51,13 +51,15 @@ def pr_time():
     save_message(msg)
 
 
+@periodic_task(run_every=(crontab(hour=20, minute=0, day_of_week=6)), name='audio_parser')
 def audio_parser():
     from bot.models import Audio
     import sys
     counter = 1
     pag_pages = ['https://umma.ru/audlo/shamil-alyautdinov/']
-    # last_audio_in_db_link = Audio.objects.last().audio_link
-    last_audio_in_db_link = 'https://umma.ru/uploads/audio/ous97eldud.mp3'
+    sub = Subscribers.objects.get(comment='Я')
+    last_audio_in_db_link = Audio.objects.last().audio_link
+    #last_audio_in_db_link = 'https://umma.ru/uploads/audio/ous97eldud.mp3'
     print(last_audio_in_db_link)
     breakFlag = False
     while True:
@@ -79,13 +81,13 @@ def audio_parser():
                 print(r)
                 if sys.getsizeof(r.content) < 50 * 1024 * 1024:
                     print('upload to telegram')
-                    msg = tbot.send_audio(358610685, r.content, timeout=180,
+                    msg = tbot.send_audio(sub.telegram_chat_id, r.content, timeout=180,
                                           title=title, performer='Шамиль Аляутдинов')
                     save_message(msg)
                     print('add to db')
                     Audio.objects.create(title=title, audio_link=audio_link,
                                          tg_audio_link=msg.audio.file_id)
-                    tbot.delete_message(358610685, msg.message)
+                    #tbot.delete_message(sub.telegram_chat_id, msg.message_id)
                 else:
                     Audio.objects.create(title=title, audio_link=audio_link)
         if breakFlag:

@@ -28,7 +28,7 @@
 
     <div class="col-9" id='content'>
         {% for content in qs %}
-            <b>{{ content.day }} день) </b>{{ content.content_for_day }}<br><br>
+            <b>{{ content.day }} день) </b>{{ content.content_for_day|safe }}<br><br>
         {% endfor %}
     </div>
 
@@ -85,7 +85,7 @@
         print(contentDay)
         print(ayatsFromLabel);
         $.ajax({
-          url: 'https://quranbot.blablatdinov.ru/content/send/',
+          url: 'https://quranbot.blablatdinov.ru/content/send',
           method: 'POST',
           data: {
             content_day: contentDay,
