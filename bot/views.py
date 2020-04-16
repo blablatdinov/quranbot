@@ -17,7 +17,8 @@ from .utils import save_message
 
 
 if DEBUG:
-    r = telebot.apihelper.proxy = {'https': 'socks5://sockduser:123@blablatdinov.ru:7777'}
+    pass
+    #r = telebot.apihelper.proxy = {'https': 'socks5://sockduser:ehodof21@66.55.70.132:7777'}
 token = DJANGO_TELEGRAMBOT['BOTS'][0]['TOKEN']
 webhook_url = DJANGO_TELEGRAMBOT['WEBHOOK_SITE']
 tbot = telebot.TeleBot(token)
@@ -26,7 +27,7 @@ sleep(0.1)
 tbot.set_webhook(f'{webhook_url}/{token}')
 
 
-markup = types.ReplyKeyboardMarkup()
+markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
 item = types.KeyboardButton('🎧Подкасты')
 markup.row(item)
 item = types.KeyboardButton('🌟Избранное')
@@ -84,7 +85,6 @@ def help_handler(message):
 def to_dev(message):
     text = f'<b>Сообщение для разработчика:</b>\n\n{message.text[4:]}'
     msg = tbot.send_message(358610865, text, parse_mode='HTML')
-    save_message(msg)
 
 
 def add_to_favorit(chat_id, ayat_pk):

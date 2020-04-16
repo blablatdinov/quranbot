@@ -14,6 +14,7 @@ def content_gen(request):
     else:
         # print(request.POST)
         # print(request.method)
+        print('take')
         sura = request.POST['sura']
         qs = QuranAyat.objects.filter(sura=sura).order_by('pk')
         data = []
