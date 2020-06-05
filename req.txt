@@ -35,6 +35,7 @@ PySocks==1.7.1
 pyTelegramBotAPI==3.6.7
 python-crontab==2.4.0
 python-dateutil==2.8.1
+python-dotenv==0.13.0
 pytz==2019.3
 redis==3.3.11
 requests==2.22.0
