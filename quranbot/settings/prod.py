@@ -1,5 +1,6 @@
 from .base import *
 
+
 DEBUG = False
 
 ALLOWED_HOSTS = [
@@ -17,9 +18,9 @@ DATABASES = {
         #'ENGINE': 'django.db.backends.sqlite3',
         #'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'qbot_db',
-        'USER': 'qbot',
-        'PASSWORD': 'qbot',
+        'NAME': os.getenv('qbot_db_name'),
+        'USER': os.getenv('qbot_db_username'),
+        'PASSWORD': os.getenv('qbot_db_password'),
         'HOST': 'localhost',
         'PORT': '',
     }
@@ -27,9 +28,7 @@ DATABASES = {
 
 STATIC_ROOT = '/home/www/code/quranbot/static'
 
-TG_BOT_TOKEN = '705810219:AAHwIwmLT7P3ffdP5fV6OFy2kWvBSDERGNk'
-
-
+TG_BOT_TOKEN = os.getenv('qbot_tg_token')
 
 
 DJANGO_TELEGRAMBOT = {
