@@ -23,7 +23,7 @@ token = DJANGO_TELEGRAMBOT['BOTS'][0]['TOKEN']
 webhook_url = DJANGO_TELEGRAMBOT['WEBHOOK_SITE']
 tbot = telebot.TeleBot(token)
 tbot.remove_webhook()
-sleep(0.1)
+sleep(1)
 tbot.set_webhook(f'{webhook_url}/{token}')
 
 
@@ -45,7 +45,19 @@ def bot(request):
         raise PermissionDenied
 
 
+def stop_retry(func):
+
+    def wrapper(message):
+        if Message.objects.filter(message_id=message.message_id).exists():
+            print('Here was retry')
+        else:
+            func(message)
+
+    return wrapper
+
+
 @tbot.message_handler(commands=['start'])  # Обработчик команды старт
+@stop_retry
 def start_handler(message):
     save_message(message)
     try:  # Если пользователь уже есть в нашей базе выполняется следующий код 
@@ -74,6 +86,7 @@ def start_handler(message):
 
 
 @tbot.message_handler(commands=['help'])
+@stop_retry
 def help_handler(message):
     save_message(message)
     help_mes = AdminMessage.objects.get(key='help').text
@@ -82,6 +95,7 @@ def help_handler(message):
 
 
 @tbot.message_handler(commands=['dev'])  # Обработчик команды /dev
+@stop_retry
 def to_dev(message):
     text = f'<b>Сообщение для разработчика:</b>\n\n{message.text[4:]}'
     msg = tbot.send_message(358610865, text, parse_mode='HTML')
@@ -131,6 +145,7 @@ def send_ayats(tg_id, text):
 
 
 @tbot.message_handler(content_types=['text'])  # обработчик всех текстовых сообщений
+@stop_retry
 def text(message):
     save_message(message)
     if message.text == 'подкасты' or message.text == 'Подкасты' or message.text == '🎧Подкасты':
