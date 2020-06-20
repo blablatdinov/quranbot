@@ -1,5 +1,10 @@
 from .base import *
 
+from dotenv import load_dotenv
+
+
+project_folder = '/home/www/code/quranbot'
+load_dotenv(os.path.join(project_folder, '.env'))
 
 DEBUG = False
 
@@ -32,7 +37,7 @@ TG_BOT_TOKEN = os.getenv('qbot_tg_token')
 
 
 DJANGO_TELEGRAMBOT = {
-    'WEBHOOK_SITE': 'https://blablatdinov.ru',
+    'WEBHOOK_SITE': 'https://quranbot.blablatdinov.ru',
     'BOTS': [
         {
             'TOKEN': TG_BOT_TOKEN
