@@ -1,11 +1,33 @@
 from django.db import models
 
+from content.models import Ayat
+
+
+class Mailing(models.Model):
+    pass
+
+
+class AdminMessage(models.Model):
+    """Административные сообщения"""
+    title = models.CharField(max_length=128)
+    text = models.TextField()
+    key = models.CharField(max_length=128)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = 'Админитративное сообщение'
+        verbose_name_plural = 'Админитративное сообщения'
+
 
 class Subscriber(models.Model):
     """ Модель подписчика бота """
     tg_chat_id = models.IntegerField(verbose_name="Идентификатор подписчика")
     is_active = models.BooleanField(default=True, verbose_name="Подписан ли польователь на бота")
     comment = models.TextField(null=True)
+    day = models.IntegerField()
+    favorit_ayats = models.ManyToManyField(Ayat, related_name='favorit_ayats', blank=True, null=True)
 
     def __str__(self):
         str(self.tg_chat_id)
@@ -23,6 +45,7 @@ class Message(models.Model):
     chat_id = models.IntegerField(verbose_name="Идентификатор чата, в котором идет общение")
     text = models.TextField(null=True, verbose_name="Текст сообщения")
     json = models.TextField()
+    mailing = models.ForeignKey(Mailing, on_delete=models.PROTECT)
 
     class Meta:
         verbose_name = "Сообщение"
