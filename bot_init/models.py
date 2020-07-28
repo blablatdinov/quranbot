@@ -31,7 +31,8 @@ class Subscriber(models.Model):
     favorit_ayats = models.ManyToManyField(Ayat, related_name='favorit_ayats', blank=True, null=True)
 
     def __str__(self):
-        str(self.tg_chat_id)
+        return str(self.tg_chat_id)
+
 
     class Meta:
         verbose_name = "Подписчик"
@@ -54,7 +55,10 @@ class Message(models.Model):
 
 
 class SubscriberAction(models.Model):  # TODO подумать над именем класса
-    subscriber = models.ForeignKey(Subscriber, on_delete=models.PROTECT)
+    subscriber = models.ForeignKey(Subscriber, on_delete=models.CASCADE)
     date_time = models.DateTimeField(auto_now_add=True)
     action = models.CharField(max_length=16, choices=SUBSCRIBER_ACTIONS)
+
+    def __str__(self):
+        return 'wow'
 

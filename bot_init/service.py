@@ -31,11 +31,11 @@ def send_answer(answer, chat_id):
 
 
 def _create_subscribed_action(subscriber: Subscriber):  # TODO Может объеденить в одну ф-ю?
-    SubscriberAction.objects.create(subscriber=subscriber, action=SUBSCRIBER_ACTIONS[0])
+    SubscriberAction.objects.create(subscriber=subscriber, action=SUBSCRIBER_ACTIONS[0][0])
 
 
 def _create_reactivate_action(subscriber: Subscriber):
-    SubscriberAction.objects.create(subscriber=subscriber, action=SUBSCRIBER_ACTIONS[1])
+    SubscriberAction.objects.create(subscriber=subscriber, action=SUBSCRIBER_ACTIONS[1][0])
 
 
 def _not_created_subscriber_service(subscriber: Subscriber):
