@@ -1,20 +1,13 @@
-from time import sleep
-
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import telebot
 
-from config.settings import TG_BOT
-from bot_init.service import registration_subscriber
+from bot_init.service import registration_subscriber, send_answer, get_tbot_instance
 from bot_init.utils import save_message
 
 
-token = TG_BOT.token
-tbot = telebot.TeleBot(TG_BOT.token)
-tbot.remove_webhook()
-sleep(1)
-web = tbot.set_webhook(f'{TG_BOT.webhook_host}/{TG_BOT.token}')
+tbot = get_tbot_instance()
 
 
 @csrf_exempt
@@ -33,5 +26,5 @@ def bot(request):
 def start_handler(message):
     """ Обработчик команды /start """
     save_message(message)
-    registration_subscriber(message)
-    ...
+    answer = registration_subscriber(message.chat.id, message.chat)
+    send_answer(answer, message.chat.id)

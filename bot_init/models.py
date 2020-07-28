@@ -1,5 +1,6 @@
 from django.db import models
 
+from bot_init.schemas import SUBSCRIBER_ACTIONS
 from content.models import Ayat
 
 
@@ -50,3 +51,10 @@ class Message(models.Model):
     class Meta:
         verbose_name = "Сообщение"
         verbose_name_plural = "Сообщения"
+
+
+class SubscriberAction(models.Model):  # TODO подумать над именем класса
+    subscriber = models.ForeignKey(Subscriber, on_delete=models.PROTECT)
+    date_time = models.DateTimeField(auto_now_add=True)
+    action = models.CharField(max_length=16, choices=SUBSCRIBER_ACTIONS)
+
