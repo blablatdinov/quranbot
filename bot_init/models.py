@@ -45,7 +45,7 @@ class Message(models.Model):
     chat_id = models.IntegerField(verbose_name="Идентификатор чата, в котором идет общение")
     text = models.TextField(null=True, verbose_name="Текст сообщения")
     json = models.TextField()
-    mailing = models.ForeignKey(Mailing, on_delete=models.PROTECT)
+    mailing = models.ForeignKey(Mailing, on_delete=models.PROTECT, blank=True, null=True)
 
     class Meta:
         verbose_name = "Сообщение"

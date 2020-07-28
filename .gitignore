@@ -1,4 +1,3 @@
-*/migrations/
 .idea/
 *__pycache__/
 gunicorn.conf.py
