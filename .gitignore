@@ -1,13 +1,10 @@
-ubuntu-venv/
-venv/
-flask-env/
-
 */migrations/
 .idea/
 *__pycache__/
 gunicorn.conf.py
 static/
+venv/
 *.json
 db.sqlite3
-*settings.py
 celerybeat*
+.env
