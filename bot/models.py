@@ -97,6 +97,7 @@ class Audio(models.Model):
     title = models.CharField(max_length=128)
     audio_link = models.CharField(max_length=512)
     tg_audio_link = models.CharField(max_length=512, null=True, blank=True)
+    is_flag = models.BooleanField(default=False, verbose_name='Последнее аудио за сессию парсинга')
 
     def __str__(self):
         return self.title

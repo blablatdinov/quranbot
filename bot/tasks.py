@@ -13,25 +13,41 @@ import lxml
 from bs4 import BeautifulSoup as bs
 import requests
 import time
+import logging
+
+
+log = logging.getLogger(__name__)
 
 
 
 @periodic_task(run_every=(crontab(hour=7, minute=0)), name='mailing')
 def mailing():
-    subs = Subscribers.objects.filter(status=True)  # Получаем подписчиков
-    for sub in subs:  # Проходимся по подписчикам
-        content = QuranOneDayContent.objects.get(day=sub.day).content_for_day()
-        try:
+    order_to_admin = ''
+    subs = Subscribers.objects.filter(status=True)
+    try:
+        for sub in subs:
+            content = QuranOneDayContent.objects.get(day=sub.day).content_for_day()
             msg = tbot.send_message(chat_id=sub.telegram_chat_id, text=content, parse_mode='HTML')
             save_message(msg)
             sub.day += 1
             sub.save()
             time.sleep(0.1)
-        except ApiException:
+    except ApiException as e:
+        if 'bot was blocked by the user' in str(e):
             sub.status = False
             sub.save()
-            msg = tbot.send_message(chat_id=358610865, text=f'Пользователь {sub.telegram_chat_id} отписан')
-            save_message(msg)
+            order_to_admin += f'Пользователь {sub.telegram_chat_id} отписан\n'
+            #msg = tbot.send_message(chat_id=358610865, text=f'Пользователь {sub.telegram_chat_id} отписан')
+        else:
+            msg = tbot.send_message(chat_id=358610865, text=f'Непредвиденная ошибка')
+            log.error(str(e))
+        save_message(msg)
+    except QuranOneDayContent.DoesNotExist:
+        order_to_admin += f'Закончился ежедневный контент\n'
+    order_to_admin += f'Осталось контента на {subs.order_by("day").last().day - QuranOneDayContent.objects.all().order_by("day").last().day - 1} дней'
+    msg = tbot.send_message(chat_id=358610865, text=order_to_admin)
+    save_message(msg)
+
 
 
 @periodic_task(run_every=(crontab(hour=6, minute=0)), name='prayer-time')
@@ -58,19 +74,18 @@ def audio_parser():
     counter = 1
     pag_pages = ['https://umma.ru/audlo/shamil-alyautdinov/']
     sub = Subscribers.objects.get(comment='Я')
-    last_audio_in_db_link = Audio.objects.last().audio_link
+    last_audio_in_db_link = Audio.objects.filter(is_flag=True).reverse()[0].audio_link
     #last_audio_in_db_link = 'https://umma.ru/uploads/audio/ous97eldud.mp3'
     print(last_audio_in_db_link)
     breakFlag = False
     while True:
-        print(pag_pages[-1])
         soup = bs(requests.get(pag_pages[-1]).text, 'lxml')
         article_blocks = soup.find_all('article')
         for block in article_blocks:
             link = 'https://umma.ru' + block.find('div', class_='main').find('a')['href']
             soup = bs(requests.get(link).text, 'lxml')
             audio_link = soup.find('audio').find('a')['href']
-            title = soup.find('h1').text[42:-37]
+            title = soup.find('h1').text.strip()
             print(audio_link)
             if audio_link == last_audio_in_db_link:
                 breakFlag = True
@@ -80,6 +95,7 @@ def audio_parser():
                 r = requests.get(audio_link)
                 print(r)
                 if sys.getsizeof(r.content) < 50 * 1024 * 1024:
+                    continue
                     print('upload to telegram')
                     msg = tbot.send_audio(sub.telegram_chat_id, r.content, timeout=180,
                                           title=title, performer='Шамиль Аляутдинов')
