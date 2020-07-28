@@ -3,10 +3,10 @@ from .base import *
 from dotenv import load_dotenv
 
 
-project_folder = '/home/www/code/quranbot'
+project_folder = BASE_DIR
 load_dotenv(os.path.join(project_folder, '.env'))
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
     'quranbot.blablatdinov.ru',

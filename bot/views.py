@@ -1,12 +1,14 @@
 # Импорт стандартных модулей python
 from time import sleep
 import random
+import json
 # Импорт данных из настроек
 from quranbot.settings import DEBUG
 from quranbot.settings import DJANGO_TELEGRAMBOT
 # Импорт доп. библиотек 
 import telebot
 from telebot import types
+from telebot.apihelper import ApiException
 # Импорт модулей django
 from django.http import HttpResponse
 from django.core.exceptions import PermissionDenied
@@ -48,16 +50,24 @@ def bot(request):
 def stop_retry(func):
 
     def wrapper(message):
-        if Message.objects.filter(message_id=message.message_id).exists():
+        if Message.objects.filter(message_id=message.message_id):
             print('Here was retry')
+            return None
         else:
             func(message)
 
     return wrapper
 
 
+@tbot.message_handler(commands=['aigulin'])
+def subscribers_from_aigulin(message):
+    save_message(message)
+    msg = tbot.send_message(message.chat.id, Subscribers.objects.filter(day=2, status=True).count())
+    save_message(msg)
+
+
 @tbot.message_handler(commands=['start'])  # Обработчик команды старт
-@stop_retry
+#@stop_retry
 def start_handler(message):
     save_message(message)
     try:  # Если пользователь уже есть в нашей базе выполняется следующий код 
@@ -72,7 +82,7 @@ def start_handler(message):
             msg = tbot.send_message(message.chat.id, f'Ваш статус "<b>Активен</b>", вы продолжите с дня {s.day}',
                               parse_mode='HTML', reply_markup=markup)
             save_message(msg)
-    except:  # Если пользователь отправил команду /start впервые
+    except Subscribers.DoesNotExist:  # Если пользователь отправил команду /start впервые
         start_mes = AdminMessage.objects.get(key='help').text
         msg = tbot.send_message(message.chat.id, start_mes, parse_mode='HTML')
         save_message(msg)
@@ -81,12 +91,13 @@ def start_handler(message):
         subscriber.save()
         msg = tbot.send_message(message.chat.id, day_content.content_for_day(), parse_mode='HTML', reply_markup=markup)
         save_message(msg)
-        msg = tbot.send_message(358610865, f'Зарегестрировался новый пользователь - {message.chat.id}')
+        last_start_msg = Message.objects.filter(text='/start').last()
+        msg = tbot.send_message(358610865, f'Зарегестрировался новый пользователь - {message.chat.id}\nИнформация по пользователю:\nhttps://quranbot.blablatdinov.ru/admin/bot/message/{last_start_msg.pk}/change/')
         save_message(msg)
 
 
 @tbot.message_handler(commands=['help'])
-@stop_retry
+#@stop_retry
 def help_handler(message):
     save_message(message)
     help_mes = AdminMessage.objects.get(key='help').text
@@ -95,7 +106,7 @@ def help_handler(message):
 
 
 @tbot.message_handler(commands=['dev'])  # Обработчик команды /dev
-@stop_retry
+#@stop_retry
 def to_dev(message):
     text = f'<b>Сообщение для разработчика:</b>\n\n{message.text[4:]}'
     msg = tbot.send_message(358610865, text, parse_mode='HTML')
@@ -145,7 +156,7 @@ def send_ayats(tg_id, text):
 
 
 @tbot.message_handler(content_types=['text'])  # обработчик всех текстовых сообщений
-@stop_retry
+#@stop_retry
 def text(message):
     save_message(message)
     if message.text == 'подкасты' or message.text == 'Подкасты' or message.text == '🎧Подкасты':
@@ -161,8 +172,11 @@ def text(message):
         response = ''
         for a in ayats:
             response += f'{a.sura}:{a.ayat}\n'
-        msg = tbot.send_message(message.chat.id, response, reply_markup=markup)
-        save_message(msg)
+        try:
+            msg = tbot.send_message(message.chat.id, response, reply_markup=markup)
+            save_message(msg)
+        except ApiException:
+            print('empty ayats list')
     elif ':' in message.text:
         send_ayats(message.chat.id, message.text)
 

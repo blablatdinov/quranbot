@@ -8,7 +8,9 @@ import json
 def content_gen(request):
     if request.method == 'GET':
         # print(request.user)
-        qs = QuranOneDayContent.objects.all().order_by('-day')#[:10]
+        #qs = QuranOneDayContent.objects.all().order_by('-day')[:10]
+        qs = QuranOneDayContent.objects.all().order_by('-day')
+        # qs = qs[len(qs) - 14:]
         for q in qs:
             print(q)
         context = {
