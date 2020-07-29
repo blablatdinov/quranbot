@@ -1,6 +1,7 @@
 from time import sleep
 
 from telebot import TeleBot
+rom telebot.apihelper import ApiException
 
 from bot_init.models import Subscriber, AdminMessage, SubscriberAction
 from bot_init.utils import save_message
@@ -9,17 +10,45 @@ from config.settings import TG_BOT
 from content.models import MorningContent
 
 
+def _create_subscribed_action(subscriber: Subscriber):  # TODO Может объеденить в одну ф-ю? Индексы сделать как константы
+    SubscriberAction.objects.create(subscriber=subscriber, action=SUBSCRIBER_ACTIONS[0][0])
+
+
+def _create_reactivate_action(subscriber: Subscriber):
+    SubscriberAction.objects.create(subscriber=subscriber, action=SUBSCRIBER_ACTIONS[2][0])
+
+
+def _create_unsibscribed_action(subscriber: Subscriber):
+    SubscriberAction.objects.create(subscriber=subscriber, action=SUBSCRIBER_ACTIONS[1][0])
+
+
 def get_tbot_instance():
     return TeleBot(TG_BOT.token)
 
 
+def _subscriber_unsubscribed(chat_id: int):
+    subscriber = Subscriber.objects.get(tg_chat_id=chat_id)
+    subscriber.is_active = False
+    subscriber.save()
+    _create_unsibscribed_action(subscriber)
+
+
 def _send_answer(answer: Answer, chat_id: int):  # TODO где будет регистрация tbot?
     tbot = get_tbot_instance()
-    if answer.keyboard:
-        msg = tbot.send_message(chat_id, answer.text, answer.keyboard)
-    else:
-        msg = tbot.send_message(chat_id, answer.text)
-    save_message(msg)
+    try:
+        if answer.keyboard:
+            msg = tbot.send_message(chat_id, answer.text, answer.keyboard)
+        else:
+            msg = tbot.send_message(chat_id, answer.text)
+        message_instance = save_message(msg)
+        return message_instance
+    except ApiException as e:
+        if 'bot was blocked by the user' in str(e):
+            _subscriber_unsubscribed(chat_id)
+        else:
+            ...
+            # TODO log, send_to_admin
+            # unexpected_error
 
 
 def send_answer(answer, chat_id):  # FIXME а где у нас try except?
@@ -34,14 +63,6 @@ def send_message_to_admin(message_text: str):  # TODO возможно нужн�
     answer = Answer(message_text)
     for admin_tg_chat_id in TG_BOT.admins:
         send_answer(answer, admin_tg_chat_id)
-
-
-def _create_subscribed_action(subscriber: Subscriber):  # TODO Может объеденить в одну ф-ю?
-    SubscriberAction.objects.create(subscriber=subscriber, action=SUBSCRIBER_ACTIONS[0][0])
-
-
-def _create_reactivate_action(subscriber: Subscriber):
-    SubscriberAction.objects.create(subscriber=subscriber, action=SUBSCRIBER_ACTIONS[1][0])
 
 
 def _not_created_subscriber_service(subscriber: Subscriber):
