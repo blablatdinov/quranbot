@@ -26,10 +26,5 @@ def bot(request):
 def start_handler(message):
     """ Обработчик команды /start """
     save_message(message)
-    answer = registration_subscriber(
-        chat_id=message.chat.id,
-        first_name=message.chat.first_name,
-        last_name=message.chat.last_name,
-        username=message.chat.username
-    )
+    answer = registration_subscriber(chat_id=message.chat.id)
     send_answer(answer, message.chat.id)
