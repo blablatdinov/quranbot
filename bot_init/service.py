@@ -1,7 +1,7 @@
 from time import sleep
 
 from telebot import TeleBot
-rom telebot.apihelper import ApiException
+from telebot.apihelper import ApiException
 
 from bot_init.models import Subscriber, AdminMessage, SubscriberAction
 from bot_init.utils import save_message
@@ -74,15 +74,18 @@ def _not_created_subscriber_service(subscriber: Subscriber):
     return Answer('Я вернулся')
 
 
-def _created_subscriber_service(subscriber: Subscriber, username: str, first_name: str, last_name: str):
+def _created_subscriber_service(subscriber: Subscriber):
+    """Функция обрабатывает и генерирует ответ для нового подписчика"""
     # FIXME здесь стоят загллушки
     # start_message_text = AdminMessage.objects.get(key='start').text
-    subscriber.comment = f'first_name: {first_name}\nlast_name: {last_name}\nusername: {username}'
-    subscriber.save(update_fields=['comment'])
     start_message_text = 'Hello'
     # day_content = MorningContent.objects.get(day=1)
     day_content = 'first day'
     _create_subscribed_action(subscriber)
+    send_message_to_admin(
+        f'Зарегестрировался новый пользователь.\n\n'
+        # TODO можно добавить комманду для статистики
+    )
     answers = [
         Answer(start_message_text),
         Answer(day_content)
@@ -90,7 +93,7 @@ def _created_subscriber_service(subscriber: Subscriber, username: str, first_nam
     return answers
 
 
-def registration_subscriber(chat_id: int, username: str, first_name: str, last_name: str):
+def registration_subscriber(chat_id: int):
     """Логика сохранения подписчика"""
     # message_text = message.text
     subscriber, created = Subscriber.objects.get_or_create(tg_chat_id=chat_id)
