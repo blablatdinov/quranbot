@@ -30,6 +30,12 @@ def send_answer(answer, chat_id):  # FIXME а где у нас try except?
         _send_answer(answer, chat_id)
 
 
+def send_message_to_admin(message_text: str):  # TODO возможно нужно будет доставать данные из БД
+    answer = Answer(message_text)
+    for admin_tg_chat_id in TG_BOT.admins:
+        send_answer(answer, admin_tg_chat_id)
+
+
 def _create_subscribed_action(subscriber: Subscriber):  # TODO Может объеденить в одну ф-ю?
     SubscriberAction.objects.create(subscriber=subscriber, action=SUBSCRIBER_ACTIONS[0][0])
 

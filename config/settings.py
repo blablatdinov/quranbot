@@ -97,5 +97,16 @@ r = requests.get(f'https://api.telegram.org/bot{TG_BOT.token}/getMe').json()
 if not r.get('ok'):
     print(r)  # TODO Нормальное логгирование
     exit()
+try:
+    if os.getenv('ADMINS') == '':
+        TG_BOT.admins = []
+    else:
+        TG_BOT.admins = [int(chat_id) for chat_id in os.getenv('ADMINS').split(',')]
+except ValueError:
+    print('Пожалуйста проверьте переменную ADMINS в файле .env')
+    exit()
+except AttributeError:
+    print('Пожалуйста проверьте переменную ADMINS в файле .env')
+    exit()
 TG_BOT.name = r['result']['username']
 TG_BOT.id = r['result']['id']
