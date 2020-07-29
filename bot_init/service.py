@@ -22,7 +22,7 @@ def _send_answer(answer: Answer, chat_id: int):  # TODO где будет рег
     save_message(msg)
 
 
-def send_answer(answer, chat_id):
+def send_answer(answer, chat_id):  # FIXME а где у нас try except?
     if isinstance(answer, list):
         for answer_inst in answer:
             _send_answer(answer_inst, chat_id)
