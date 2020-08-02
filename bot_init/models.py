@@ -5,14 +5,15 @@ from content.models import Ayat
 
 
 class Mailing(models.Model):
+    """Класс объеденяющий сообщения для удобного удаления при некорректной рассылке"""
     pass
 
 
 class AdminMessage(models.Model):
     """Административные сообщения"""
-    title = models.CharField(max_length=128)
-    text = models.TextField()
-    key = models.CharField(max_length=128)
+    title = models.CharField(max_length=128, verbose_name='Навзвание')
+    text = models.TextField(verbose_name='Текст сообщения')
+    key = models.CharField(max_length=128, verbose_name='Ключ, по которому сообщение вызывается в коде')
 
     def __str__(self):
         return self.title
@@ -26,13 +27,14 @@ class Subscriber(models.Model):
     """ Модель подписчика бота """
     tg_chat_id = models.IntegerField(verbose_name="Идентификатор подписчика")
     is_active = models.BooleanField(default=True, verbose_name="Подписан ли польователь на бота")
-    comment = models.TextField(null=True)
-    day = models.IntegerField(default=2)
-    favorit_ayats = models.ManyToManyField(Ayat, related_name='favorit_ayats', blank=True, null=True)
+    comment = models.TextField(null=True, verbose_name="Комментарий к подписчику")
+    day = models.IntegerField(default=2, verbose_name="День, для рассылки утреннего контента")
+    favourite_ayats = models.ManyToManyField(
+        Ayat, related_name='favorit_ayats', blank=True, null=True, verbose_name='Избранные аяты'
+    )
 
     def __str__(self):
         return str(self.tg_chat_id)
-
 
     class Meta:
         verbose_name = "Подписчик"
@@ -55,10 +57,23 @@ class Message(models.Model):
 
 
 class SubscriberAction(models.Model):  # TODO подумать над именем класса
+    """
+    Действие подписчика
+
+    Нужно для того, чтобы удобно вести статистику, отслеживаем 3 варианта событий:
+     - Пользователь подписался
+     - Пользователь отписался
+     - Пользователь реактивировался
+
+    """
     subscriber = models.ForeignKey(Subscriber, on_delete=models.CASCADE)
     date_time = models.DateTimeField(auto_now_add=True)
     action = models.CharField(max_length=16, choices=SUBSCRIBER_ACTIONS)
 
     def __str__(self):
-        return 'wow'
+        return f'{self.subscriber} {self.action}'
+
+    class Meta:
+        verbose_name = 'Действия пользователя'
+        verbose_name_plural = 'Действия пользователей'
 
