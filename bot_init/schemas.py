@@ -4,8 +4,9 @@ from bot_init.markup import InlineKeyboard, Keyboard
 
 
 class Answer(NamedTuple):
-    text: str
+    text: str = None
     keyboard: Keyboard or InlineKeyboard = None
+    tg_audio_id: str = None
 
 
 SUBSCRIBER_ACTIONS = (

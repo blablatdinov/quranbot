@@ -5,6 +5,7 @@ from content.models import MorningContent
 
 
 def get_morning_content(day_num: int) -> str:
+    """Получаем утренний контент по номеру дня"""
     try:
         content = MorningContent.objects.get(day=day_num).content_for_day()
         return content
@@ -14,6 +15,7 @@ def get_morning_content(day_num: int) -> str:
 
 
 def do_morning_content_distribution():  # TODO можно заранее сгенерировать контент
+    """Выполняем рассылку утреннего контента"""
     active_subscribers = Subscriber.objects.filter(is_active=True)
     mailing = Mailing.objects.create()
     for subscriber in active_subscribers:
