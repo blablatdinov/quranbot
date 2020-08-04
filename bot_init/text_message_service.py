@@ -26,22 +26,27 @@ def get_ayat_by_sura_ayat(text: str) -> Ayat:
     """
     sura_num, ayat_num = [int(x) for x in text.split(':')]
 
-    if not 1 < sura_num < 114:
+    if not 1 <= sura_num <= 114:
         raise SuraDoesNotExists
 
-    ayats_in_sura = Ayat.objects.filter(sura=sura_num)  # TODO разнести функцию
+    ayats_in_sura = Ayat.objects.filter(sura=sura_num)  # TODO разнести функцию, не читаемый код
     for ayat in ayats_in_sura:
         if '-' in str(ayat):
-            low_limit, up_limit = [int(x) for x in str(ayat).split('-')]
+            low_limit, up_limit = [int(x) for x in str(ayat).split(':')[1].split('-')]
             if ayat_num in range(low_limit, up_limit):
                 return ayat
         elif ',' in str(ayat):
-            name = [int(x) for x in str(ayat).split(',')]
+            name = [int(x) for x in str(ayat).split(':')[1].split(',')]
             if ayat_num in name:
                 return ayat
-        elif int(ayat) == ayat_num:
+        elif int(ayat.ayat) == ayat_num:
             return ayat
     raise AyatDoesNotExists
+
+
+def translate_ayat_into_answer(ayat: Ayat) -> Answer:
+    text = f'<b>({ayat.sura}:{ayat.ayat})</b>\n{ayat.arab_text}\n\n{ayat.content}\n\n<i>{ayat.trans}</i>\n\n'
+    return Answer(text=text)
 
 
 def text_message_service(chat_id: int, message_text: str) -> Answer:
@@ -50,6 +55,9 @@ def text_message_service(chat_id: int, message_text: str) -> Answer:
         answer = get_podcast_in_answer_type()
     elif 'Избранное' in message_text:
         ...
+    elif ':' in message_text:
+        ayat = get_ayat_by_sura_ayat(message_text)
+        answer = translate_ayat_into_answer(ayat)
     else:
         raise UnknownMessage(message_text)
     return answer

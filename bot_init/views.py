@@ -33,4 +33,5 @@ def start_handler(message):
 
 @tbot.message_handler(content_types=['text'])
 def text_handler(message):
-    text_message_service(message.chat.id, message.text)
+    answer = text_message_service(message.chat.id, message.text)
+    send_answer(answer, message.chat.id)
