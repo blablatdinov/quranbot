@@ -19,3 +19,14 @@ def save_message(msg: Message):
     message_instance = Message.objects.create(date=date, from_user_id=from_user_id, message_id=message_id,
                            chat_id=chat_id, text=text, json=json_text)
     return message_instance
+
+
+def stop_retry(func):
+    """Декоратор, предотвращает повторный ответ на одно сообщение"""
+    def wrapper(message):
+        if Message.objects.filter(message_id=message.message_id):
+            return
+            # TODO логгинг
+        func(message)
+
+    return wrapper

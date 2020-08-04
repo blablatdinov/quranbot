@@ -90,7 +90,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-TG_BOT = namedtuple('Bot', ['token', 'webhook_host', 'name', 'id'])
+TG_BOT = namedtuple('Bot', ['token', 'webhook_host', 'name', 'id', 'admins'])
 TG_BOT.token = os.getenv('BOT_TOKEN')
 TG_BOT.webhook_host = os.getenv('HOST')
 r = requests.get(f'https://api.telegram.org/bot{TG_BOT.token}/getMe').json()

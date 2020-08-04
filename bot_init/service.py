@@ -3,29 +3,19 @@ from time import sleep
 from telebot import TeleBot
 from telebot.apihelper import ApiException
 
-from bot_init.models import Subscriber, AdminMessage, SubscriberAction
+from bot_init.models import Subscriber, SubscriberAction, Message, AdminMessage, Admin
 from bot_init.utils import save_message
 from bot_init.schemas import Answer, SUBSCRIBER_ACTIONS
 from config.settings import TG_BOT
 from content.models import MorningContent
 
 
-def _create_subscribed_action(subscriber: Subscriber):  # TODO Может объеденить в одну ф-ю? Индексы сделать как константы
-    """Создаем запись в БД о том, что пользователь зарегестрировался"""
-    SubscriberAction.objects.create(subscriber=subscriber, action=SUBSCRIBER_ACTIONS[0][0])
+def _create_action(subscriber: Subscriber, action: str):
+    """Создаем запись в БД о подписке, отписке или реактивации бота пользователем"""
+    SubscriberAction.objects.create(subscriber=subscriber, action=action)
 
 
-def _create_reactivate_action(subscriber: Subscriber):
-    """Создаем запись в БД о том, что пользователь реактивировался"""
-    SubscriberAction.objects.create(subscriber=subscriber, action=SUBSCRIBER_ACTIONS[2][0])
-
-
-def _create_unsibscribed_action(subscriber: Subscriber):
-    """Создаем запись в БД о том, что пользователь отписался"""
-    SubscriberAction.objects.create(subscriber=subscriber, action=SUBSCRIBER_ACTIONS[1][0])
-
-
-def get_tbot_instance():
+def get_tbot_instance() -> TeleBot:
     """Получаем экземпляр класса TeleBot для удобной работы с API"""
     return TeleBot(TG_BOT.token)
 
@@ -35,63 +25,76 @@ def _subscriber_unsubscribed(chat_id: int):
     subscriber = Subscriber.objects.get(tg_chat_id=chat_id)
     subscriber.is_active = False
     subscriber.save()
-    _create_unsibscribed_action(subscriber)
+    _create_action(subscriber, SUBSCRIBER_ACTIONS[0][0])
 
 
-def _send_answer(answer: Answer, chat_id: int):  # TODO где будет регистрация tbot? Добавить рассылку аудио файлов
+def _send_answer(answer: Answer, chat_id: int):  # TODO где будет регистрация tbot
     """Отправляем сообщение пользователю"""
     tbot = get_tbot_instance()
     try:
-        if answer.keyboard:
-            msg = tbot.send_message(chat_id, answer.text, answer.keyboard, parse_mode='HTML')
+        if answer.tg_audio_id:
+            msg = tbot.send_audio(chat_id, audio=answer.tg_audio_id)
         else:
-            msg = tbot.send_message(chat_id, answer.text, parse_mode='HTML')
+            msg = tbot.send_message(chat_id, answer.text, reply_markup=answer.keyboard, parse_mode='HTML')
         message_instance = save_message(msg)
         return message_instance
     except ApiException as e:
         if 'bot was blocked by the user' in str(e):
             _subscriber_unsubscribed(chat_id)
+        elif 'message text is empty' in str(e):
+            send_message_to_admin('Закончился ежедневный контент')
+            raise Exception('Закончился ежедневный контент')
         else:
-            ...
-            # TODO log, send_to_admin
-            # unexpected_error
+            send_message_to_admin(f'Непредвиденная ошибка\n\n{e}')
+            # TODO log
+            raise e
 
 
-def send_answer(answer, chat_id):  # FIXME а где у нас try except? Зачем нужны проверки в этой функции?
-    """Отправляем ответ пользователю"""
+def send_answer(answer, chat_id) -> Message:
+    """
+    Отправляем ответ пользователю
+
+    Функция может принять как единственный экземпляр класса Answer, так и список экземпляров.
+    Поэтому в функции нужна проверка
+    """
     if isinstance(answer, list):
         for answer_inst in answer:
-            _send_answer(answer_inst, chat_id)
+            print(answer_inst)
+            message = _send_answer(answer_inst, chat_id)
     elif isinstance(answer, Answer):
-        _send_answer(answer, chat_id)
+        message = _send_answer(answer, chat_id)
+    else:
+        raise TypeError(
+            'Функция принимает только экземпляры класса Answer или массив экземпляров класса Answer'
+            f'Было передано {type(answer)}'
+        )
+    return message
 
 
-def send_message_to_admin(message_text: str):  # TODO возможно нужно будет доставать данные из БД
+def send_message_to_admin(message_text: str) -> Message:
     """Отправляем сообщение админу"""
     answer = Answer(message_text)
-    for admin_tg_chat_id in TG_BOT.admins:
-        send_answer(answer, admin_tg_chat_id)
+    admins_tg_chat_ids = TG_BOT.admins + [admin.subscriber.tg_chat_id for admin in Admin.objects.all()]
+    for admin_tg_chat_id in admins_tg_chat_ids:
+        message_instance = send_answer(answer, admin_tg_chat_id)
+    return message_instance
 
 
 def _not_created_subscriber_service(subscriber: Subscriber):
     """Фунция вызывается если пользователь, который уже существует в базе был корректно обработан"""
     if subscriber.is_active:
         return Answer('Вы уже зарегистрированы')
-    # TODO добавить блабла вы продолжите с н дня
-    _create_reactivate_action(subscriber)
+    _create_action(subscriber, SUBSCRIBER_ACTIONS[2][0])
     subscriber.is_active = True
     subscriber.save(update_fields=['is_active'])
-    return Answer('Я вернулся')
+    return Answer(f'Рады видеть вас снова, вы продолжите с дня {subscriber.day}')
 
 
 def _created_subscriber_service(subscriber: Subscriber) -> Answer:
     """Функция обрабатывает и генерирует ответ для нового подписчика"""
-    # FIXME здесь стоят загллушки
-    # start_message_text = AdminMessage.objects.get(key='start').text
-    start_message_text = 'Hello'
-    # day_content = MorningContent.objects.get(day=1)
-    day_content = 'first day'
-    _create_subscribed_action(subscriber)
+    start_message_text = AdminMessage.objects.get(key='start').text
+    day_content = MorningContent.objects.get(day=1).content_for_day()
+    _create_action(subscriber, SUBSCRIBER_ACTIONS[1][0])
     send_message_to_admin(
         f'Зарегестрировался новый пользователь.\n\n'
         # TODO можно добавить комманду для статистики
@@ -105,7 +108,6 @@ def _created_subscriber_service(subscriber: Subscriber) -> Answer:
 
 def registration_subscriber(chat_id: int) -> Answer:
     """Логика сохранения подписчика"""
-    # message_text = message.text
     subscriber, created = Subscriber.objects.get_or_create(tg_chat_id=chat_id)
     if not created:
         answer = _not_created_subscriber_service(subscriber)
@@ -114,9 +116,9 @@ def registration_subscriber(chat_id: int) -> Answer:
     return answer
 
 
-def update_webhook():
+def update_webhook(host=f'{TG_BOT.webhook_host}/{TG_BOT.token}'):
     """Обновляем webhook"""
     tbot = get_tbot_instance()
     tbot.remove_webhook()
     sleep(1)
-    web = tbot.set_webhook(f'{TG_BOT.webhook_host}/{TG_BOT.token}')
+    web = tbot.set_webhook(host)

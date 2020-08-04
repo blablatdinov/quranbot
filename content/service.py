@@ -1,6 +1,6 @@
 from bot_init.models import Subscriber, Mailing
 from bot_init.schemas import Answer
-from bot_init.service import send_answer
+from bot_init.service import send_answer, send_message_to_admin
 from content.models import MorningContent
 
 
@@ -10,8 +10,9 @@ def get_morning_content(day_num: int) -> str:
         content = MorningContent.objects.get(day=day_num).content_for_day()
         return content
     except MorningContent.DoesNotExist:
-        pass
-        # TODO log, send to admin, raise Exception
+        text = f'Ежедневный контент для дня {day_num} не найден'
+        send_message_to_admin(text)
+        # TODO log
 
 
 def do_morning_content_distribution():  # TODO можно заранее сгенерировать контент
@@ -28,5 +29,8 @@ def do_morning_content_distribution():  # TODO можно заранее сге�
 
         subscriber.day += 1
         subscriber.save(update_fields=['day'])
-        # TODO отправлять отчет по рассылке админам
-        # FIXME чет дофига длинная функция получается
+    text = f'Рассылка завершена, отправьте /del{mailing.pk} для ее удаления'
+    msg = send_message_to_admin(text)
+    msg.mailing = mailing
+    msg.save(update_fields=['mailing'])
+    # FIXME чет дофига длинная функция получается
