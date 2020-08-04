@@ -9,7 +9,7 @@ class MorningContent(models.Model):
     def __str__(self):
         return f'{self.day} день'
 
-    def content_for_day(self) -> str:  # TODO подумать насчет генерации контента
+    def content_for_day(self) -> str:  # TODO подумать насчет генерации контента, сделать property
         """Возвращаем контент в виде строки для этого дня"""
         ayats = Ayat.objects.filter(one_day_content__day=self.day).order_by('pk')
         result = ''
@@ -18,7 +18,7 @@ class MorningContent(models.Model):
         for ayat in ayats:
             result += f'<b>{ayat.sura}:{ayat.ayat})</b> {ayat.content}\n'
         if result != '':
-            result += f'\nСсылка на источник: {ayats[0].link_to_source}'
+            result += f'\nСсылка на источник: <a href="https://umma.ru{ayats[0].link_to_source}">umma.ru</a>'
         return result
 
     class Meta:
@@ -29,7 +29,7 @@ class MorningContent(models.Model):
 class AudioFile(models.Model):
     # TODO добавить путь к файлу если есть, verbose_name, переименовать tg_audio_link -> tg_file_id
     audio_link = models.CharField(max_length=512, verbose_name='Ссылка на аудио')
-    tg_audio_link = models.CharField(max_length=512, verbose_name='Идентификатор файла в телеграмм')
+    tg_file_id = models.CharField(max_length=512, verbose_name='Идентификатор файла в телеграмм')
 
     def __str__(self):
         return self.audio_link

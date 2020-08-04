@@ -41,6 +41,18 @@ class Subscriber(models.Model):
         verbose_name_plural = "Подписчики"
 
 
+class Admin(models.Model):
+    """Модель администратора бота"""
+    subscriber = models.OneToOneField(Subscriber, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.subscriber)
+
+    class Meta:
+        verbose_name = "Администратор"
+        verbose_name_plural = "Администраторы"
+
+
 class Message(models.Model):
     """ Модель для хранения сообщеинй """
     date = models.DateTimeField(null=True, verbose_name="Дата отправки")
@@ -49,7 +61,7 @@ class Message(models.Model):
     chat_id = models.IntegerField(verbose_name="Идентификатор чата, в котором идет общение")
     text = models.TextField(null=True, verbose_name="Текст сообщения")
     json = models.TextField()
-    mailing = models.ForeignKey(Mailing, on_delete=models.PROTECT, blank=True, null=True)
+    mailing = models.ForeignKey(Mailing, related_name='messages', on_delete=models.PROTECT, blank=True, null=True)
 
     class Meta:
         verbose_name = "Сообщение"
