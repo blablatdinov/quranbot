@@ -5,8 +5,7 @@ import telebot
 
 from bot_init.service import registration_subscriber, send_answer, get_tbot_instance
 from bot_init.text_message_service import text_message_service
-from bot_init.utils import save_message
-
+from bot_init.utils import save_message, stop_retry
 
 tbot = get_tbot_instance()
 
@@ -23,7 +22,8 @@ def bot(request):
         raise PermissionDenied
 
 
-@tbot.message_handler(commands=['start'])  # Обработчик команды старт
+@tbot.message_handler(commands=['start'])
+@stop_retry
 def start_handler(message):
     """ Обработчик команды /start """
     save_message(message)
@@ -32,6 +32,7 @@ def start_handler(message):
 
 
 @tbot.message_handler(content_types=['text'])
+@stop_retry
 def text_handler(message):
     answer = text_message_service(message.chat.id, message.text)
     send_answer(answer, message.chat.id)
