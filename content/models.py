@@ -26,7 +26,8 @@ class MorningContent(models.Model):
         verbose_name_plural = 'Ежедневный контент для пользователей'
 
 
-class AudioFile(models.Model):  # TODO добавить путь к файлу если есть, verbose_name
+class AudioFile(models.Model):
+    # TODO добавить путь к файлу если есть, verbose_name, переименовать tg_audio_link -> tg_file_id
     audio_link = models.CharField(max_length=512, verbose_name='Ссылка на аудио')
     tg_audio_link = models.CharField(max_length=512, verbose_name='Идентификатор файла в телеграмм')
 
@@ -37,6 +38,7 @@ class AudioFile(models.Model):  # TODO добавить путь к файлу �
 class Ayat(models.Model):
     """Аят священного Корана"""
     additional_content = models.TextField(blank=True, verbose_name='Допопнительный контент')
+    content = models.TextField(verbose_name='Текст аята')
     arab_text = models.TextField(verbose_name='Арабский текст')
     trans = models.TextField(verbose_name='Транслитерация')
     sura = models.IntegerField(verbose_name='Номер суры')

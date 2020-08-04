@@ -43,9 +43,9 @@ def _send_answer(answer: Answer, chat_id: int):  # TODO где будет рег
     tbot = get_tbot_instance()
     try:
         if answer.keyboard:
-            msg = tbot.send_message(chat_id, answer.text, answer.keyboard)
+            msg = tbot.send_message(chat_id, answer.text, answer.keyboard, parse_mode='HTML')
         else:
-            msg = tbot.send_message(chat_id, answer.text)
+            msg = tbot.send_message(chat_id, answer.text, parse_mode='HTML')
         message_instance = save_message(msg)
         return message_instance
     except ApiException as e:
@@ -110,7 +110,7 @@ def registration_subscriber(chat_id: int) -> Answer:
     if not created:
         answer = _not_created_subscriber_service(subscriber)
     else:
-        answer = _created_subscriber_service(subscriber, username, first_name, last_name)
+        answer = _created_subscriber_service(subscriber)
     return answer
 
 
