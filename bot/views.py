@@ -24,9 +24,9 @@ if DEBUG:
 token = DJANGO_TELEGRAMBOT['BOTS'][0]['TOKEN']
 webhook_url = DJANGO_TELEGRAMBOT['WEBHOOK_SITE']
 tbot = telebot.TeleBot(token)
-tbot.remove_webhook()
+#tbot.remove_webhook()
 sleep(1)
-tbot.set_webhook(f'{webhook_url}/{token}')
+#tbot.set_webhook(f'{webhook_url}/{token}')
 
 
 markup = types.ReplyKeyboardMarkup(resize_keyboard=True)

@@ -16,6 +16,7 @@ class Command(BaseCommand):
                 sub.save()
                 count += 1
             except:
-                pass
+                sub.status = False
+                sub.save()
         #count = Subscribers.objects.filter(status=True).count()
         print(f'Count of active users - {count}')
