@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 project_folder = BASE_DIR
 load_dotenv(os.path.join(project_folder, '.env'))
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
     'quranbot.blablatdinov.ru',
