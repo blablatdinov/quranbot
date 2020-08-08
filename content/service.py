@@ -15,17 +15,21 @@ def get_morning_content(day_num: int) -> str:
         # TODO log
 
 
-def do_morning_content_distribution():  # TODO можно заранее сгенерировать контент
+def do_morning_content_distribution():
     """Выполняем рассылку утреннего контента"""
+    # TODO можно заранее сгенерировать контент, Заранее оповещать админов, что контент кончается
     active_subscribers = Subscriber.objects.filter(is_active=True)
     mailing = Mailing.objects.create()
     for subscriber in active_subscribers:
         content = get_morning_content(subscriber.day)
         answer = Answer(content)  # TODO впиши коммент про answers это же не ответ
 
-        message_instance = send_answer(answer, subscriber.tg_chat_id)
-        message_instance.mailing = mailing
-        message_instance.save(update_fields=['mailing'])
+        try:
+            message_instance = send_answer(answer, subscriber.tg_chat_id)
+            message_instance.mailing = mailing
+            message_instance.save(update_fields=['mailing'])
+        except:
+            pass
 
         subscriber.day += 1
         subscriber.save(update_fields=['day'])
