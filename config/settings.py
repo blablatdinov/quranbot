@@ -110,3 +110,14 @@ except AttributeError:
     exit()
 TG_BOT.name = r['result']['username']
 TG_BOT.id = r['result']['id']
+
+CELERY_BROKER_URL = 'redis://localhost:6379/1'
+
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASKS_SERIALIZER = 'json'
+#
+#
+# CELERY_RESULT_BACKEND = 'django-db'
+# CELERY_CACHE_BACKEND = 'django-cache'
+#
+# CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'

@@ -10,6 +10,10 @@ from config.settings import TG_BOT
 from content.models import MorningContent
 
 
+def get_admins_list():
+    return TG_BOT.admins
+
+
 def _create_action(subscriber: Subscriber, action: str):
     """Создаем запись в БД о подписке, отписке или реактивации бота пользователем"""
     SubscriberAction.objects.create(subscriber=subscriber, action=action)
@@ -41,7 +45,7 @@ def _send_answer(answer: Answer, chat_id: int):  # TODO где будет рег
     except ApiException as e:
         if 'bot was blocked by the user' in str(e):
             _subscriber_unsubscribed(chat_id)
-        elif 'message text is empty' in str(e):
+        elif 'message text is empty' in str(e):  # TODO законченный контент отлавливается в рассылке сообщений
             send_message_to_admin('Закончился ежедневный контент')
             raise Exception('Закончился ежедневный контент')
         else:
@@ -94,7 +98,7 @@ def _created_subscriber_service(subscriber: Subscriber) -> Answer:
     """Функция обрабатывает и генерирует ответ для нового подписчика"""
     start_message_text = AdminMessage.objects.get(key='start').text
     day_content = MorningContent.objects.get(day=1).content_for_day()
-    _create_action(subscriber, SUBSCRIBER_ACTIONS[1][0])
+    _create_action(subscriber, SUBSCRIBER_ACTIONS[0][0])
     send_message_to_admin(
         f'Зарегестрировался новый пользователь.\n\n'
         # TODO можно добавить комманду для статистики
@@ -122,3 +126,4 @@ def update_webhook(host=f'{TG_BOT.webhook_host}/{TG_BOT.token}'):
     tbot.remove_webhook()
     sleep(1)
     web = tbot.set_webhook(host)
+    print(tbot.get_webhook_info())
