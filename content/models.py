@@ -27,9 +27,9 @@ class MorningContent(models.Model):
 
 
 class AudioFile(models.Model):
-    # TODO добавить путь к файлу если есть, verbose_name, переименовать tg_audio_link -> tg_file_id
+    # TODO добавить путь к файлу если есть, verbose_name
     audio_link = models.CharField(max_length=512, verbose_name='Ссылка на аудио')
-    tg_file_id = models.CharField(max_length=512, verbose_name='Идентификатор файла в телеграмм')
+    tg_file_id = models.CharField(max_length=512, verbose_name='Идентификатор файла в телеграмм', blank=True, null=True)
 
     def __str__(self):
         return self.audio_link
@@ -44,7 +44,7 @@ class Ayat(models.Model):
     sura = models.IntegerField(verbose_name='Номер суры')
     ayat = models.CharField(max_length=16, verbose_name='Номер аята')
     html = models.TextField(verbose_name='Спарсенный HTML текст')
-    audio = models.ForeignKey(AudioFile, on_delete=models.PROTECT, verbose_name='Аудио файл')
+    audio = models.OneToOneField(AudioFile, on_delete=models.PROTECT, verbose_name='Аудио файл', blank=True, null=True)
     one_day_content = models.ForeignKey(
         MorningContent, blank=True, null=True, on_delete=models.SET_NULL, verbose_name='Ежедневный контент'
     )
@@ -65,8 +65,7 @@ class Ayat(models.Model):
 class Podcast(models.Model):  # TODO adds field with description and other
     """Модель для аудио подкаста"""
     title = models.CharField(max_length=128, verbose_name='Название')
-    audio = models.ForeignKey(AudioFile, on_delete=models.PROTECT, verbose_name='Аудио файл')
-    is_flag = models.BooleanField(default=False, verbose_name='Последнее аудио за сессию парсинга')  # TODO naming
+    audio = models.OneToOneField(AudioFile, on_delete=models.PROTECT, verbose_name='Аудио файл')
 
     def __str__(self):
         return self.title

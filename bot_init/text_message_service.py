@@ -6,7 +6,7 @@ from bot_init.exceptions import AyatDoesNotExists, SuraDoesNotExists, UnknownMes
 from bot_init.markup import InlineKeyboard
 from bot_init.models import Mailing
 from bot_init.schemas import Answer
-from bot_init.service import get_tbot_instance
+from bot_init.service import get_tbot_instance, get_admins_list
 from content.models import Podcast, Ayat
 
 
@@ -54,14 +54,14 @@ def get_keyboard_for_ayat(ayat: Ayat):
     prev_ayat = Ayat.objects.get(pk=ayat.pk - 1)
     next_ayat = Ayat.objects.get(pk=ayat.pk + 1)
     buttons = (
-        ((str(prev_ayat), 'wow'), (str(next_ayat), 'wow')),
+        ((str(prev_ayat), f'get_ayat({prev_ayat.pk})'), (str(next_ayat), f'get_ayat({next_ayat.pk})')),
     )
     return InlineKeyboard(buttons).keyboard
 
 
 def translate_ayat_into_answer(ayat: Ayat) -> List[Answer]:
     text = f'<b>({ayat.sura}:{ayat.ayat})</b>\n{ayat.arab_text}\n\n{ayat.content}\n\n<i>{ayat.trans}</i>\n\n'
-    return [Answer(text=text), Answer(tg_audio_id=ayat.audio.tg_file_id)]
+    return [Answer(text=text, keyboard=get_keyboard_for_ayat(ayat)), Answer(tg_audio_id=ayat.audio.tg_file_id)]
 
 
 def delete_messages_in_mailing(mailing_pk: int):
@@ -80,7 +80,7 @@ def text_message_service(chat_id: int, message_text: str) -> Answer:
     elif ':' in message_text:
         ayat = get_ayat_by_sura_ayat(message_text)
         answer = translate_ayat_into_answer(ayat)
-    elif regexp_result := re.search(r'/del\d+', message_text):
+    elif regexp_result := re.search(r'/del\d+', message_text) and chat_id in get_admins_list():
         mailing_pk = re.search(r'\d+', regexp_result.group(0)).group(0)
         delete_messages_in_mailing(mailing_pk)
         answer = Answer('Рассылка удалена')
