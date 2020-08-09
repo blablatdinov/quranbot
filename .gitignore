@@ -2,6 +2,7 @@
 *__pycache__/
 static/
 venv/
+logs/
 *.json
 db.sqlite3
 celerybeat*
