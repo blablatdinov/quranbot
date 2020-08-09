@@ -63,6 +63,12 @@ class Message(models.Model):
     json = models.TextField()
     mailing = models.ForeignKey(Mailing, related_name='messages', on_delete=models.PROTECT, blank=True, null=True)
 
+    def __str__(self):
+        if self.from_user_id == 705810219:
+            return 'From bot'
+        else:
+            return 'To bot'
+
     class Meta:
         verbose_name = "Сообщение"
         verbose_name_plural = "Сообщения"
