@@ -125,3 +125,16 @@ def update_webhook(host=f'{TG_BOT.webhook_host}/{TG_BOT.token}'):
     tbot.remove_webhook()
     sleep(1)
     web = tbot.set_webhook(host)
+
+
+def count_active_users():
+    count = 0
+    for sub in Subscriber.objects.all():
+        try:
+            get_tbot_instance().send_chat_action(sub.telegram_chat_id, 'typing')
+            sub.is_active = True
+            sub.save(update_fields=['is_active'])
+            count += 1
+        except:
+            pass
+    return f'Count of active users - {count}'
