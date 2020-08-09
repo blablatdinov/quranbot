@@ -1,6 +1,5 @@
 .idea/
 *__pycache__/
-gunicorn.conf.py
 static/
 venv/
 *.json
