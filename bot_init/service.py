@@ -63,7 +63,6 @@ def send_answer(answer, chat_id) -> Message:
     """
     if isinstance(answer, list):
         for answer_inst in answer:
-            print(answer_inst)
             message = _send_answer(answer_inst, chat_id)
     elif isinstance(answer, Answer):
         message = _send_answer(answer, chat_id)
@@ -126,4 +125,3 @@ def update_webhook(host=f'{TG_BOT.webhook_host}/{TG_BOT.token}'):
     tbot.remove_webhook()
     sleep(1)
     web = tbot.set_webhook(host)
-    print(tbot.get_webhook_info())
