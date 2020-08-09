@@ -11,4 +11,4 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         load_dotenv('.env')
-        update_webhook(f'{os.getenv("HOST")}/{os.getenv("BOT_TOKEN")}')
+        update_webhook(f'{os.getenv("HOST")}/bot_init/{os.getenv("BOT_TOKEN")}')
