@@ -4,7 +4,7 @@ from typing import List, Tuple
 
 from bot_init.exceptions import AyatDoesNotExists, SuraDoesNotExists, UnknownMessage
 from bot_init.markup import InlineKeyboard
-from bot_init.models import Mailing
+from bot_init.models import Mailing, Subscriber
 from bot_init.schemas import Answer
 from bot_init.service import get_tbot_instance, get_admins_list
 from content.models import Podcast, Ayat
@@ -84,12 +84,22 @@ def delete_messages_in_mailing(mailing_pk: int):
         tbot.delete_message(message.chat_id, message.message_id)
 
 
+def get_favourite_ayats(chat_id: int):
+    subscriber = Subscriber.objects.get(tg_chat_id=chat_id)
+    ayats = subscriber.favourite_ayats.all()
+    if ayats.count():
+        text = ''
+        [text + str(ayat) for ayat in ayats]
+        return Answer(text)
+    return Answer('У вас нет избранных аятов')
+
+
 def text_message_service(chat_id: int, message_text: str) -> Answer:
     """Функция обрабатывает все текстовые сообщения"""
     if 'Подкасты' in message_text:
         answer = get_podcast_in_answer_type()
     elif 'Избранное' in message_text:
-        ...
+        answer = get_favourite_ayats(chat_id)
     elif ':' in message_text:
         ayat = get_ayat_by_sura_ayat(message_text)
         answer = translate_ayat_into_answer(ayat)
