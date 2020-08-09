@@ -23,7 +23,7 @@ def create_content(request):
 
 def get_ayats(request):
     sura_num = request.GET.get('sura_num')
-    ayats = list(Ayat.objects.filter(one_day_content__isnull=True, sura=sura_num).values('pk', 'sura', 'ayat'))
+    ayats = list(Ayat.objects.filter(one_day_content__isnull=True, sura=sura_num).order_by('pk').values('pk', 'sura', 'ayat'))
     return JsonResponse(ayats, safe=False)
 
 

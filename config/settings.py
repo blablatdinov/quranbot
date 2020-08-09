@@ -95,6 +95,7 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
+STATIC_ROOT = 'static/'
 
 TG_BOT = namedtuple('Bot', ['token', 'webhook_host', 'name', 'id', 'admins'])
 TG_BOT.token = os.getenv('BOT_TOKEN')
