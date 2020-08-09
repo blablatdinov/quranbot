@@ -5,6 +5,7 @@ import telebot
 
 from bot_init.handle_service import handle_query_service
 from bot_init.service import registration_subscriber, send_answer, get_tbot_instance
+from bot_init.schemas import Answer
 from bot_init.text_message_service import text_message_service
 from bot_init.utils import save_message, stop_retry
 
@@ -42,7 +43,9 @@ def text_handler(message):
 
 @tbot.callback_query_handler(func=lambda call: True)
 def handle_query(call):
+    call_id = call.id
     chat_id = call.from_user.id
     text = call.data
-    answer = handle_query_service(text)
-    send_answer(answer, chat_id)
+    answer = handle_query_service(text, chat_id, call_id)
+    if isinstance(answer, Answer) or isinstance(answer, list):
+        send_answer(answer, chat_id)

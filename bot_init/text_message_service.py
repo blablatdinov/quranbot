@@ -54,20 +54,26 @@ def get_keyboard_for_ayat(ayat: Ayat):
     if ayat == Ayat.objects.first():
         next_ayat = Ayat.objects.get(pk=ayat.pk + 1)
         buttons = (
-            ((str(next_ayat), f'get_ayat({next_ayat.pk})'),),
+            (('Добавить в избранное', f'add_in_favourites({ayat.pk})'),),
+            ( (str(next_ayat), f'get_ayat({next_ayat.pk})'),),
         )
         return InlineKeyboard(buttons).keyboard
     elif ayat == Ayat.objects.last():
         prev_ayat = Ayat.objects.get(pk=ayat.pk - 1)
         buttons = (
-            ((str(prev_ayat), f'get_ayat({prev_ayat.pk})'),),
+            (('Добавить в избранное', f'add_in_favourites({ayat.pk})'),),
+            ( (str(prev_ayat), f'get_ayat({prev_ayat.pk})'),),
         )
         return InlineKeyboard(buttons).keyboard
     else:
         next_ayat = Ayat.objects.get(pk=ayat.pk + 1)
         prev_ayat = Ayat.objects.get(pk=ayat.pk - 1)
         buttons = (
-            ((str(prev_ayat), f'get_ayat({prev_ayat.pk})'), (str(next_ayat), f'get_ayat({next_ayat.pk})')),
+            (('Добавить в избранное', f'add_in_favourites({ayat.pk})'),),
+            (
+                (str(prev_ayat), f'get_ayat({prev_ayat.pk})'), 
+                (str(next_ayat), f'get_ayat({next_ayat.pk})')
+            ),
         )
         return InlineKeyboard(buttons).keyboard
 
@@ -89,7 +95,8 @@ def get_favourite_ayats(chat_id: int):
     ayats = subscriber.favourite_ayats.all()
     if ayats.count():
         text = ''
-        [text + str(ayat) for ayat in ayats]
+        for elem in ayats:
+            text += f'{str(elem)}\n'
         return Answer(text)
     return Answer('У вас нет избранных аятов')
 
