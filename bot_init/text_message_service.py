@@ -59,6 +59,9 @@ def get_keyboard_for_ayat(ayat: Ayat):
         return InlineKeyboard(buttons).keyboard
     elif ayat == Ayat.objects.last():
         prev_ayat = Ayat.objects.get(pk=ayat.pk - 1)
+        buttons = (
+            ((str(prev_ayat), f'get_ayat({prev_ayat.pk})'),),
+        )
         return InlineKeyboard(buttons).keyboard
     else:
         next_ayat = Ayat.objects.get(pk=ayat.pk + 1)
