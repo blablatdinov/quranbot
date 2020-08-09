@@ -131,10 +131,10 @@ def count_active_users():
     count = 0
     for sub in Subscriber.objects.all():
         try:
-            get_tbot_instance().send_chat_action(sub.telegram_chat_id, 'typing')
+            get_tbot_instance().send_chat_action(sub.tg_chat_id, 'typing')
             sub.is_active = True
             sub.save(update_fields=['is_active'])
             count += 1
-        except:
-            pass
+        except Exception as e:
+            print(e)
     return f'Count of active users - {count}'
