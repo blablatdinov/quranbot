@@ -44,6 +44,5 @@ def text_handler(message):
 def handle_query(call):
     chat_id = call.from_user.id
     text = call.data
-    print(text)
     answer = handle_query_service(text)
     send_answer(answer, chat_id)

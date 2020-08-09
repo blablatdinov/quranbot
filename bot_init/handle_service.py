@@ -6,7 +6,6 @@ from content.models import Ayat
 
 
 def handle_query_service(text: str):
-    print(text)
     if 'get_ayat' in text:
         ayat_pk = re.search(r'\d+', text).group(0)
         ayat = Ayat.objects.get(pk=ayat_pk)
