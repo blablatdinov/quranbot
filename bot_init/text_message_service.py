@@ -51,12 +51,22 @@ def get_ayat_by_sura_ayat(text: str) -> Ayat:
 
 def get_keyboard_for_ayat(ayat: Ayat):
     """Возвращает клавиатуру для сообщения с аятом"""
-    prev_ayat = Ayat.objects.get(pk=ayat.pk - 1)
-    next_ayat = Ayat.objects.get(pk=ayat.pk + 1)
-    buttons = (
-        ((str(prev_ayat), f'get_ayat({prev_ayat.pk})'), (str(next_ayat), f'get_ayat({next_ayat.pk})')),
-    )
-    return InlineKeyboard(buttons).keyboard
+    if ayat == Ayat.objects.first():
+        next_ayat = Ayat.objects.get(pk=ayat.pk + 1)
+        buttons = (
+            ((str(next_ayat), f'get_ayat({next_ayat.pk})'),),
+        )
+        return InlineKeyboard(buttons).keyboard
+    elif ayat == Ayat.objects.last():
+        prev_ayat = Ayat.objects.get(pk=ayat.pk - 1)
+        return InlineKeyboard(buttons).keyboard
+    else:
+        next_ayat = Ayat.objects.get(pk=ayat.pk + 1)
+        prev_ayat = Ayat.objects.get(pk=ayat.pk - 1)
+        buttons = (
+            ((str(prev_ayat), f'get_ayat({prev_ayat.pk})'), (str(next_ayat), f'get_ayat({next_ayat.pk})')),
+        )
+        return InlineKeyboard(buttons).keyboard
 
 
 def translate_ayat_into_answer(ayat: Ayat) -> List[Answer]:
