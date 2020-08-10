@@ -67,13 +67,9 @@ def send_prayer_time():
     """Рассылаем время намаза с кнопками"""
     for subscriber in Subscriber.objects.filter(city__isnull=False):
         prayer_times = get_prayer_time(subscriber.city)
-        text = f'Время намаза для г. Казань ({(datetime.today() + timedelta(days=1)).strftime("%d.%m.%Y")}) \n\n' \
-               f'Утренний: {prayer_times[0].time.strftime("%H:%M")}\n' \
-               f'Восход: {prayer_times[1].time.strftime("%H:%M")}\n' \
-               f'Обеденный: {prayer_times[2].time.strftime("%H:%M")}\n' \
-               f'Послеобеденный: {prayer_times[3].time.strftime("%H:%M")}\n' \
-               f'Вечерный: {prayer_times[4].time.strftime("%H:%M")}\n' \
-               f'Ночной: {prayer_times[5].time.strftime("%H:%M")}\n'
+        text = f'Время намаза для г. Казань ({(datetime.today() + timedelta(days=1)).strftime("%d.%m.%Y")}) \n\n'
+        for i in range(6):
+            text += f'{prayer_times[i].get_name_display()}: {prayer_times[i].time.strftime("%H:%M")}\n'
         buttons = get_buttons(subscriber, prayer_times.exclude(name='sunrise'))
         keyboard = InlineKeyboard(buttons).keyboard
         send_answer(Answer(text, keyboard=keyboard), subscriber.tg_chat_id)
