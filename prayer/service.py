@@ -1,5 +1,6 @@
 import csv
 from datetime import datetime
+from datetime import timedelta
 
 from django.db.models import QuerySet
 
@@ -11,7 +12,9 @@ from prayer.models import PrayerAtUser, PrayerAtUserGroup, City, Prayer
 
 
 def get_prayer_time(city: City):
-    p = Prayer.objects.filter(city=city, day__date=datetime.today())
+    date = datetime.today() + timedelta(days=1)
+    print(date)
+    p = Prayer.objects.filter(city=city, day__date=date)
     return p
 
 
@@ -36,7 +39,7 @@ def get_buttons(subscriber: Subscriber = None, prayer_times: QuerySet = None, pr
 def send_prayer_time():
     for subscriber in Subscriber.objects.filter(city__isnull=False):
         prayer_times = get_prayer_time(subscriber.city)
-        text = f'Время намаза для г. Казань ({datetime.today().strftime("%d.%m.%Y")}) \n\n' \
+        text = f'Время намаза для г. Казань ({(datetime.today() + timedelta(days=1)).strftime("%d.%m.%Y")}) \n\n' \
                f'Утренний: {prayer_times[0].time.strftime("%H:%M")}\n' \
                f'Восход: {prayer_times[1].time.strftime("%H:%M")}\n' \
                f'Обеденный: {prayer_times[2].time.strftime("%H:%M")}\n' \
