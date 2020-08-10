@@ -5,39 +5,62 @@ from prayer.schemas import PRAYER_NAMES
 
 
 class City(models.Model):
-    link_to_csv = models.CharField(max_length=500)
-    name = models.CharField(max_length=200)
+    """Модель города"""
+    link_to_csv = models.CharField(max_length=500, verbose_name='Ссылка для скачивания csv файла с временами намазов')
+    name = models.CharField(max_length=200, verbose_name='Название городаk')
 
     def __str__(self):
         return f'{self.name} ({self.link_to_csv})'
 
+    class Meta:
+        verbose_name = 'Город'
+        verbose_name_plural = 'Города'
+
 
 class Day(models.Model):
-    date = models.DateField()
+    """Дата для намаза"""
+    date = models.DateField(verbose_name='Дата намаза')
 
     def __str__(self):
         return self.date.strftime('%d.%m.%Y')
 
+    class Meta:
+        verbose_name = 'Дата'
+        verbose_name_plural = 'Даты'
+
 
 class PrayerAtUserGroup(models.Model):
+    """Модель для группировке намазов у пользователя"""
     pass
 
 
 class Prayer(models.Model):
-    city = models.ForeignKey(City, on_delete=models.CASCADE)
-    day = models.ForeignKey(Day, on_delete=models.CASCADE)
-    time = models.TimeField()
-    name = models.CharField(max_length=10, choices=PRAYER_NAMES)
+    """Модель намаза"""
+    city = models.ForeignKey(City, on_delete=models.CASCADE, verbose_name='Город')
+    day = models.ForeignKey(Day, on_delete=models.CASCADE, verbose_name='Дата')
+    time = models.TimeField(verbose_name='Время намаза')
+    name = models.CharField(max_length=10, choices=PRAYER_NAMES, verbose_name='Название')
 
     def __str__(self):
         return f'{self.city} {self.day} {self.time} {self.name}'
 
+    class Meta:
+        verbose_name = 'Время намаза'
+        verbose_name_plural = 'Времена намазов'
+
 
 class PrayerAtUser(models.Model):
-    subscriber = models.ForeignKey(Subscriber, on_delete=models.CASCADE)
-    is_read = models.BooleanField(default=False)
-    prayer_group = models.ForeignKey(PrayerAtUserGroup, on_delete=models.CASCADE)
-    prayer = models.ForeignKey(Prayer, on_delete=models.CASCADE)
+    """Модель намаза для пользователя"""
+    subscriber = models.ForeignKey(Subscriber, on_delete=models.CASCADE, verbose_name='Подписчик')
+    is_read = models.BooleanField(default=False, verbose_name='Прочитан ли намаз')
+    prayer_group = models.ForeignKey(
+        PrayerAtUserGroup, on_delete=models.CASCADE, verbose_name='Сгруппированные по 5 намазы для пользователя'
+    )
+    prayer = models.ForeignKey(Prayer, on_delete=models.CASCADE, verbose_name='')
 
     def __str__(self):
         return ...
+
+    class Meta:
+        verbose_name = 'Запись о намазе для пользователя'
+        verbose_name_plural = 'Записи о намазе для пользователей'
