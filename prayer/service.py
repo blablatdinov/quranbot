@@ -12,17 +12,19 @@ from prayer.models import PrayerAtUser, PrayerAtUserGroup, City, Prayer
 
 
 def get_prayer_time(city: City):
+    """Возвращает время намазов для следующего дня"""
     date = datetime.today() + timedelta(days=1)
-    print(date)
     p = Prayer.objects.filter(city=city, day__date=date)
     return p
 
 
 def get_emoji_for_button(prayer: PrayerAtUser):
+    """Возвращает эмоджи для кнопки в зависимости от того, прочитан намаз или нет"""
     return '❌' if not prayer.is_read else '✅'
 
 
 def get_buttons(subscriber: Subscriber = None, prayer_times: QuerySet = None, prayer_pk: int = None):
+    """Возвращает кнопки со статусом намазов"""
     if prayer_pk is None:
         prayer_group = PrayerAtUserGroup.objects.create()
         prayers = [PrayerAtUser.objects.create(subscriber=subscriber, prayer_group=prayer_group, prayer=prayer)
@@ -37,6 +39,7 @@ def get_buttons(subscriber: Subscriber = None, prayer_times: QuerySet = None, pr
 
 
 def send_prayer_time():
+    """Рассылаем время намаза с кнопками"""
     for subscriber in Subscriber.objects.filter(city__isnull=False):
         prayer_times = get_prayer_time(subscriber.city)
         text = f'Время намаза для г. Казань ({(datetime.today() + timedelta(days=1)).strftime("%d.%m.%Y")}) \n\n' \
