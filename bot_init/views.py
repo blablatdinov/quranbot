@@ -52,3 +52,14 @@ def handle_query(call):
     answer = handle_query_service(text, chat_id, call_id, message_id, message_text)
     if isinstance(answer, Answer) or isinstance(answer, list):
         send_answer(answer, chat_id)
+
+
+@tbot.message_handler(content_types=['location'])
+def handle_location(message):
+    from geopy.geocoders import Nominatim
+    geolocator = Nominatim(user_agent="qbot")
+    location = geolocator.reverse(f"{message.location.latitude}, {message.location.longitude}")
+    print(dir(location.address))
+    print(type(location.address))
+    print(location.address)
+    print(location.address.split(', ')[4])
