@@ -32,6 +32,9 @@ class Subscriber(models.Model):
     favourite_ayats = models.ManyToManyField(
         Ayat, related_name='favorit_ayats', blank=True, null=True, verbose_name='Избранные аяты'
     )
+    city = models.ForeignKey(
+        'prayer.City', verbose_name='Город для рассылки намазов', on_delete=models.PROTECT, blank=True, null=True
+    )
 
     def __str__(self):
         return str(self.tg_chat_id)
