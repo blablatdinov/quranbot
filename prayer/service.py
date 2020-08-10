@@ -1,29 +1,29 @@
 import csv
 from datetime import datetime
 
+from django.db.models import QuerySet
+
 from bot_init.markup import InlineKeyboard
 from bot_init.models import Subscriber
 from bot_init.schemas import Answer
 from bot_init.service import send_answer
-from prayer.models import PrayerAtUser, PrayerAtUserGroup
+from prayer.models import PrayerAtUser, PrayerAtUserGroup, City, Prayer
 
 
-def get_prayer_time():
-    with open('Kazan.csv', 'r') as f:
-        csv_reader = csv.reader(f, delimiter=';')
-        for row in csv_reader:
-            if datetime.now().strftime('%d.%m.%Y') == row[0]:
-                return row
+def get_prayer_time(city: City):
+    p = Prayer.objects.filter(city=city, day__date=datetime.today())
+    return p
 
 
 def get_emoji_for_button(prayer: PrayerAtUser):
     return '❌' if not prayer.is_read else '✅'
 
 
-def get_buttons(subscriber: Subscriber = None, prayer_pk: int = None):
+def get_buttons(subscriber: Subscriber = None, prayer_times: QuerySet = None, prayer_pk: int = None):
     if prayer_pk is None:
         prayer_group = PrayerAtUserGroup.objects.create()
-        prayers = [PrayerAtUser.objects.create(subscriber=subscriber, prayer_group=prayer_group) for _ in range(5)]
+        prayers = [PrayerAtUser.objects.create(subscriber=subscriber, prayer_group=prayer_group, prayer=prayer)
+                   for prayer in prayer_times]
     else:
         prayer = PrayerAtUser.objects.get(pk=prayer_pk)
         prayers = PrayerAtUser.objects.filter(prayer_group=prayer.prayer_group)
@@ -34,15 +34,15 @@ def get_buttons(subscriber: Subscriber = None, prayer_pk: int = None):
 
 
 def send_prayer_time():
-    for subscriber in Subscriber.objects.all():
-        prayer_times = get_prayer_time()
-        text = f'Время намаза для г. Казань ({prayer_times[0]}) \n\n' \
-               f'Утренний: {prayer_times[1]}\n' \
-               f'Восход: {prayer_times[2]}\n' \
-               f'Обеденный: {prayer_times[4]}\n' \
-               f'Послеобеденный: {prayer_times[6]}\n' \
-               f'Вечерный: {prayer_times[7]}\n' \
-               f'Ночной: {prayer_times[8]}\n'
-        buttons = get_buttons(subscriber)
+    for subscriber in Subscriber.objects.filter(city__isnull=False):
+        prayer_times = get_prayer_time(subscriber.city)
+        text = f'Время намаза для г. Казань ({datetime.today().strftime("%d.%m.%Y")}) \n\n' \
+               f'Утренний: {prayer_times[0].time.strftime("%H:%M")}\n' \
+               f'Восход: {prayer_times[1].time.strftime("%H:%M")}\n' \
+               f'Обеденный: {prayer_times[2].time.strftime("%H:%M")}\n' \
+               f'Послеобеденный: {prayer_times[3].time.strftime("%H:%M")}\n' \
+               f'Вечерный: {prayer_times[4].time.strftime("%H:%M")}\n' \
+               f'Ночной: {prayer_times[5].time.strftime("%H:%M")}\n'
+        buttons = get_buttons(subscriber, prayer_times.exclude(name='sunrise'))
         keyboard = InlineKeyboard(buttons).keyboard
         send_answer(Answer(text, keyboard=keyboard), subscriber.tg_chat_id)

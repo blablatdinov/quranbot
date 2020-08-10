@@ -14,9 +14,9 @@ def prayer_time_parser():
         with open('Kazan.csv', 'r') as f:
             csv_reader = csv.reader(f, delimiter=';')
             for row in csv_reader:
-                day = Day.objects.create(date=datetime.strptime(row[0], '%d.%m.%Y'))
+                day, _ = Day.objects.get_or_create(date=datetime.strptime(row[0], '%d.%m.%Y'))
                 s = [1, 2, 4, 6, 7, 8]
                 for x in range(len(s)):
                     a = time_.strptime(row[s[x]], '%H:%M')
                     a = time(hour=a.tm_hour, minute=a.tm_min)
-                    Prayer.objects.create(city=city, day=day, name=PRAYER_NAMES[x], time=a)
+                    Prayer.objects.create(city=city, day=day, name=PRAYER_NAMES[x][0], time=a)
