@@ -4,11 +4,13 @@ from django.views.decorators.csrf import csrf_exempt
 import telebot
 
 from bot_init.handle_service import handle_query_service
+from bot_init.inline_search_service import inline_query_service
 from bot_init.service import registration_subscriber, send_answer, get_tbot_instance
 from bot_init.schemas import Answer
 from bot_init.text_message_service import text_message_service
 from bot_init.utils import save_message, stop_retry
 from prayer.service import set_city_to_subscriber_by_location
+
 
 tbot = get_tbot_instance()
 
@@ -62,3 +64,9 @@ def handle_location(message):
         message.chat.id
     )
     send_answer(answer, message.chat.id)
+
+
+@tbot.inline_handler(func=lambda query: len(query.query) > 0)
+def inline_query(query):
+    """Поиск по названию города"""
+    inline_query_service(query.query, query.id)
