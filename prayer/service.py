@@ -11,6 +11,7 @@ from bot_init.models import Subscriber
 from bot_init.schemas import Answer
 from bot_init.service import send_answer
 from prayer.models import PrayerAtUser, PrayerAtUserGroup, City, Prayer
+from prayer.schemas import PRAYER_NAMES
 
 
 def get_address(x, y):
@@ -76,3 +77,13 @@ def send_prayer_time():
         buttons = get_buttons(subscriber, prayer_times.exclude(name='sunrise'))
         keyboard = InlineKeyboard(buttons).keyboard
         send_answer(Answer(text, keyboard=keyboard), subscriber.tg_chat_id)
+
+
+def get_unread_prayers(chat_id):
+    subscriber = Subscriber.objects.get(tg_chat_id=chat_id)
+    unread_prayers = PrayerAtUser.objects.filter(subscriber=subscriber, is_read=False)
+    text = 'Непрочитано\n\n'
+    for i in [0, 2, 3, 4, 5]:
+        prayer_type_group = unread_prayers.filter(prayer__name=PRAYER_NAMES[i][0])
+        text += f'{PRAYER_NAMES[i][1]}: {prayer_type_group.count()}\n'
+    return Answer(text)
