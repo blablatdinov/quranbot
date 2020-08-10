@@ -4,6 +4,7 @@ from datetime import timedelta
 
 from django.db.models import QuerySet
 from geopy.geocoders import Nominatim
+from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from bot_init.markup import InlineKeyboard
 from bot_init.models import Subscriber
@@ -28,7 +29,10 @@ def set_city_to_subscriber_by_location(location: tuple, chat_id: int):  # TODO �
             subscriber.save(update_fields=['city'])
             return Answer(f'Вам будет приходить время намаза для г. {city.name}')
     print(location, address)  # TODO логгировать
-    return Answer('Город не найден')
+    keyboard = InlineKeyboardMarkup()
+    button = InlineKeyboardButton("Поиск города", switch_inline_query_current_chat='')
+    keyboard.add(button)
+    return Answer('Город не найден', keyboard=keyboard)
 
 
 def get_prayer_time(city: City):
