@@ -5,7 +5,7 @@ from bot_init.markup import InlineKeyboard
 from bot_init.models import Subscriber
 from bot_init.schemas import Answer
 from bot_init.service import send_answer
-from prayer.models import Prayer, PrayerGroup
+from prayer.models import PrayerAtUser, PrayerAtUserGroup
 
 
 def get_prayer_time():
@@ -16,17 +16,17 @@ def get_prayer_time():
                 return row
 
 
-def get_emoji_for_button(prayer: Prayer):
+def get_emoji_for_button(prayer: PrayerAtUser):
     return '❌' if not prayer.is_read else '✅'
 
 
 def get_buttons(subscriber: Subscriber = None, prayer_pk: int = None):
     if prayer_pk is None:
-        prayer_group = PrayerGroup.objects.create()
-        prayers = [Prayer.objects.create(subscriber=subscriber, prayer_group=prayer_group) for _ in range(5)]
+        prayer_group = PrayerAtUserGroup.objects.create()
+        prayers = [PrayerAtUser.objects.create(subscriber=subscriber, prayer_group=prayer_group) for _ in range(5)]
     else:
-        prayer = Prayer.objects.get(pk=prayer_pk)
-        prayers = Prayer.objects.filter(prayer_group=prayer.prayer_group)
+        prayer = PrayerAtUser.objects.get(pk=prayer_pk)
+        prayers = PrayerAtUser.objects.filter(prayer_group=prayer.prayer_group)
     buttons = [
         [(get_emoji_for_button(x), f'change_prayer_status({x.pk})') for x in prayers]
     ]
