@@ -8,6 +8,7 @@ from bot_init.models import Mailing, Subscriber
 from bot_init.schemas import Answer
 from bot_init.service import get_tbot_instance, get_admins_list
 from content.models import Podcast, Ayat
+from prayer.service import get_unread_prayers
 
 
 def get_random_podcast() -> Podcast:
@@ -114,6 +115,8 @@ def text_message_service(chat_id: int, message_text: str) -> Answer:
         mailing_pk = re.search(r'\d+', regexp_result.group(0)).group(0)
         delete_messages_in_mailing(mailing_pk)
         answer = Answer('Рассылка удалена')
+    elif '/prayer':
+        return get_unread_prayers(chat_id)
     else:
         raise UnknownMessage(message_text)
     return answer
