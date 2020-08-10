@@ -59,7 +59,7 @@ class PrayerAtUser(models.Model):
     prayer = models.ForeignKey(Prayer, on_delete=models.CASCADE, verbose_name='')
 
     def __str__(self):
-        return ...
+        return f'{self.subscriber} {self.prayer}'
 
     class Meta:
         verbose_name = 'Запись о намазе для пользователя'

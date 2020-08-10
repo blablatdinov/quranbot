@@ -23,11 +23,11 @@ def set_city_to_subscriber_by_location(location: tuple, chat_id: int):  # TODO �
     address = get_address(location[0], location[1])
     address_split = address.replace(', ', ' ').split(' ')
     for elem in address_split:
-        if city := City.objects.filter(name=elem).first():
+        if city := City.objects.filter(name__contains=elem).first():
             subscriber.city = city
             subscriber.save(update_fields=['city'])
             return Answer(f'Вам будет приходить время намаза для г. {city.name}')
-    print(location)  # TODO логгировать
+    print(location, address)  # TODO логгировать
     return Answer('Город не найден')
 
 
