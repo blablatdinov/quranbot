@@ -1,12 +1,12 @@
 from django.db import models
 
 from bot_init.models import Subscriber
-from prayer.schemas import PRAYER_NAMES, CITIES
+from prayer.schemas import PRAYER_NAMES
 
 
 class City(models.Model):
     link_to_csv = models.CharField(max_length=500)
-    name = models.CharField(max_length=200, choices=CITIES)
+    name = models.CharField(max_length=200)
 
     def __str__(self):
         return f'{self.name} ({self.link_to_csv})'
