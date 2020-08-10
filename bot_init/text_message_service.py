@@ -98,7 +98,7 @@ def get_favourite_ayats(chat_id: int):
         for elem in ayats:
             text += f'{str(elem)}\n'
         return Answer(text)
-    return Answer('У вас нет избранных аятов')
+    return Answer('Вы еще не добавили аятов в "Избранное"')
 
 
 def text_message_service(chat_id: int, message_text: str) -> Answer:
