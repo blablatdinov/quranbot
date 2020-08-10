@@ -9,4 +9,5 @@ PRAYER_NAMES = (
 
 CITIES = (
     ('kazan', 'Казань'),
+    ('nab_chelny', 'Набережные Челны'),
 )
