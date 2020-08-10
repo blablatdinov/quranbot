@@ -8,6 +8,7 @@ from bot_init.service import registration_subscriber, send_answer, get_tbot_inst
 from bot_init.schemas import Answer
 from bot_init.text_message_service import text_message_service
 from bot_init.utils import save_message, stop_retry
+from prayer.service import set_city_to_subscriber_by_location
 
 tbot = get_tbot_instance()
 
@@ -56,10 +57,8 @@ def handle_query(call):
 
 @tbot.message_handler(content_types=['location'])
 def handle_location(message):
-    from geopy.geocoders import Nominatim
-    geolocator = Nominatim(user_agent="qbot")
-    location = geolocator.reverse(f"{message.location.latitude}, {message.location.longitude}")
-    print(dir(location.address))
-    print(type(location.address))
-    print(location.address)
-    print(location.address.split(', ')[4])
+    answer = set_city_to_subscriber_by_location(
+        (message.location.latitude, message.location.longitude),
+        message.chat.id
+    )
+    send_answer(answer, message.chat.id)

@@ -3,12 +3,32 @@ from datetime import datetime
 from datetime import timedelta
 
 from django.db.models import QuerySet
+from geopy.geocoders import Nominatim
 
 from bot_init.markup import InlineKeyboard
 from bot_init.models import Subscriber
 from bot_init.schemas import Answer
 from bot_init.service import send_answer
 from prayer.models import PrayerAtUser, PrayerAtUserGroup, City, Prayer
+
+
+def get_address(x, y):
+    geolocator = Nominatim(user_agent="qbot")
+    location = geolocator.reverse(f"{x}, {y}")
+    return location.address
+
+
+def set_city_to_subscriber_by_location(location: tuple, chat_id: int):  # TODO создать ф-ю для доставания подписчика с try, except
+    subscriber = Subscriber.objects.get(tg_chat_id=chat_id)
+    address = get_address(location[0], location[1])
+    address_split = address.replace(', ', ' ').split(' ')
+    for elem in address_split:
+        if city := City.objects.filter(name=elem).first():
+            subscriber.city = city
+            subscriber.save(update_fields=['city'])
+            return Answer(f'Вам будет приходить время намаза для г. {city.name}')
+    print(location)  # TODO логгировать
+    return Answer('Город не найден')
 
 
 def get_prayer_time(city: City):
