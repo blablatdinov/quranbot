@@ -75,13 +75,12 @@ def send_prayer_time():
         send_answer(Answer(text, keyboard=keyboard), subscriber.tg_chat_id)
 
 
-def get_keyboard_for_unread_prayers(prayers: QuerySet, chat_id: int):
+def get_keyboard_for_unread_prayers(chat_id: int):
     buttons = []
     for i in [0, 2, 3, 4, 5]:
         prayer_name = PRAYER_NAMES[i][1]
         buttons.append(((f'{prayer_name} - 1', f'unread_prayer_type_minus_one({prayer_name}, {chat_id})'),),)
     return InlineKeyboard(buttons).keyboard
-
 
 
 def get_unread_prayers(chat_id):
@@ -91,4 +90,4 @@ def get_unread_prayers(chat_id):
     for i in [0, 2, 3, 4, 5]:
         prayer_type_group = unread_prayers.filter(prayer__name=PRAYER_NAMES[i][0])
         text += f'{PRAYER_NAMES[i][1]}: {prayer_type_group.count()}\n'
-    return Answer(text, keyboard=get_keyboard_for_unread_prayers(unread_prayers, chat_id))
+    return Answer(text, keyboard=get_keyboard_for_unread_prayers(chat_id))
