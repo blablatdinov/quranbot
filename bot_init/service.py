@@ -29,7 +29,7 @@ def _subscriber_unsubscribed(chat_id: int):
     subscriber = Subscriber.objects.get(tg_chat_id=chat_id)
     subscriber.is_active = False
     subscriber.save()
-    _create_action(subscriber, SUBSCRIBER_ACTIONS[0][0])
+    _create_action(subscriber, SUBSCRIBER_ACTIONS[1][0])
 
 
 def _send_answer(answer: Answer, chat_id: int):  # TODO где будет регистрация tbot
