@@ -6,7 +6,7 @@ from bot_init.text_message_service import translate_ayat_into_answer
 from bot_init.models import Subscriber
 from bot_init.service import get_tbot_instance
 from content.models import Ayat
-from prayer.models import Prayer
+from prayer.models import PrayerAtUser
 from prayer.service import get_buttons
 
 
@@ -25,7 +25,7 @@ def handle_query_service(text: str, chat_id: int = None, call_id: int = None, me
         get_tbot_instance().answer_callback_query(call_id, show_alert=True, text='Аят добавлен в избранные')
     elif 'change_prayer_status' in text:
         prayer_pk = int(re.search(r'\d+', text).group(0))
-        prayer = Prayer.objects.get(pk=prayer_pk)
+        prayer = PrayerAtUser.objects.get(pk=prayer_pk)
         prayer.is_read = not prayer.is_read
         prayer.save()
         keyboard = InlineKeyboard(get_buttons(prayer_pk=prayer_pk)).keyboard
