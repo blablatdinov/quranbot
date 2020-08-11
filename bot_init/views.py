@@ -39,6 +39,7 @@ def start_handler(message):
 @tbot.message_handler(content_types=['text'])
 @stop_retry
 def text_handler(message):
+    """Обработчик тестовых сообщений в т. ч. некоторых комманд"""
     save_message(message)
     answer = text_message_service(message.chat.id, message.text)
     send_answer(answer, message.chat.id)
@@ -46,6 +47,7 @@ def text_handler(message):
 
 @tbot.callback_query_handler(func=lambda call: True)
 def handle_query(call):
+    """Обравботка нажатий на инлайн кнопку"""
     answer = handle_query_service(
         chat_id=call.from_user.id,
         text=call.data,
@@ -58,6 +60,7 @@ def handle_query(call):
 
 @tbot.message_handler(content_types=['location'])
 def handle_location(message):
+    """Обравботка геолокации"""
     answer = set_city_to_subscriber_by_location(
         (message.location.latitude, message.location.longitude),
         message.chat.id

@@ -1,6 +1,6 @@
-import csv
 from datetime import datetime
 from datetime import timedelta
+from typing import List, Tuple
 
 from django.db.models import QuerySet
 from geopy.geocoders import Nominatim
@@ -14,15 +14,19 @@ from prayer.models import PrayerAtUser, PrayerAtUserGroup, City, Prayer
 from prayer.schemas import PRAYER_NAMES
 
 
-def get_address(x, y):
+def get_address(x: str, y: str):
+    """Получаем аддресс по координатам благодаря библиотеке geopy"""
     geolocator = Nominatim(user_agent="qbot")
     location = geolocator.reverse(f"{x}, {y}")
     return location.address
 
 
-def set_city_to_subscriber_by_location(location: tuple, chat_id: int):  # TODO создать ф-ю для доставания подписчика с try, except
+def set_city_to_subscriber_by_location(location: tuple, chat_id: int) -> Answer:
+    """Ищем город и если не находим, то предлагаем пользователю найти в поиске"""
+    # TODO создать ф-ю для доставания подписчика с try, except. Побить функцию
     subscriber = Subscriber.objects.get(tg_chat_id=chat_id)
     address = get_address(location[0], location[1])
+
     address_split = address.replace(', ', ' ').split(' ')
     for elem in address_split:
         if city := City.objects.filter(name__contains=elem).first():
@@ -30,25 +34,29 @@ def set_city_to_subscriber_by_location(location: tuple, chat_id: int):  # TODO �
             subscriber.save(update_fields=['city'])
             return Answer(f'Вам будет приходить время намаза для г. {city.name}')
     print(location, address)  # TODO логгировать
+
     keyboard = InlineKeyboardMarkup()
     button = InlineKeyboardButton("Поиск города", switch_inline_query_current_chat='')
     keyboard.add(button)
     return Answer('Город не найден', keyboard=keyboard)
 
 
-def get_prayer_time(city: City):
+def get_prayer_time(city: City) -> QuerySet[Prayer]:
     """Возвращает время намазов для следующего дня"""
     date = datetime.today() + timedelta(days=1)
-    p = Prayer.objects.filter(city=city, day__date=date)
-    return p
+    prayers = Prayer.objects.filter(city=city, day__date=date)
+    return prayers
 
 
-def get_emoji_for_button(prayer: PrayerAtUser):
+def get_emoji_for_button(prayer: PrayerAtUser) -> str:
     """Возвращает эмоджи для кнопки в зависимости от того, прочитан намаз или нет"""
     return '❌' if not prayer.is_read else '✅'
 
 
-def get_buttons(subscriber: Subscriber = None, prayer_times: QuerySet = None, prayer_pk: int = None):
+def get_buttons(
+        subscriber: Subscriber = None,
+        prayer_times: QuerySet = None,
+        prayer_pk: int = None) -> List[List[Tuple[str, str]]]:
     """Возвращает кнопки со статусом намазов"""
     if prayer_pk is None:
         prayer_group = PrayerAtUserGroup.objects.create()
@@ -63,7 +71,7 @@ def get_buttons(subscriber: Subscriber = None, prayer_times: QuerySet = None, pr
     return buttons
 
 
-def send_prayer_time():
+def send_prayer_time() -> None:
     """Рассылаем время намаза с кнопками"""
     for subscriber in Subscriber.objects.filter(city__isnull=False):
         prayer_times = get_prayer_time(subscriber.city)
@@ -75,13 +83,15 @@ def send_prayer_time():
         send_answer(Answer(text, keyboard=keyboard), subscriber.tg_chat_id)
 
 
-def get_unread_prayers_by_chat_id(chat_id: int):
+def get_unread_prayers_by_chat_id(chat_id: int) -> QuerySet[Prayer]:
+    """Получаем непрочитанные намазы у подписчика"""
     subscriber = Subscriber.objects.get(tg_chat_id=chat_id)
     unread_prayers = PrayerAtUser.objects.filter(subscriber=subscriber, is_read=False)
     return unread_prayers
 
 
-def unread_prayer_type_minus_one(chat_id: int, prayer_type_id: int):
+def unread_prayer_type_minus_one(chat_id: int, prayer_type_id: int) -> None:
+    """Уменьшаем кол-во непрочитанных намазов отдельной категории на один"""
     unread_prayers = get_unread_prayers_by_chat_id(chat_id)
     prayer_name = PRAYER_NAMES[prayer_type_id][0]
     separate_unread_prayer = unread_prayers.filter(prayer__name=prayer_name).first()
@@ -89,7 +99,8 @@ def unread_prayer_type_minus_one(chat_id: int, prayer_type_id: int):
     separate_unread_prayer.save(update_fields=['is_read'])
 
 
-def get_keyboard_for_unread_prayers(chat_id: int):
+def get_keyboard_for_unread_prayers(chat_id: int) -> InlineKeyboardMarkup:
+    """Возвращает клавиатуру для непрочитанных намазаов. Чтобы люди при нажатии могли уменьшать их кол-во"""
     buttons = []
     for prayer_type_id in [0, 2, 3, 4, 5]:
         prayer_name = PRAYER_NAMES[prayer_type_id][1]
@@ -97,7 +108,8 @@ def get_keyboard_for_unread_prayers(chat_id: int):
     return InlineKeyboard(buttons).keyboard
 
 
-def get_unread_prayers(chat_id):
+def get_unread_prayers(chat_id) -> Answer:
+    """Возвращает кол-во непрочитанных намазов с клавиатурой"""
     text = 'Непрочитано\n\n'
     unread_prayers = get_unread_prayers_by_chat_id(chat_id)
     for i in [0, 2, 3, 4, 5]:
