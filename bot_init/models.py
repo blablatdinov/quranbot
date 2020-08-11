@@ -102,7 +102,7 @@ class SubscriberAction(models.Model):  # TODO подумать над имене
 class CallbackData(models.Model):
     """Модель для сохранения данных, с inline кнопок"""
     date = models.DateTimeField(null=True, verbose_name="Дата отправки")
-    call_id = models.IntegerField(verbose_name="Идентификатор данных")
+    call_id = models.CharField(max_length=500, verbose_name="Идентификатор данных")
     chat_id = models.IntegerField(verbose_name="Идентификатор чата из которого пришли данные")
     text = models.TextField(null=True, verbose_name="Текст сообщения")
     json = models.TextField()
