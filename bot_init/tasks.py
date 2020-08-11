@@ -6,6 +6,11 @@ from content.service import do_morning_content_distribution
 from bot_init.service import upload_database_dump
 
 
-@periodic_task(run_every=(crontab(hour=7, minute=30)), name='mailing')
-def mailing():
+@periodic_task(run_every=(crontab(hour=7, minute=30)), name='upload_dump')
+def upload_dump():
+    upload_database_dump()
+
+
+@periodic_task(run_every=(crontab(hour=6, minute=30)), name='check_users')
+def check_users():
     upload_database_dump()
