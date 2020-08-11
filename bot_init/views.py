@@ -46,15 +46,14 @@ def text_handler(message):
 
 @tbot.callback_query_handler(func=lambda call: True)
 def handle_query(call):
-    call_id = call.id
-    chat_id = call.from_user.id
-    text = call.data
-    message_id = call.message.message_id
-    message_text = call.message.text
-    print(text)
-    answer = handle_query_service(text, chat_id, call_id, message_id, message_text)
+    answer = handle_query_service(
+        chat_id=call.from_user.id,
+        text=call.data,
+        message_id=call.message.message_id,
+        message_text=call.message.text
+    )
     if isinstance(answer, Answer) or isinstance(answer, list):
-        send_answer(answer, chat_id)
+        send_answer(answer, call.from_user.id)
 
 
 @tbot.message_handler(content_types=['location'])
