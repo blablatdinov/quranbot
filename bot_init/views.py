@@ -61,6 +61,7 @@ def handle_query(call):
 @tbot.message_handler(content_types=['location'])
 def handle_location(message):
     """Обравботка геолокации"""
+    save_message(message)
     answer = set_city_to_subscriber_by_location(
         (message.location.latitude, message.location.longitude),
         message.chat.id
