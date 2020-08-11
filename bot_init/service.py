@@ -6,6 +6,7 @@ from telebot.apihelper import ApiException
 from google.oauth2 import service_account
 from googleapiclient.http import MediaIoBaseDownload, MediaFileUpload
 from googleapiclient.discovery import build
+from progressbar import progressbar
 
 from config.settings import BASE_DIR
 from bot_init.models import Subscriber, SubscriberAction, Message, AdminMessage, Admin
@@ -143,26 +144,3 @@ def count_active_users():
         except Exception as e:
             print(e)
     return f'Count of active users - {count}'
-
-
-def upload_database_dump():
-    """Функция снимает дамп базы данных и загружет его на облако"""
-    SCOPES = ['https://www.googleapis.com/auth/drive']
-    SERVICE_ACCOUNT_FILE = BASE_DIR + '/deploy/quranbot-keys.json'
-    credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
-    service = build('drive', 'v3', credentials=credentials)
-    folder_id = '1G_NYTKUHkQixdElU1hOCg4PR2c66zJPB'
-
-    command = f'/var/lib/postgresql/bin/pg_dump -U qbot qbot_db -h localhost | gzip -c --best > {BASE_DIR}/deploy/qbot_db.sql.gz'
-    os.system(command)
-
-    name = 'qbot_db.sql.gz'
-    file_path = BASE_DIR + '/deploy/qbot_db.sql.gz'
-    file_metadata = {
-            'name': name,
-            'parents': [folder_id]
-    }
-    media = MediaFileUpload(file_path, resumable=True)
-    r = service.files().create(body=file_metadata, media_body=media, fields='id').execute()
-    print('Dump uploaded succesful')
-
