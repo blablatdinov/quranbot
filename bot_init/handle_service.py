@@ -73,7 +73,7 @@ def handle_query_service(text: str, chat_id: int = None, call_id: int = None, me
             reply_markup=keyboard
         )
     elif 'unread_prayer_type_minus_one' in text:
-        answer = _unread_prayer_type_minus_one(text, chat_id)
+        answer = _unread_prayer_type_minus_one(text)
         get_tbot_instance().edit_message_text(
             text=answer.text,
             chat_id=chat_id,
