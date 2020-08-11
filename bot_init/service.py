@@ -6,6 +6,7 @@ from telebot.apihelper import ApiException
 from google.oauth2 import service_account
 from googleapiclient.http import MediaIoBaseDownload, MediaFileUpload
 from googleapiclient.discovery import build
+from progressbar import progressbar as pbar
 
 from config.settings import BASE_DIR
 from bot_init.models import Subscriber, SubscriberAction, Message, AdminMessage, Admin
@@ -134,14 +135,14 @@ def update_webhook(host=f'{TG_BOT.webhook_host}/{TG_BOT.token}'):
 
 def count_active_users():
     count = 0
-    for sub in Subscriber.objects.all():
+    for sub in pbar(Subscriber.objects.all()):
         try:
             get_tbot_instance().send_chat_action(sub.tg_chat_id, 'typing')
             sub.is_active = True
             sub.save(update_fields=['is_active'])
             count += 1
         except Exception as e:
-            print(e)
+            pass
     return f'Count of active users - {count}'
 
 
