@@ -41,7 +41,7 @@ def set_city_to_subscriber_by_location(location: tuple, chat_id: int) -> Answer:
     return Answer('Город не найден', keyboard=keyboard)
 
 
-def get_prayer_time(city: City) -> QuerySet[Prayer]:
+def get_prayer_time(city: City) -> QuerySet:
     """Возвращает время намазов для следующего дня"""
     date = datetime.today() + timedelta(days=1)
     prayers = Prayer.objects.filter(city=city, day__date=date)
@@ -83,7 +83,7 @@ def send_prayer_time() -> None:
         send_answer(Answer(text, keyboard=keyboard), subscriber.tg_chat_id)
 
 
-def get_unread_prayers_by_chat_id(chat_id: int) -> QuerySet[Prayer]:
+def get_unread_prayers_by_chat_id(chat_id: int) -> QuerySet:
     """Получаем непрочитанные намазы у подписчика"""
     subscriber = Subscriber.objects.get(tg_chat_id=chat_id)
     unread_prayers = PrayerAtUser.objects.filter(subscriber=subscriber, is_read=False)
