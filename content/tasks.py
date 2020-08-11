@@ -5,6 +5,6 @@ from celery.schedules import crontab
 from content.service import do_morning_content_distribution
 
 
-# @periodic_task(run_every=(crontab(hour=7, minute=0)), name='mailing')
-# def mailing():
-    # do_morning_content_distribution()
+@periodic_task(run_every=(crontab(hour=7, minute=0)), name='mailing')
+def mailing():
+    do_morning_content_distribution()
