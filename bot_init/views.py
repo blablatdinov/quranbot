@@ -52,7 +52,8 @@ def handle_query(call):
         chat_id=call.from_user.id,
         text=call.data,
         message_id=call.message.message_id,
-        message_text=call.message.text
+        message_text=call.message.text,
+        call_id=call.id
     )
     if isinstance(answer, Answer) or isinstance(answer, list):
         send_answer(answer, call.from_user.id)
@@ -61,6 +62,7 @@ def handle_query(call):
 @tbot.message_handler(content_types=['location'])
 def handle_location(message):
     """Обравботка геолокации"""
+    save_message(message)
     answer = set_city_to_subscriber_by_location(
         (message.location.latitude, message.location.longitude),
         message.chat.id
