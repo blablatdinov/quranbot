@@ -21,7 +21,7 @@ class SubscriberAdmin(admin.ModelAdmin):
     search_fields = (
         'tg_chat_id',
     )
-    list_display = ('__str__', 'is_active', 'comment', 'day')
+    list_display = ('__str__', 'is_active', 'comment', 'day', 'city')
 
 
 admin.site.register(Mailing)

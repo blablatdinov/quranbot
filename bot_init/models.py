@@ -30,7 +30,7 @@ class Subscriber(models.Model):
     comment = models.TextField(blank=True, null=True, verbose_name="Комментарий к подписчику")
     day = models.IntegerField(default=2, verbose_name="День, для рассылки утреннего контента")
     favourite_ayats = models.ManyToManyField(
-        Ayat, related_name='favorit_ayats', blank=True, null=True, verbose_name='Избранные аяты'
+        Ayat, related_name='favorit_ayats', blank=True, verbose_name='Избранные аяты'
     )
     city = models.ForeignKey(
         'prayer.City', verbose_name='Город для рассылки намазов', on_delete=models.PROTECT, blank=True, null=True
