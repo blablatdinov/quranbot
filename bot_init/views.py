@@ -8,7 +8,7 @@ from bot_init.inline_search_service import inline_query_service
 from bot_init.service import registration_subscriber, send_answer, get_tbot_instance
 from bot_init.schemas import Answer
 from bot_init.text_message_service import text_message_service
-from bot_init.utils import save_message, stop_retry
+from bot_init.utils import save_message, stop_retry, save_callback_data
 from prayer.service import set_city_to_subscriber_by_location
 
 
@@ -48,6 +48,7 @@ def text_handler(message):
 @tbot.callback_query_handler(func=lambda call: True)
 def handle_query(call):
     """Обравботка нажатий на инлайн кнопку"""
+    save_callback_data(call)
     answer = handle_query_service(
         chat_id=call.from_user.id,
         text=call.data,
