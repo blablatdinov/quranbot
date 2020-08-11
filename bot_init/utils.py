@@ -28,19 +28,23 @@ def save_callback_data(call) -> CallbackData:
     """Функция для сохранения данных из inline кнопки"""
     date = make_aware(datetime.fromtimestamp(call.message.date))
     call_id = call.id
-    chat_id = call.from_user.id
+    chat_id = str(call.from_user.id)
     call_data = call.data
     json_ = str(call)
     json_ = re.sub(r'<telebot\.types\.User[^>]+>', f"'{TG_BOT.name}'", json_)
     json_ = re.sub(r'<telebot\.types\.Chat[^>]+>', str(chat_id), json_)
-    json_ = eval(json_)
-    json_text = json.dumps(json_, indent=2, ensure_ascii=False)
+    json_ = re.sub(r'<telebot\.types\.[^>]+>', 'None', json_)
+    try:
+        json_ = eval(json_)
+        json_ = json.dumps(json_, indent=2, ensure_ascii=False)
+    except:
+        pass
     instance = CallbackData.objects.create(
         date=date,
         call_id=call_id,
         chat_id=chat_id,
         text=call_data,
-        json=json_text
+        json=json_
     )
     return instance
 
