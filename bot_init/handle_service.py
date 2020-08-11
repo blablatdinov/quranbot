@@ -7,33 +7,62 @@ from bot_init.models import Subscriber
 from bot_init.service import get_tbot_instance
 from content.models import Ayat
 from prayer.models import PrayerAtUser
-from prayer.service import get_buttons
+from prayer.service import get_buttons, unread_prayer_type_minus_one, get_unread_prayers
+
+
+def _get_ayat(text: str):
+    ayat_pk = re.search(r'\d+', text).group(0)
+    ayat = Ayat.objects.get(pk=ayat_pk)
+    answer = translate_ayat_into_answer(ayat)
+    return answer
+
+
+def _unread_prayer_type_minus_one(text: str, chat_id: int):
+    regexp_result = re.findall(r'\d+', text)
+    prayer_type_id, chat_id = [int(x) for x in regexp_result]
+    unread_prayer_type_minus_one(chat_id, prayer_type_id)
+    answer = get_unread_prayers(chat_id)
+    return answer
+
+
+def _add_ayat_in_favourites(text: str, chat_id: int):
+    ayat_pk = re.search(r'\d+', text).group(0)
+    ayat = Ayat.objects.get(pk=ayat_pk)
+    subscriber = Subscriber.objects.get(tg_chat_id=chat_id)
+    subscriber.favourite_ayats.add(ayat)
+    subscriber.save()
+    return 'Аят добавлен в избранные'
+
+
+def _change_prayer_status(text: str):
+    prayer_pk = int(re.search(r'\d+', text).group(0))
+    prayer = PrayerAtUser.objects.get(pk=prayer_pk)
+    prayer.is_read = not prayer.is_read
+    prayer.save()
+    keyboard = InlineKeyboard(get_buttons(prayer_pk=prayer_pk)).keyboard
+    return keyboard
 
 
 def handle_query_service(text: str, chat_id: int = None, call_id: int = None, message_id: int = None, message_text: str = None):
     if 'get_ayat' in text:
-        ayat_pk = re.search(r'\d+', text).group(0)
-        ayat = Ayat.objects.get(pk=ayat_pk)
-        answer = translate_ayat_into_answer(ayat)
+        answer = _get_ayat(text)
         return answer
     elif 'add_in_favourites' in text:
-        ayat_pk = re.search(r'\d+', text).group(0)
-        ayat = Ayat.objects.get(pk=ayat_pk)
-        subscriber = Subscriber.objects.get(tg_chat_id=chat_id)
-        subscriber.favourite_ayats.add(ayat)
-        subscriber.save()
-        get_tbot_instance().answer_callback_query(call_id, show_alert=True, text='Аят добавлен в избранные')
+        text = _add_ayat_in_favourites(text, chat_id)
+        get_tbot_instance().answer_callback_query(call_id, show_alert=True, text=text)
     elif 'change_prayer_status' in text:
-        prayer_pk = int(re.search(r'\d+', text).group(0))
-        prayer = PrayerAtUser.objects.get(pk=prayer_pk)
-        prayer.is_read = not prayer.is_read
-        prayer.save()
-        keyboard = InlineKeyboard(get_buttons(prayer_pk=prayer_pk)).keyboard
+        keyboard = _change_prayer_status(text)
         get_tbot_instance().edit_message_text(
             text=message_text,
             chat_id=chat_id,
             message_id=message_id,
             reply_markup=keyboard
         )
-
-
+    elif 'unread_prayer_type_minus_one' in text:
+        answer = _unread_prayer_type_minus_one(text, chat_id)
+        get_tbot_instance().edit_message_text(
+            text=answer.text,
+            chat_id=chat_id,
+            message_id=message_id,
+            reply_markup=answer.keyboard
+        )

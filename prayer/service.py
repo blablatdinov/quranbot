@@ -75,18 +75,31 @@ def send_prayer_time():
         send_answer(Answer(text, keyboard=keyboard), subscriber.tg_chat_id)
 
 
+def get_unread_prayers_by_chat_id(chat_id: int):
+    subscriber = Subscriber.objects.get(tg_chat_id=chat_id)
+    unread_prayers = PrayerAtUser.objects.filter(subscriber=subscriber, is_read=False)
+    return unread_prayers
+
+
+def unread_prayer_type_minus_one(chat_id: int, prayer_type_id: int):
+    unread_prayers = get_unread_prayers_by_chat_id(chat_id)
+    prayer_name = PRAYER_NAMES[prayer_type_id][0]
+    separate_unread_prayer = unread_prayers.filter(prayer__name=prayer_name).first()
+    separate_unread_prayer.is_read = True
+    separate_unread_prayer.save(update_fields=['is_read'])
+
+
 def get_keyboard_for_unread_prayers(chat_id: int):
     buttons = []
-    for i in [0, 2, 3, 4, 5]:
-        prayer_name = PRAYER_NAMES[i][1]
-        buttons.append(((f'{prayer_name} - 1', f'unread_prayer_type_minus_one({prayer_name}, {chat_id})'),),)
+    for prayer_type_id in [0, 2, 3, 4, 5]:
+        prayer_name = PRAYER_NAMES[prayer_type_id][1]
+        buttons.append(((f'{prayer_name} - 1', f'unread_prayer_type_minus_one({prayer_type_id}, {chat_id})'),),)
     return InlineKeyboard(buttons).keyboard
 
 
 def get_unread_prayers(chat_id):
-    subscriber = Subscriber.objects.get(tg_chat_id=chat_id)
-    unread_prayers = PrayerAtUser.objects.filter(subscriber=subscriber, is_read=False)
     text = 'Непрочитано\n\n'
+    unread_prayers = get_unread_prayers_by_chat_id(chat_id)
     for i in [0, 2, 3, 4, 5]:
         prayer_type_group = unread_prayers.filter(prayer__name=PRAYER_NAMES[i][0])
         text += f'{PRAYER_NAMES[i][1]}: {prayer_type_group.count()}\n'
