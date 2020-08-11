@@ -98,3 +98,15 @@ class SubscriberAction(models.Model):  # TODO подумать над имене
         verbose_name = 'Действия пользователя'
         verbose_name_plural = 'Действия пользователей'
 
+
+class CallbackData(models.Model):
+    """Модель для сохранения данных, с inline кнопок"""
+    date = models.DateTimeField(null=True, verbose_name="Дата отправки")
+    call_id = models.IntegerField(verbose_name="Идентификатор данных")
+    chat_id = models.IntegerField(verbose_name="Идентификатор чата из которого пришли данные")
+    text = models.TextField(null=True, verbose_name="Текст сообщения")
+    json = models.TextField()
+
+    class Meta:
+        verbose_name = "Данные с inline кнопок"
+        verbose_name_plural = "Данные с inline кнопок"

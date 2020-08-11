@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from bot_init.models import Message, Subscriber, Mailing, AdminMessage, SubscriberAction
+from bot_init.models import Message, Subscriber, Mailing, AdminMessage, SubscriberAction, CallbackData
 
 
 @admin.register(Message)
@@ -24,10 +24,6 @@ class SubscriberAdmin(admin.ModelAdmin):
     list_display = ('__str__', 'is_active', 'comment', 'day', 'city')
 
 
-admin.site.register(Mailing)
-admin.site.register(AdminMessage)
-
-
 @admin.register(SubscriberAction)
 class SubscriberActionAdmin(admin.ModelAdmin):
     list_display = (
@@ -35,3 +31,8 @@ class SubscriberActionAdmin(admin.ModelAdmin):
         'date_time',
         'action'
     )
+
+
+admin.site.register(Mailing)
+admin.site.register(AdminMessage)
+admin.site.register(CallbackData)
