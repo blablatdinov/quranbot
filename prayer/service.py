@@ -64,7 +64,7 @@ def get_buttons(
                    for prayer in prayer_times]
     else:
         prayer = PrayerAtUser.objects.get(pk=prayer_pk)
-        prayers = PrayerAtUser.objects.filter(prayer_group=prayer.prayer_group)
+        prayers = PrayerAtUser.objects.filter(prayer_group=prayer.prayer_group).order_by('pk')
     buttons = [
         [(get_emoji_for_button(x), f'change_prayer_status({x.pk})') for x in prayers]
     ]
