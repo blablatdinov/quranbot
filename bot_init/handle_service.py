@@ -1,7 +1,11 @@
 # TODO создать папку для бизнес логики
 import re
+from typing import List
+
+from telebot.types import InlineKeyboardMarkup
 
 from bot_init.markup import InlineKeyboard
+from bot_init.schemas import Answer
 from bot_init.text_message_service import translate_ayat_into_answer
 from bot_init.models import Subscriber
 from bot_init.service import get_tbot_instance
@@ -10,14 +14,19 @@ from prayer.models import PrayerAtUser
 from prayer.service import get_buttons, unread_prayer_type_minus_one, get_unread_prayers
 
 
-def _get_ayat(text: str):
+def _get_ayat(text: str) -> List[Answer]:
+    """Получаем аят по pk и возвращам ответ пользователю"""
     ayat_pk = re.search(r'\d+', text).group(0)
     ayat = Ayat.objects.get(pk=ayat_pk)
     answer = translate_ayat_into_answer(ayat)
     return answer
 
 
-def _unread_prayer_type_minus_one(text: str, chat_id: int):
+def _unread_prayer_type_minus_one(text: str) -> Answer:
+    """
+    Парсим идентификатор для схемы PRAYER_NAMES и chat_id подписчика.
+    Помечаем намаз прочитанным для подписчика
+    """
     regexp_result = re.findall(r'\d+', text)
     prayer_type_id, chat_id = [int(x) for x in regexp_result]
     unread_prayer_type_minus_one(chat_id, prayer_type_id)
@@ -25,7 +34,10 @@ def _unread_prayer_type_minus_one(text: str, chat_id: int):
     return answer
 
 
-def _add_ayat_in_favourites(text: str, chat_id: int):
+def _add_ayat_in_favourites(text: str, chat_id: int) -> str:
+    """
+    Парсим id аята и добаввляем его в "Избранные" подписчику
+    """
     ayat_pk = re.search(r'\d+', text).group(0)
     ayat = Ayat.objects.get(pk=ayat_pk)
     subscriber = Subscriber.objects.get(tg_chat_id=chat_id)
@@ -34,7 +46,8 @@ def _add_ayat_in_favourites(text: str, chat_id: int):
     return 'Аят добавлен в избранные'
 
 
-def _change_prayer_status(text: str):
+def _change_prayer_status(text: str) -> InlineKeyboardMarkup:
+    """Меняем статус намаза на прочитанный или не прочитанный"""
     prayer_pk = int(re.search(r'\d+', text).group(0))
     prayer = PrayerAtUser.objects.get(pk=prayer_pk)
     prayer.is_read = not prayer.is_read
@@ -44,6 +57,7 @@ def _change_prayer_status(text: str):
 
 
 def handle_query_service(text: str, chat_id: int = None, call_id: int = None, message_id: int = None, message_text: str = None):
+    """Функция для обработки всех нажатий на инлайн кнопки"""
     if 'get_ayat' in text:
         answer = _get_ayat(text)
         return answer
