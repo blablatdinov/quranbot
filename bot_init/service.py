@@ -34,7 +34,7 @@ def _subscriber_unsubscribed(chat_id: int):
     subscriber = Subscriber.objects.get(tg_chat_id=chat_id)
     subscriber.is_active = False
     subscriber.save()
-    _create_action(subscriber, SUBSCRIBER_ACTIONS[0][0])
+    _create_action(subscriber, SUBSCRIBER_ACTIONS[1][0])
 
 
 def _send_answer(answer: Answer, chat_id: int):  # TODO где будет регистрация tbot
@@ -48,7 +48,7 @@ def _send_answer(answer: Answer, chat_id: int):  # TODO где будет рег
         message_instance = save_message(msg)
         return message_instance
     except ApiException as e:
-        if 'bot was blocked by the user' in str(e):
+        if 'bot was blocked by the user' in str(e) or 'user is deactivated' in str(e):
             _subscriber_unsubscribed(chat_id)
         elif 'message text is empty' in str(e):  # TODO законченный контент отлавливается в рассылке сообщений
             send_message_to_admin('Закончился ежедневный контент')
