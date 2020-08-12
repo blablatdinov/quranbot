@@ -42,7 +42,7 @@ class Prayer(models.Model):
     name = models.CharField(max_length=10, choices=PRAYER_NAMES, verbose_name='Название')
 
     def __str__(self):
-        return f'{self.city} {self.day} {self.time} {self.name}'
+        return f'{self.city} {self.day} {self.time} {self.get_name_display()}'
 
     class Meta:
         verbose_name = 'Время намаза'
