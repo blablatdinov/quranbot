@@ -1,3 +1,5 @@
+import json
+
 from django.contrib import admin
 
 from bot_init.models import Message, Subscriber, Mailing, AdminMessage, SubscriberAction, CallbackData
@@ -9,6 +11,10 @@ class MessageAdmin(admin.ModelAdmin):
     search_fields = ('text', 'from_user_id', 'chat_id')
 
     def get_message_text(self, obj):
+        if obj.text is None:
+            json_ = json.loads(obj.json)
+            if audio := json_['audio']:
+                return 'Аудио - ' + audio['title']
         if isinstance(obj.text, str):
             return obj.text[:50] + ('...' if len(obj.text) >= 50 else '')
         return '-'
