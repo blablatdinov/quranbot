@@ -13,4 +13,4 @@ def upload_dump():
 
 @periodic_task(run_every=(crontab(hour=6, minute=30)), name='check_users')
 def check_users():
-    upload_database_dump()
+    count_active_users()
