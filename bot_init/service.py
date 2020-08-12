@@ -133,16 +133,33 @@ def update_webhook(host=f'{TG_BOT.webhook_host}/{TG_BOT.token}'):
     web = tbot.set_webhook(host)
 
 
+def get_subscriber_by_chat_id(chat_id: int):
+    try:
+        subscriber = Subscriber.objects.get(tg_chat_id=chat_id)
+        return subscriber
+    except Subscriber.DoesNotExist:
+        pass  # TODO что будем делать в этом случае
+
+
+
+def check_user_status_by_typing(chat_id: int):
+    sub = get_subscriber_by_chat_id(chat_id)
+    try:
+        get_tbot_instance().send_chat_action(sub.tg_chat_id, 'typing')
+        if not sub.is_active:
+            sub.is_active = True
+            sub.save(update_fields=['is_active'])
+        return True
+    except Exception as e:
+        if ('bot was blocked by the user' in str(e) or 'user is deactivated' in str(e)) and sub.is_active:
+            _subscriber_unsubscribed(sub.tg_chat_id)
+
+
 def count_active_users():
     count = 0
     for sub in pbar(Subscriber.objects.all()):
-        try:
-            get_tbot_instance().send_chat_action(sub.tg_chat_id, 'typing')
-            sub.is_active = True
-            sub.save(update_fields=['is_active'])
+        if check_user_status_by_typing(sub.tg_chat_id):
             count += 1
-        except Exception as e:
-            pass
     return f'Count of active users - {count}'
 
 
