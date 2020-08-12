@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+  <title>Создание контента</title>
+</head>
+<body>
+{% if request.user %}
+<div id="app">
+  <div class="row">
+    <div class="col-3">
+      <input placeholder='Сура' v-model='suraForGet'>
+      <button v-on:click='getAyats()'>Получить аяты</button><br>
+      <input placeholder='День' v-model='dayForSend'>
+      <button v-on:click='sendAyats()'>Отправить аяты</button>
+      <ul>
+        <li v-for="elem in ayats">
+          <input
+            type="checkbox"
+            v-model="elem.isChecked"
+          >
+          [[elem.sura]]: [[elem.ayat]]
+        </li>
+      </ul>
+    </div>
+    <div class="col-9">
+      <ul>
+        <li v-for="elem in content">
+          [[elem.day]]) <span v-html="elem.content"></span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script>
+  var app = new Vue({
+    delimiters: ['[[', ']]'],
+    el: '#app',
+    data: {
+      baseUrl: 'https://quranbot.blablatdinov.ru',
+      content: [],
+      suraForGet: '1',
+      ayats: [],
+      dayForSend: null
+    },
+    methods: {
+      getContent () {
+        fetch(this.baseUrl + '/content/api/getContent')
+          .then(res => res.json()).then(res => {
+            let data = res
+            for (let i = 0; i < data.length; i++) {
+              this.$set(this.content, i, data[i])
+            }
+            console.log(this.content)
+        })
+      },
+      getAyats () {
+        fetch(this.baseUrl + `/content/api/getAyats?sura_num=${this.suraForGet}`)
+        .then(res => res.json()).then(res => {
+          for (let i = 0; i < res.length; i++) {
+            let ayat = res[i]
+            ayat.isChecked = i < 5
+            this.$set(this.ayats, i, ayat)
+          }
+        })
+      },
+      sendAyats () {
+        ayats_pk = []
+        for (let x of this.ayats) {
+          if (x.isChecked){
+            ayats_pk.push(x.pk)
+          }
+        }
+        data = {
+          day: this.dayForSend,
+          // ayats: [i for (let i of this.ayats)]
+          ayats: ayats_pk
+        }
+        console.log(data)
+        fetch(this.baseUrl + `/content/api/sendAyats`, {
+          method: 'POST',
+          body: JSON.stringify(data)
+        })
+          .then(res => res.json()).then(res => {
+          this.ayats = []
+          this.getAyats()
+          this.getContent()
+          this.dayForSend++
+        })
+      }
+    },
+    created () {
+      this.getContent()
+    }
+  })
+</script>
+{% endif %}
+</body>
+</html>
