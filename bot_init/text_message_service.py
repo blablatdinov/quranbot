@@ -115,7 +115,7 @@ def text_message_service(chat_id: int, message_text: str) -> Answer:
         mailing_pk = re.search(r'\d+', regexp_result.group(0)).group(0)
         delete_messages_in_mailing(mailing_pk)
         answer = Answer('Рассылка удалена')
-    elif '/prayer':
+    elif '/prayer' in message_text:
         return get_unread_prayers(chat_id)
     else:
         raise UnknownMessage(message_text)
