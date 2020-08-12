@@ -34,5 +34,7 @@ def send_ayats(request):
     ayats = [Ayat.objects.get(pk=x) for x in data.get('ayats')]
     for ayat in ayats:
         ayat.one_day_content = morning_content
+        if len(morning_content.content_for_day()) > 4095:
+            return JsonResponse({'ok': False, 'error': 'too many symbols in content for day'})
         ayat.save()
     return JsonResponse({'ok': True})
