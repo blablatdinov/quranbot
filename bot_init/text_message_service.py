@@ -1,0 +1,119 @@
+import re
+from random import choice
+from typing import List, Tuple
+
+from bot_init.exceptions import AyatDoesNotExists, SuraDoesNotExists, UnknownMessage
+from bot_init.markup import InlineKeyboard
+from bot_init.models import Mailing, Subscriber
+from bot_init.schemas import Answer
+from bot_init.service import get_tbot_instance, get_admins_list
+from content.models import Podcast, Ayat
+
+
+def get_random_podcast() -> Podcast:
+    """Возвращает рандомный подкаст"""
+    podcast = choice(Podcast.objects.all())
+    return podcast
+
+
+def get_podcast_in_answer_type() -> Answer:
+    """Получаем подкаст и упаковываем его для отправки пользователю"""
+    podcast = get_random_podcast()
+    if file_id := podcast.audio.tg_file_id:
+        return Answer(tg_audio_id=file_id)
+    return Answer(podcast.audio.audio_link)
+
+
+def get_ayat_by_sura_ayat(text: str) -> Ayat:
+    """
+    Функция возвращает аят по номеру суры и аята
+    Например: пользователь присылает 2:3, по базе ищется данный аят и возвращает 2:1-5
+    """
+    sura_num, ayat_num = [int(x) for x in text.split(':')]
+
+    if not 1 <= sura_num <= 114:
+        raise SuraDoesNotExists
+
+    ayats_in_sura = Ayat.objects.filter(sura=sura_num)  # TODO разнести функцию, не читаемый код
+    for ayat in ayats_in_sura:
+        if '-' in str(ayat):
+            low_limit, up_limit = [int(x) for x in str(ayat).split(':')[1].split('-')]
+            if ayat_num in range(low_limit, up_limit + 1):
+                return ayat
+        elif ',' in str(ayat):
+            name = [int(x) for x in str(ayat).split(':')[1].split(',')]
+            if ayat_num in name:
+                return ayat
+        elif int(ayat.ayat) == ayat_num:
+            return ayat
+    raise AyatDoesNotExists
+
+
+def get_keyboard_for_ayat(ayat: Ayat):
+    """Возвращает клавиатуру для сообщения с аятом"""
+    if ayat == Ayat.objects.first():
+        next_ayat = Ayat.objects.get(pk=ayat.pk + 1)
+        buttons = (
+            (('Добавить в избранное', f'add_in_favourites({ayat.pk})'),),
+            ( (str(next_ayat), f'get_ayat({next_ayat.pk})'),),
+        )
+        return InlineKeyboard(buttons).keyboard
+    elif ayat == Ayat.objects.last():
+        prev_ayat = Ayat.objects.get(pk=ayat.pk - 1)
+        buttons = (
+            (('Добавить в избранное', f'add_in_favourites({ayat.pk})'),),
+            ( (str(prev_ayat), f'get_ayat({prev_ayat.pk})'),),
+        )
+        return InlineKeyboard(buttons).keyboard
+    else:
+        next_ayat = Ayat.objects.get(pk=ayat.pk + 1)
+        prev_ayat = Ayat.objects.get(pk=ayat.pk - 1)
+        buttons = (
+            (('Добавить в избранное', f'add_in_favourites({ayat.pk})'),),
+            (
+                (str(prev_ayat), f'get_ayat({prev_ayat.pk})'), 
+                (str(next_ayat), f'get_ayat({next_ayat.pk})')
+            ),
+        )
+        return InlineKeyboard(buttons).keyboard
+
+
+def translate_ayat_into_answer(ayat: Ayat) -> List[Answer]:
+    text = f'<b>({ayat.sura}:{ayat.ayat})</b>\n{ayat.arab_text}\n\n{ayat.content}\n\n<i>{ayat.trans}</i>\n\n'
+    return [Answer(text=text, keyboard=get_keyboard_for_ayat(ayat)), Answer(tg_audio_id=ayat.audio.tg_file_id)]
+
+
+def delete_messages_in_mailing(mailing_pk: int):
+    tbot = get_tbot_instance()
+    messages = Mailing.objects.get(pk=mailing_pk).messages.all()
+    for message in messages:
+        tbot.delete_message(message.chat_id, message.message_id)
+
+
+def get_favourite_ayats(chat_id: int):
+    subscriber = Subscriber.objects.get(tg_chat_id=chat_id)
+    ayats = subscriber.favourite_ayats.all()
+    if ayats.count():
+        text = ''
+        for elem in ayats:
+            text += f'{str(elem)}\n'
+        return Answer(text)
+    return Answer('Вы еще не добавили аятов в "Избранное"')
+
+
+def text_message_service(chat_id: int, message_text: str) -> Answer:
+    """Функция обрабатывает все текстовые сообщения"""
+    if 'Подкасты' in message_text:
+        answer = get_podcast_in_answer_type()
+    elif 'Избранное' in message_text:
+        answer = get_favourite_ayats(chat_id)
+    elif ':' in message_text:
+        ayat = get_ayat_by_sura_ayat(message_text)
+        answer = translate_ayat_into_answer(ayat)
+    elif regexp_result := re.search(r'/del\d+', message_text) and chat_id in get_admins_list():
+        mailing_pk = re.search(r'\d+', regexp_result.group(0)).group(0)
+        delete_messages_in_mailing(mailing_pk)
+        answer = Answer('Рассылка удалена')
+    else:
+        raise UnknownMessage(message_text)
+    return answer
