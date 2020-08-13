@@ -1,3 +1,4 @@
+# TODO Здесь много логики, относящейся к контенту
 import re
 from random import choice
 from typing import List, Tuple
@@ -70,7 +71,7 @@ def get_keyboard_for_ayat(ayat: Ayat):
         prev_ayat = Ayat.objects.get(pk=ayat.pk - 1)
         buttons = (
             (('Добавить в избранное', f'add_in_favourites({ayat.pk})'),),
-            ( (str(prev_ayat), f'get_ayat({prev_ayat.pk})'),),
+            ((str(prev_ayat), f'get_ayat({prev_ayat.pk})'),),
         )
         return InlineKeyboard(buttons).keyboard
     else:
@@ -88,7 +89,7 @@ def get_keyboard_for_ayat(ayat: Ayat):
 
 def translate_ayat_into_answer(ayat: Ayat) -> List[Answer]:
     text = f'<b>({ayat.sura}:{ayat.ayat})</b>\n{ayat.arab_text}\n\n{ayat.content}\n\n<i>{ayat.trans}</i>\n\n'
-    return [Answer(text=text, keyboard=get_keyboard_for_ayat(ayat)), Answer(get_audio_answer(ayat.audio))]
+    return [Answer(text=text, keyboard=get_keyboard_for_ayat(ayat)), get_audio_answer(ayat.audio)]
 
 
 def delete_messages_in_mailing(mailing_pk: int):
