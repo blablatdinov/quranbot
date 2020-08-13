@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 from telebot import TeleBot
 
-from bot_init.service import get_admins_list, get_tbot_instance
+from bot_init.service import get_admins_list, get_tbot_instance, _subscriber_unsubscribed
 from bot_init.service import _create_action
 from bot_init.models import Subscriber, SubscriberAction
 from django.test import TestCase
@@ -50,3 +50,16 @@ class GetInstanceForAPITestCase(TestCase):
         res1 = get_tbot_instance().get_me().username
         res2 = TeleBot(os.getenv('BOT_TOKEN')).get_me().username
         self.assertEqual(res1, res2)
+
+
+class SubscriberUnsibscribedTestCase(TestCase):
+
+    def test_ok(self):
+        chat_id = 8439934
+        Subscriber.objects.create(tg_chat_id=chat_id)
+        _subscriber_unsubscribed(chat_id)
+        s = Subscriber.objects.last()
+        action = SubscriberAction.objects.last().action
+        self.assertEqual(s.is_active, False)
+        self.assertEqual(action, 'unsubscribed')
+
