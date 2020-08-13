@@ -11,6 +11,7 @@
 <body>
 {% if request.user %}
 <div id="app">
+<h1>Error</h1>
   <div class="row">
     <div class="col-3">
       <input placeholder='Сура' v-model='suraForGet'>
@@ -22,8 +23,9 @@
           <input
             type="checkbox"
             v-model="elem.isChecked"
+            v-on:click="countContentLength(elem.pk)"
           >
-          [[elem.sura]]: [[elem.ayat]]
+          [[elem.sura]]: [[elem.ayat]] ([[elem.content_length]])
         </li>
       </ul>
     </div>
@@ -43,9 +45,10 @@
     delimiters: ['[[', ']]'],
     el: '#app',
     data: {
-      baseUrl: 'https://quranbot.blablatdinov.ru',
+      //baseUrl: 'https://quranbot.blablatdinov.ru',
+      baseUrl: 'http://localhost:8010',
       content: [],
-      suraForGet: '1',
+      suraForGet: '50',
       ayats: [],
       dayForSend: null
     },
@@ -93,6 +96,20 @@
           this.getContent()
           this.dayForSend++
         })
+      },
+      countContentLength (pk) {
+        count = 0
+        for (let i = 0; i < this.ayats.length; i++) {
+          if (this.ayats[i].pk === pk) {
+            this.ayats[i].isChecked = true
+          }
+        }
+        for (let i = 0; i < this.ayats.length; i++) {
+          if (this.ayats[i].isChecked) {
+            count++
+          }
+        }
+        console.log(count)
       }
     },
     created () {
