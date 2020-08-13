@@ -1,11 +1,15 @@
 import os
+import re
 
 from dotenv import load_dotenv
 from telebot import TeleBot
 
-from bot_init.service import get_admins_list, get_tbot_instance, _subscriber_unsubscribed
+from bot_init.service import get_admins_list, get_tbot_instance, _subscriber_unsubscribed, _not_created_subscriber_service, _created_subscriber_service
+from bot_init.service import *
 from bot_init.service import _create_action
-from bot_init.models import Subscriber, SubscriberAction
+# from bot_init.models import Subscriber, SubscriberAction, AdminMessage
+from bot_init.models import *
+from bot_init.schemas import Answer
 from django.test import TestCase
 
 
@@ -52,7 +56,7 @@ class GetInstanceForAPITestCase(TestCase):
         self.assertEqual(res1, res2)
 
 
-class SubscriberUnsibscribedTestCase(TestCase):
+class SubscriberUnsubscribedTestCase(TestCase):
 
     def test_ok(self):
         chat_id = 8439934
@@ -62,4 +66,39 @@ class SubscriberUnsibscribedTestCase(TestCase):
         action = SubscriberAction.objects.last().action
         self.assertEqual(s.is_active, False)
         self.assertEqual(action, 'unsubscribed')
+
+
+class NotNewSubscriberServiceTestCase(TestCase):
+    
+    def test_ok(self):
+        chat_id = 8439934
+        s = Subscriber.objects.create(is_active=False, tg_chat_id=chat_id)
+        answer = _not_created_subscriber_service(s)
+        self.assertEqual(True, s.is_active)
+        self.assertEqual(True, isinstance(answer, Answer))
+        self.assertEqual(True, bool(re.search(r'Рады видеть вас снова, вы продолжите с дня \d+', answer.text)))
+
+
+class NewSubscriberServiceTestCase(TestCase):
+    
+    def test_ok(self):
+        chat_id = 8439934
+        start_message_text = 'Hello'
+        AdminMessage.objects.create(key='start', text=start_message_text, title=start_message_text)
+        m = MorningContent.objects.create(day=1)
+        Ayat.objects.create(
+            content='asdf',
+            arab_text='asdf',
+            trans='asdf',
+            sura=5,
+            ayat='3',
+            html='<html></html>',
+            one_day_content=m
+        )
+        s = Subscriber.objects.create(tg_chat_id=chat_id)
+        answer = _created_subscriber_service(s)
+        self.assertEqual(True, s.is_active)
+        self.assertEqual(True, isinstance(answer, list))
+        self.assertEqual(2, len(answer))
+        self.assertEqual(start_message_text, answer[0].text)
 
