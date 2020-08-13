@@ -2,13 +2,22 @@ import re
 from random import choice
 from typing import List, Tuple
 
+from django.conf import settings
+
 from bot_init.exceptions import AyatDoesNotExists, SuraDoesNotExists, UnknownMessage
 from bot_init.markup import InlineKeyboard
 from bot_init.models import Mailing, Subscriber
 from bot_init.schemas import Answer
 from bot_init.service import get_tbot_instance, get_admins_list
-from content.models import Podcast, Ayat
+from content.models import Podcast, Ayat, AudioFile
 from prayer.service import get_unread_prayers
+
+
+def get_audio_answer(audio: AudioFile) -> Answer:
+    if file_id := audio.tg_file_id and not settings.DEBUG:
+        # Если включен режим отладки, и это не основной бот, file_id работать не будут
+        return Answer(tg_audio_id=file_id)
+    return Answer(audio.audio_link)
 
 
 def get_random_podcast() -> Podcast:
@@ -20,9 +29,7 @@ def get_random_podcast() -> Podcast:
 def get_podcast_in_answer_type() -> Answer:
     """Получаем подкаст и упаковываем его для отправки пользователю"""
     podcast = get_random_podcast()
-    if file_id := podcast.audio.tg_file_id:
-        return Answer(tg_audio_id=file_id)
-    return Answer(podcast.audio.audio_link)
+    answer = get_audio_answer(podcast.audio)
 
 
 def get_ayat_by_sura_ayat(text: str) -> Ayat:
@@ -81,7 +88,7 @@ def get_keyboard_for_ayat(ayat: Ayat):
 
 def translate_ayat_into_answer(ayat: Ayat) -> List[Answer]:
     text = f'<b>({ayat.sura}:{ayat.ayat})</b>\n{ayat.arab_text}\n\n{ayat.content}\n\n<i>{ayat.trans}</i>\n\n'
-    return [Answer(text=text, keyboard=get_keyboard_for_ayat(ayat)), Answer(tg_audio_id=ayat.audio.tg_file_id)]
+    return [Answer(text=text, keyboard=get_keyboard_for_ayat(ayat)), Answer(get_audio_answer(ayat.audio))]
 
 
 def delete_messages_in_mailing(mailing_pk: int):
