@@ -39,6 +39,7 @@ class CreateActionTestCase(TestCase):
     def test_unsubscribed(self):
         subscriber = Subscriber.objects.create(tg_chat_id=2123)
         action_name = 'unsubscribed'
+        _create_action(subscriber, action_name)
         res1 = SubscriberAction.objects.last()
         res2 = SubscriberAction.objects.create(subscriber=subscriber, action=action_name)
         self.assertEqual(res1.action, res2.action)
@@ -47,6 +48,7 @@ class CreateActionTestCase(TestCase):
     def test_reactivate(self):
         subscriber = Subscriber.objects.create(tg_chat_id=2123)
         action_name = 'reactivate'
+        _create_action(subscriber, action_name)
         res1 = SubscriberAction.objects.last()
         res2 = SubscriberAction.objects.create(subscriber=subscriber, action=action_name)
         self.assertEqual(res1.action, res2.action)
