@@ -1,5 +1,6 @@
 import os
 import re
+import random
 
 from dotenv import load_dotenv
 from telebot import TeleBot
@@ -102,3 +103,19 @@ class NewSubscriberServiceTestCase(TestCase):
         self.assertEqual(2, len(answer))
         self.assertEqual(start_message_text, answer[0].text)
 
+
+# class TestCase(TestCase):
+
+    # def test_ok(self):
+        # ...
+
+
+class CountActiveUsersTestCase(TestCase):
+
+    def test_ok(self):
+        count = 14
+        for i in range(count):
+            chat_id = random.randint(1000, 9999)
+            Subscriber.objects.create(tg_chat_id=chat_id)
+        count_from_func = count_active_users()
+        self.assertEqual(count, count_from_func)
