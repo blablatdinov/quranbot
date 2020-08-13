@@ -1,4 +1,3 @@
-# TODO создать папку для бизнес логики
 import re
 from typing import List
 
@@ -6,7 +5,7 @@ from telebot.types import InlineKeyboardMarkup
 
 from bot_init.markup import InlineKeyboard
 from bot_init.schemas import Answer
-from bot_init.text_message_service import translate_ayat_into_answer
+from bot_init.services.text_message_service import translate_ayat_into_answer
 from bot_init.models import Subscriber
 from bot_init.service import get_tbot_instance
 from content.models import Ayat
