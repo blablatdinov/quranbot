@@ -23,7 +23,15 @@ def create_content(request):
 
 def get_ayats(request):
     sura_num = request.GET.get('sura_num')
-    ayats = list(Ayat.objects.filter(one_day_content__isnull=True, sura=sura_num).order_by('pk').values('pk', 'sura', 'ayat'))
+    ayats = [
+        {
+            'pk': ayat.pk,
+            'sura': ayat.sura,
+            'ayat': ayat.ayat,
+            'content_length': len(ayat.content)
+        }
+        for ayat in Ayat.objects.filter(one_day_content__isnull=True, sura=sura_num).order_by('pk')
+    ]
     return JsonResponse(ayats, safe=False)
 
 
@@ -34,5 +42,7 @@ def send_ayats(request):
     ayats = [Ayat.objects.get(pk=x) for x in data.get('ayats')]
     for ayat in ayats:
         ayat.one_day_content = morning_content
+        if len(morning_content.content_for_day()) > 4095:
+            return JsonResponse({'ok': False, 'error': 'too many symbols in content for day'})
         ayat.save()
     return JsonResponse({'ok': True})
