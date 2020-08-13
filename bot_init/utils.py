@@ -4,7 +4,7 @@ import json
 from datetime import datetime
 from django.utils.timezone import make_aware
 from bot_init.models import Message, CallbackData
-from config.settings import TG_BOT
+from django.conf import settings
 
 
 def save_message(msg):

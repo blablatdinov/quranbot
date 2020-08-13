@@ -8,16 +8,15 @@ from googleapiclient.http import MediaIoBaseDownload, MediaFileUpload
 from googleapiclient.discovery import build
 from progressbar import progressbar as pbar
 
-from config.settings import BASE_DIR
+from django.conf import settings
 from bot_init.models import Subscriber, SubscriberAction, Message, AdminMessage, Admin
 from bot_init.utils import save_message
 from bot_init.schemas import Answer, SUBSCRIBER_ACTIONS
-from config.settings import TG_BOT
 from content.models import MorningContent
 
 
 def get_admins_list():
-    return TG_BOT.admins
+    return settings.TG_BOT.admins
 
 
 def _create_action(subscriber: Subscriber, action: str):
@@ -27,7 +26,7 @@ def _create_action(subscriber: Subscriber, action: str):
 
 def get_tbot_instance() -> TeleBot:
     """Получаем экземпляр класса TeleBot для удобной работы с API"""
-    return TeleBot(TG_BOT.token)
+    return TeleBot(settings.TG_BOT.token)
 
 
 def _subscriber_unsubscribed(chat_id: int):
@@ -83,7 +82,7 @@ def send_answer(answer, chat_id) -> Message:
 def send_message_to_admin(message_text: str) -> Message:
     """Отправляем сообщение админу"""
     answer = Answer(message_text)
-    admins_tg_chat_ids = TG_BOT.admins + [admin.subscriber.tg_chat_id for admin in Admin.objects.all()]
+    admins_tg_chat_ids = settings.TG_BOT.admins + [admin.subscriber.tg_chat_id for admin in Admin.objects.all()]
     for admin_tg_chat_id in admins_tg_chat_ids:
         message_instance = send_answer(answer, admin_tg_chat_id)
     return message_instance
@@ -125,7 +124,7 @@ def registration_subscriber(chat_id: int) -> Answer:
     return answer
 
 
-def update_webhook(host=f'{TG_BOT.webhook_host}/{TG_BOT.token}'):
+def update_webhook(host=f'{settings.TG_BOT.webhook_host}/{settings.TG_BOT.token}'):
     """Обновляем webhook"""
     tbot = get_tbot_instance()
     tbot.remove_webhook()
@@ -166,16 +165,16 @@ def count_active_users():
 def upload_database_dump():
     """Функция снимает дамп базы данных и загружет его на облако"""
     SCOPES = ['https://www.googleapis.com/auth/drive']
-    SERVICE_ACCOUNT_FILE = BASE_DIR + '/deploy/quranbot-keys.json'
+    SERVICE_ACCOUNT_FILE = settings.BASE_DIR + '/deploy/quranbot-keys.json'
     credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
     service = build('drive', 'v3', credentials=credentials)
     folder_id = '1G_NYTKUHkQixdElU1hOCg4PR2c66zJPB'
 
-    command = f'/var/lib/postgresql/bin/pg_dump -U qbot qbot_db -h localhost | gzip -c --best > {BASE_DIR}/deploy/qbot_db.sql.gz'
+    command = f'/var/lib/postgresql/bin/pg_dump -U qbot qbot_db -h localhost | gzip -c --best > {settings.BASE_DIR}/deploy/qbot_db.sql.gz'
     os.system(command)
 
     name = 'qbot_db.sql.gz'
-    file_path = BASE_DIR + '/deploy/qbot_db.sql.gz'
+    file_path = settings.BASE_DIR + '/deploy/qbot_db.sql.gz'
     file_metadata = {
             'name': name,
             'parents': [folder_id]
