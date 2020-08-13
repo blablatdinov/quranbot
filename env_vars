@@ -1,3 +1,10 @@
-SECRET_KEY=
-BOT_TOKEN=
-HOST=
+export BOT_TOKEN=
+export HOST=
+export ADMINS=
+export SECRET_KEY=
+
+# Опционально, если при разработке БД Postgres
+
+export DB_NAME=
+export DB_USERNAME=
+export DB_PASSWORD=
