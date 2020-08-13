@@ -30,23 +30,29 @@ class CreateActionTestCase(TestCase):
     def test_subscribed(self):
         subscriber = Subscriber.objects.create(tg_chat_id=2123)
         action_name = 'subscribed'
-        res1 = SubscriberAction.objects.create(subscriber=subscriber, action=action_name)
-        res2 = SubscriberAction.objects.last()
-        self.assertEqual(res1, res2)
+        _create_action(subscriber, action_name)
+        res1 = SubscriberAction.objects.last()
+        res2 = SubscriberAction.objects.create(subscriber=subscriber, action=action_name)
+        self.assertEqual(res1.action, res2.action)
+        self.assertEqual(res1.subscriber, res2.subscriber)
 
     def test_unsubscribed(self):
         subscriber = Subscriber.objects.create(tg_chat_id=2123)
         action_name = 'unsubscribed'
-        res1 = SubscriberAction.objects.create(subscriber=subscriber, action=action_name)
-        res2 = SubscriberAction.objects.last()
-        self.assertEqual(res1, res2)
+        _create_action(subscriber, action_name)
+        res1 = SubscriberAction.objects.last()
+        res2 = SubscriberAction.objects.create(subscriber=subscriber, action=action_name)
+        self.assertEqual(res1.action, res2.action)
+        self.assertEqual(res1.subscriber, res2.subscriber)
 
     def test_reactivate(self):
         subscriber = Subscriber.objects.create(tg_chat_id=2123)
         action_name = 'reactivate'
-        res1 = SubscriberAction.objects.create(subscriber=subscriber, action=action_name)
-        res2 = SubscriberAction.objects.last()
-        self.assertEqual(res1, res2)
+        _create_action(subscriber, action_name)
+        res1 = SubscriberAction.objects.last()
+        res2 = SubscriberAction.objects.create(subscriber=subscriber, action=action_name)
+        self.assertEqual(res1.action, res2.action)
+        self.assertEqual(res1.subscriber, res2.subscriber)
 
 
 class GetInstanceForAPITestCase(TestCase):

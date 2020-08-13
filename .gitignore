@@ -3,8 +3,10 @@
 static/
 venv/
 logs/
+htmlcov/
 *.json
 db.sqlite3
 *.sql*
 celerybeat*
 .env
+.coverage
