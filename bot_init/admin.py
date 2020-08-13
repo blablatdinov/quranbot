@@ -20,7 +20,6 @@ class MessageAdmin(admin.ModelAdmin):
         return '-'
 
     def get_mailing_or_source(self, obj):
-        print(obj.mailing)
         if mailing := obj.mailing:
             return f'Mailing ({mailing.pk})'
         return str(obj)
