@@ -1,9 +1,14 @@
+import os
 from time import sleep
 
 from telebot import TeleBot
 from telebot.apihelper import ApiException
-from progressbar import progressbar
+from google.oauth2 import service_account
+from googleapiclient.http import MediaIoBaseDownload, MediaFileUpload
+from googleapiclient.discovery import build
+from progressbar import progressbar as pbar
 
+from config.settings import BASE_DIR
 from bot_init.models import Subscriber, SubscriberAction, Message, AdminMessage, Admin
 from bot_init.utils import save_message
 from bot_init.schemas import Answer, SUBSCRIBER_ACTIONS
@@ -128,18 +133,54 @@ def update_webhook(host=f'{TG_BOT.webhook_host}/{TG_BOT.token}'):
     web = tbot.set_webhook(host)
 
 
-def count_active_users():
-    count = 0
-    for sub in progressbar(Subscriber.objects.all()):
-        try:
-            get_tbot_instance().send_chat_action(sub.tg_chat_id, 'typing')
+def get_subscriber_by_chat_id(chat_id: int):
+    try:
+        subscriber = Subscriber.objects.get(tg_chat_id=chat_id)
+        return subscriber
+    except Subscriber.DoesNotExist:
+        pass  # TODO что будем делать в этом случае
+
+
+
+def check_user_status_by_typing(chat_id: int):
+    sub = get_subscriber_by_chat_id(chat_id)
+    try:
+        get_tbot_instance().send_chat_action(sub.tg_chat_id, 'typing')
+        if not sub.is_active:
             sub.is_active = True
             sub.save(update_fields=['is_active'])
+        return True
+    except Exception as e:
+        if ('bot was blocked by the user' in str(e) or 'user is deactivated' in str(e)) and sub.is_active:
+            _subscriber_unsubscribed(sub.tg_chat_id)
+
+
+def count_active_users():
+    count = 0
+    for sub in pbar(Subscriber.objects.all()):
+        if check_user_status_by_typing(sub.tg_chat_id):
             count += 1
-        except Exception as e:
-            if ('bot was blocked by the user' in str(e) or 'user is deactivated' in str(e)):
-                if sub.is_active:
-                    _subscriber_unsubscribed(sub.tg_chat_id)
-            else:
-                print(e)
     return f'Count of active users - {count}'
+
+
+def upload_database_dump():
+    """Функция снимает дамп базы данных и загружет его на облако"""
+    SCOPES = ['https://www.googleapis.com/auth/drive']
+    SERVICE_ACCOUNT_FILE = BASE_DIR + '/deploy/quranbot-keys.json'
+    credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+    service = build('drive', 'v3', credentials=credentials)
+    folder_id = '1G_NYTKUHkQixdElU1hOCg4PR2c66zJPB'
+
+    command = f'/var/lib/postgresql/bin/pg_dump -U qbot qbot_db -h localhost | gzip -c --best > {BASE_DIR}/deploy/qbot_db.sql.gz'
+    os.system(command)
+
+    name = 'qbot_db.sql.gz'
+    file_path = BASE_DIR + '/deploy/qbot_db.sql.gz'
+    file_metadata = {
+            'name': name,
+            'parents': [folder_id]
+    }
+    media = MediaFileUpload(file_path, resumable=True)
+    r = service.files().create(body=file_metadata, media_body=media, fields='id').execute()
+    print('Dump uploaded succesful')
+

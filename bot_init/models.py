@@ -25,12 +25,15 @@ class AdminMessage(models.Model):
 
 class Subscriber(models.Model):
     """ Модель подписчика бота """
-    tg_chat_id = models.IntegerField(verbose_name="Идентификатор подписчика")
+    tg_chat_id = models.IntegerField(verbose_name="Идентификатор подписчика", unique=True)
     is_active = models.BooleanField(default=True, verbose_name="Подписан ли польователь на бота")
     comment = models.TextField(blank=True, null=True, verbose_name="Комментарий к подписчику")
     day = models.IntegerField(default=2, verbose_name="День, для рассылки утреннего контента")
     favourite_ayats = models.ManyToManyField(
-        Ayat, related_name='favorit_ayats', blank=True, null=True, verbose_name='Избранные аяты'
+        Ayat, related_name='favorit_ayats', blank=True, verbose_name='Избранные аяты'
+    )
+    city = models.ForeignKey(
+        'prayer.City', verbose_name='Город для рассылки намазов', on_delete=models.PROTECT, blank=True, null=True
     )
 
     def __str__(self):
@@ -95,3 +98,18 @@ class SubscriberAction(models.Model):  # TODO подумать над имене
         verbose_name = 'Действия пользователя'
         verbose_name_plural = 'Действия пользователей'
 
+
+class CallbackData(models.Model):
+    """Модель для сохранения данных, с inline кнопок"""
+    date = models.DateTimeField(null=True, verbose_name="Дата отправки")
+    call_id = models.CharField(max_length=500, verbose_name="Идентификатор данных")
+    chat_id = models.IntegerField(verbose_name="Идентификатор чата из которого пришли данные")
+    text = models.TextField(null=True, verbose_name="Текст сообщения")
+    json = models.TextField()
+
+    def __str__(self):
+        return f'{self.chat_id} {self.text}'
+
+    class Meta:
+        verbose_name = "Данные с inline кнопок"
+        verbose_name_plural = "Данные с inline кнопок"
