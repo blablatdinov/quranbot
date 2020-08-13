@@ -1,8 +1,9 @@
 import os
 
 from dotenv import load_dotenv
+from telebot import TeleBot
 
-from bot_init.service import get_admins_list
+from bot_init.service import get_admins_list, get_tbot_instance
 from bot_init.service import _create_action
 from bot_init.models import Subscriber, SubscriberAction
 from django.test import TestCase
@@ -42,3 +43,10 @@ class CreateActionTestCase(TestCase):
         res2 = SubscriberAction.objects.last()
         self.assertEqual(res1, res2)
 
+
+class GetInstanceForAPITestCase(TestCase):
+
+    def test_ok(self):
+        res1 = get_tbot_instance().get_me().username
+        res2 = TeleBot(os.getenv('BOT_TOKEN')).get_me().username
+        self.assertEqual(res1, res2)
