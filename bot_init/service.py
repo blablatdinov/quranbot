@@ -15,6 +15,10 @@ from bot_init.schemas import Answer, SUBSCRIBER_ACTIONS
 from content.models import MorningContent
 
 
+def delete_message_in_tg(chat_id: int, message_id: int) -> bool:
+    get_tbot_instance().delete_message(chat_id, message_id)
+
+
 def get_admins_list():
     return settings.TG_BOT.admins
 
