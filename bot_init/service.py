@@ -159,7 +159,7 @@ def count_active_users():
     for sub in pbar(Subscriber.objects.all()):
         if check_user_status_by_typing(sub.tg_chat_id):
             count += 1
-    return f'Count of active users - {count}'
+    return count
 
 
 def upload_database_dump():
