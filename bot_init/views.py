@@ -3,11 +3,11 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import telebot
 
-from bot_init.handle_service import handle_query_service
-from bot_init.inline_search_service import inline_query_service
 from bot_init.service import registration_subscriber, send_answer, get_tbot_instance
+from bot_init.services.inline_search_service import inline_query_service
+from bot_init.services.text_message_service import text_message_service
+from bot_init.services.handle_service import handle_query_service
 from bot_init.schemas import Answer
-from bot_init.text_message_service import text_message_service
 from bot_init.utils import save_message, stop_retry, save_callback_data
 from prayer.service import set_city_to_subscriber_by_location
 
