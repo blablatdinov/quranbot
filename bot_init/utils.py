@@ -31,7 +31,7 @@ def save_callback_data(call) -> CallbackData:
     chat_id = str(call.from_user.id)
     call_data = call.data
     json_ = str(call)
-    json_ = re.sub(r'<telebot\.types\.User[^>]+>', f"'{TG_BOT.name}'", json_)
+    json_ = re.sub(r'<telebot\.types\.User[^>]+>', f"'{settings.TG_BOT.name}'", json_)
     json_ = re.sub(r'<telebot\.types\.Chat[^>]+>', str(chat_id), json_)
     json_ = re.sub(r'<telebot\.types\.[^>]+>', 'None', json_)
     try:
