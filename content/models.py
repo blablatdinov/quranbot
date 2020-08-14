@@ -38,11 +38,11 @@ class AudioFile(models.Model):
 class Ayat(models.Model):
     """Аят священного Корана"""
     additional_content = models.TextField(blank=True, verbose_name='Допопнительный контент')
-    content = models.TextField(verbose_name='Текст аята')
-    arab_text = models.TextField(verbose_name='Арабский текст')
-    trans = models.TextField(verbose_name='Транслитерация')
-    sura = models.IntegerField(verbose_name='Номер суры')
-    ayat = models.CharField(max_length=16, verbose_name='Номер аята')
+    content = models.TextField(verbose_name='Текст аята', blank=True)
+    arab_text = models.TextField(verbose_name='Арабский текст', blank=True)
+    trans = models.TextField(verbose_name='Транслитерация', blank=True)
+    sura = models.IntegerField(verbose_name='Номер суры', blank=True)
+    ayat = models.CharField(max_length=16, verbose_name='Номер аята', blank=True)
     html = models.TextField(verbose_name='Спарсенный HTML текст')
     audio = models.OneToOneField(AudioFile, on_delete=models.PROTECT, verbose_name='Аудио файл', blank=True, null=True)
     one_day_content = models.ForeignKey(
