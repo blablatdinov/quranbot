@@ -82,7 +82,7 @@ class Message(models.Model):
         verbose_name_plural = "Сообщения"
 
 
-class SubscriberAction(models.Model):  # TODO подумать над именем класса
+class SubscriberAction(models.Model):
     """
     Действие подписчика
 
@@ -92,9 +92,9 @@ class SubscriberAction(models.Model):  # TODO подумать над имене
      - Пользователь реактивировался
 
     """
-    subscriber = models.ForeignKey(Subscriber, on_delete=models.CASCADE)
-    date_time = models.DateTimeField(auto_now_add=True)
-    action = models.CharField(max_length=16, choices=SUBSCRIBER_ACTIONS)
+    subscriber = models.ForeignKey(Subscriber, on_delete=models.CASCADE, verbose_name='Подписчик')
+    date_time = models.DateTimeField(auto_now_add=True, verbose_name='Дата/время')
+    action = models.CharField(max_length=16, choices=SUBSCRIBER_ACTIONS, verbose_name='Действие')
 
     def __str__(self):
         return f'{self.subscriber} {self.action}'
