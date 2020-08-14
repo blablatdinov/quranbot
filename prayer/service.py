@@ -43,7 +43,7 @@ def set_city_to_subscriber_by_location(location: tuple, chat_id: int) -> Answer:
     keyboard = InlineKeyboardMarkup()
     button = InlineKeyboardButton("Поиск города", switch_inline_query_current_chat='')
     keyboard.add(button)
-    return Answer('Город не найден', keyboard=keyboard)
+    return Answer('Город не найден,\nвоспользуйтесь поиском', keyboard=keyboard)
 
 
 def get_prayer_time(city: City) -> QuerySet:
