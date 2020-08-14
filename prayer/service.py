@@ -9,7 +9,7 @@ from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 from bot_init.markup import InlineKeyboard
 from bot_init.models import Subscriber
 from bot_init.schemas import Answer
-from bot_init.service import send_answer
+from bot_init.service import send_answer, get_subscriber_by_chat_id
 from prayer.models import PrayerAtUser, PrayerAtUserGroup, City, Prayer
 from prayer.schemas import PRAYER_NAMES
 
@@ -21,6 +21,13 @@ def get_address(x: str, y: str):
     return location.address
 
 
+def set_city_to_subscriber(city: City, chat_id: int) -> Answer:
+    subscriber = get_subscriber_by_chat_id(chat_id)
+    subscriber.city = city
+    subscriber.save(update_fields=['city'])
+    return Answer(f'Вам будет приходить время намаза для г. {city.name}')
+
+
 def set_city_to_subscriber_by_location(location: tuple, chat_id: int) -> Answer:
     """Ищем город и если не находим, то предлагаем пользователю найти в поиске"""
     # TODO создать ф-ю для доставания подписчика с try, except. Побить функцию
@@ -30,9 +37,7 @@ def set_city_to_subscriber_by_location(location: tuple, chat_id: int) -> Answer:
     address_split = address.replace(', ', ' ').split(' ')
     for elem in address_split:
         if city := City.objects.filter(name__contains=elem).first():
-            subscriber.city = city
-            subscriber.save(update_fields=['city'])
-            return Answer(f'Вам будет приходить время намаза для г. {city.name}')
+            answer = set_city_to_subscriber(city, subscriber.tg_chat_id)
     print(location, address)  # TODO логгировать
 
     keyboard = InlineKeyboardMarkup()
