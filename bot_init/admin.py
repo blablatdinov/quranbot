@@ -42,8 +42,18 @@ class SubscriberActionAdmin(admin.ModelAdmin):
     list_display = (
         'subscriber',
         'date_time',
-        'action'
+        'get_colorize_action'
     )
+
+    def get_colorize_action(self, obj):
+        action = obj.action
+        if obj.action == 'subscribed':
+            color = 'green'
+        elif obj.action == 'unsubscribed':
+            color = 'red'
+        else:
+            color = 'blue'
+        return mark_safe(f"<span style='color: {color}'>{obj.get_action_display()}</span>")
 
 
 admin.site.register(Mailing)
