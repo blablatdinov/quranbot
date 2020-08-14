@@ -16,14 +16,15 @@ class MessageAdmin(admin.ModelAdmin):
     def get_message_text(self, obj):
         if obj.text is None:
             json_ = json.loads(obj.json)
-            if audio := json_['audio']:
+            if audio := json_.get('audio'):
                 return mark_safe('<b>Аудио</b> - ' + audio['title'])
+            elif location := json_['location']:
+                return mark_safe(f"<b>Локация</b> - {location['latitude']}, {location['longitude']}")
         if isinstance(obj.text, str):
             return obj.text[:50] + ('...' if len(obj.text) >= 50 else '')
         return '-'
 
     def get_mailing_or_source(self, obj):
-        print(obj.mailing)
         if mailing := obj.mailing:
             return f'Mailing ({mailing.pk})'
         return str(obj)
