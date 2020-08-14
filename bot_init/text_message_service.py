@@ -8,7 +8,8 @@ from bot_init.models import Mailing, Subscriber
 from bot_init.schemas import Answer
 from bot_init.service import get_tbot_instance, get_admins_list
 from content.models import Podcast, Ayat
-from prayer.service import get_unread_prayers
+from prayer.service import get_unread_prayers, set_city_to_subscriber
+from prayer.models import City
 
 
 def get_random_podcast() -> Podcast:
@@ -117,6 +118,8 @@ def text_message_service(chat_id: int, message_text: str) -> Answer:
         answer = Answer('Рассылка удалена')
     elif '/prayer' in message_text:
         return get_unread_prayers(chat_id)
+    elif city := City.objects.filter(name=message_text).first():
+        answer = set_city_to_subscriber(city, chat_id)
     else:
         raise UnknownMessage(message_text)
     return answer
