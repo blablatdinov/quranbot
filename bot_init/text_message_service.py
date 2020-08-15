@@ -1,4 +1,5 @@
-# TODO Здесь много логики, относящейся к контенту import re
+# TODO Здесь много логики, относящейся к контенту
+import re
 from random import choice
 from typing import List, Tuple
 
