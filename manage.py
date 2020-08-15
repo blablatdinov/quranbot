@@ -3,6 +3,11 @@
 import os
 import sys
 
+from dotenv import load_dotenv
+
+
+load_dotenv('.env')
+
 
 def main():
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
