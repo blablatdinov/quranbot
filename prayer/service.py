@@ -78,9 +78,7 @@ def send_prayer_time() -> None:
         text = f'Время намаза для г. Казань ({(datetime.today() + timedelta(days=1)).strftime("%d.%m.%Y")}) \n\n'
         for i in range(6):
             text += f'{prayer_times[i].get_name_display()}: {prayer_times[i].time.strftime("%H:%M")}\n'
-        buttons = get_buttons(subscriber, prayer_times.exclude(name='sunrise'))
-        keyboard = InlineKeyboard(buttons).keyboard
-        send_answer(Answer(text, keyboard=keyboard), subscriber.tg_chat_id)
+        send_answer(Answer(text), subscriber.tg_chat_id)
 
 
 def get_unread_prayers_by_chat_id(chat_id: int) -> QuerySet:
