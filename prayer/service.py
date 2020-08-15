@@ -119,3 +119,7 @@ def get_unread_prayers(chat_id) -> Answer:
         prayer_type_group = unread_prayers.filter(prayer__name=PRAYER_NAMES[i][0])
         text += f'{PRAYER_NAMES[i][1]}: {prayer_type_group.count()}\n'
     return Answer(text, keyboard=get_keyboard_for_unread_prayers(chat_id))
+
+
+def get_prayer_time_or_no(chat_id: int) -> Answer:
+    ...
