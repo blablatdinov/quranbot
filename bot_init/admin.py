@@ -23,7 +23,6 @@ class MessageAdmin(admin.ModelAdmin):
         return '-'
 
     def get_mailing_or_source(self, obj):
-        print(obj.mailing)
         if mailing := obj.mailing:
             return f'Mailing ({mailing.pk})'
         return str(obj)
@@ -63,3 +62,6 @@ class SubscriberActionAdmin(admin.ModelAdmin):
 admin.site.register(Mailing)
 admin.site.register(AdminMessage)
 admin.site.register(CallbackData)
+
+admin.site.site_title = 'Административная панель Quran_365_bot'
+admin.site.site_header = 'Административная панель Quran_365_bot'

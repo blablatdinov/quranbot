@@ -1,7 +1,8 @@
 export BOT_TOKEN=
+export SECRET_KEY=
 export HOST=
 export ADMINS=
-export SECRET_KEY=
+export DEBUG=
 
 # Опционально, если при разработке БД Postgres
 

@@ -4,6 +4,7 @@ static/
 venv/
 htmlcov/
 logs/
+htmlcov/
 *.json
 db.sqlite3
 *.sql*
