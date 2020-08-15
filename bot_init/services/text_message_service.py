@@ -16,7 +16,7 @@ from prayer.models import City
 
 
 def get_audio_answer(audio: AudioFile) -> Answer:
-    if file_id := audio.tg_file_id and not settings.DEBUG:
+    if (file_id := audio.tg_file_id) and not settings.DEBUG:
         # Если включен режим отладки, и это не основной бот, file_id работать не будут
         return Answer(tg_audio_id=file_id)
     return Answer(audio.audio_link)
@@ -32,6 +32,7 @@ def get_podcast_in_answer_type() -> Answer:
     """Получаем подкаст и упаковываем его для отправки пользователю"""
     podcast = get_random_podcast()
     answer = get_audio_answer(podcast.audio)
+    return answer
 
 
 def get_ayat_by_sura_ayat(text: str) -> Ayat:
@@ -128,6 +129,8 @@ def text_message_service(chat_id: int, message_text: str) -> Answer:
         return get_unread_prayers(chat_id)
     elif city := City.objects.filter(name=message_text).first():
         answer = set_city_to_subscriber(city, chat_id)
+    elif 'Время намаза' in message_text:
+        answer = get_prayer_time_or_no(chat_id)
     else:
         raise UnknownMessage(message_text)
     return answer
