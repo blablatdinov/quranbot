@@ -1,5 +1,4 @@
-# TODO Здесь много логики, относящейся к контенту
-import re
+# TODO Здесь много логики, относящейся к контенту import re
 from random import choice
 from typing import List, Tuple
 
@@ -18,7 +17,7 @@ from prayer.service import get_unread_prayers, get_prayer_time_or_no
 
 
 def get_audio_answer(audio: AudioFile) -> Answer:
-    if file_id := audio.tg_file_id and not settings.DEBUG:
+    if (file_id := audio.tg_file_id) and not settings.DEBUG:
         # Если включен режим отладки, и это не основной бот, file_id работать не будут
         return Answer(tg_audio_id=file_id)
     return Answer(audio.audio_link)
@@ -34,6 +33,7 @@ def get_podcast_in_answer_type() -> Answer:
     """Получаем подкаст и упаковываем его для отправки пользователю"""
     podcast = get_random_podcast()
     answer = get_audio_answer(podcast.audio)
+    return answer
 
 
 def get_ayat_by_sura_ayat(text: str) -> Ayat:
