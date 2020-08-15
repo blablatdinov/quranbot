@@ -28,6 +28,15 @@ def set_city_to_subscriber(city: City, chat_id: int) -> Answer:
     return Answer(f'Вам будет приходить время намаза для г. {city.name}')
 
 
+def get_city_not_found_answer(text: str = None) -> Answer:
+    if text is None:
+        text = 'Город не найден,\nвоспользуйтесь поиском'
+    keyboard = InlineKeyboardMarkup()
+    button = InlineKeyboardButton("Поиск города", switch_inline_query_current_chat='')
+    keyboard.add(button)
+    return Answer(text, keyboard=keyboard)
+
+
 def set_city_to_subscriber_by_location(location: tuple, chat_id: int) -> Answer:
     """Ищем город и если не находим, то предлагаем пользователю найти в поиске"""
     # TODO создать ф-ю для доставания подписчика с try, except. Побить функцию
@@ -39,11 +48,7 @@ def set_city_to_subscriber_by_location(location: tuple, chat_id: int) -> Answer:
         if city := City.objects.filter(name__contains=elem).first():
             answer = set_city_to_subscriber(city, subscriber.tg_chat_id)
     print(location, address)  # TODO логгировать
-
-    keyboard = InlineKeyboardMarkup()
-    button = InlineKeyboardButton("Поиск города", switch_inline_query_current_chat='')
-    keyboard.add(button)
-    return Answer('Город не найден,\nвоспользуйтесь поиском', keyboard=keyboard)
+    return get_city_not_found_answer()
 
 
 def get_prayer_time(city: City, date: datetime = datetime.today() + timedelta(days=1)) -> QuerySet:
@@ -75,15 +80,20 @@ def get_buttons(
     return buttons
 
 
+def get_text_prayer_times(prayer_times: QuerySet, city_name: str, date: datetime) -> str:
+    res = f'Время намаза для г. {city_name} ({date.strftime("%d.%m.%Y")}) \n\n'
+    for i in range(6):
+        res += f'{prayer_times[i].get_name_display()}: {prayer_times[i].time.strftime("%H:%M")}\n'
+    return res
+
+
 def send_prayer_time(date: datetime = None) -> None:
     """Рассылаем время намаза с кнопками"""
     if date is None:
         date = (datetime.today() + timedelta(days=1))
     for subscriber in Subscriber.objects.filter(city__isnull=False):
         prayer_times = get_prayer_time(subscriber.city, date)
-        text = f'Время намаза для г. Казань ({date.strftime("%d.%m.%Y")}) \n\n'
-        for i in range(6):
-            text += f'{prayer_times[i].get_name_display()}: {prayer_times[i].time.strftime("%H:%M")}\n'
+        text = get_text_prayer_times(prayer_times, subscriber.city.name, date)
         send_answer(Answer(text), subscriber.tg_chat_id)
 
 
@@ -123,4 +133,12 @@ def get_unread_prayers(chat_id) -> Answer:
 
 
 def get_prayer_time_or_no(chat_id: int) -> Answer:
-    ...
+    subscriber = get_subscriber_by_chat_id(chat_id)
+    if subscriber.city is None:
+        return get_city_not_found_answer(text='Вы не указали город, отправьте местоположение или воспользуйтесь поиском')
+    today = datetime.now()
+    prayers = get_prayer_time(subscriber.city, today)
+    text = get_text_prayer_times(prayers, subscriber.city.name, today)
+    answer = Answer(text)
+    return answer
+

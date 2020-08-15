@@ -14,7 +14,7 @@ from content.models import Podcast, Ayat
 from prayer.service import get_unread_prayers, set_city_to_subscriber
 from prayer.models import City
 from content.models import Podcast, Ayat, AudioFile
-from prayer.service import get_unread_prayers
+from prayer.service import get_unread_prayers, get_prayer_time_or_no
 
 
 def get_audio_answer(audio: AudioFile) -> Answer:
