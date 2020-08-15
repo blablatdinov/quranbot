@@ -10,11 +10,7 @@ load_dotenv('.env')
 
 
 def main():
-    if os.getenv('DEBUG') == 'true':
-        using_settings = 'config.settings.dev'
-    else:
-        using_settings = 'config.settings.prod'
-    os.environ['DJANGO_SETTINGS_MODULE'] = using_settings
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
