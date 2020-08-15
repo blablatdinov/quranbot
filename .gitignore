@@ -2,9 +2,12 @@
 *__pycache__/
 static/
 venv/
+htmlcov/
 logs/
+htmlcov/
 *.json
 db.sqlite3
 *.sql*
 celerybeat*
 .env
+.coverage

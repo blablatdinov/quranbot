@@ -1,4 +1,3 @@
-# TODO создать папку для бизнес логики
 import re
 from typing import List
 

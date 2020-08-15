@@ -1,6 +1,9 @@
+# TODO Здесь много логики, относящейся к контенту
 import re
 from random import choice
 from typing import List, Tuple
+
+from django.conf import settings
 
 from bot_init.exceptions import AyatDoesNotExists, SuraDoesNotExists, UnknownMessage
 from bot_init.markup import InlineKeyboard
@@ -10,6 +13,15 @@ from bot_init.service import get_tbot_instance, get_admins_list
 from content.models import Podcast, Ayat
 from prayer.service import get_unread_prayers, set_city_to_subscriber
 from prayer.models import City
+from content.models import Podcast, Ayat, AudioFile
+from prayer.service import get_unread_prayers, get_prayer_time_or_no
+
+
+def get_audio_answer(audio: AudioFile) -> Answer:
+    if file_id := audio.tg_file_id and not settings.DEBUG:
+        # Если включен режим отладки, и это не основной бот, file_id работать не будут
+        return Answer(tg_audio_id=file_id)
+    return Answer(audio.audio_link)
 
 
 def get_random_podcast() -> Podcast:
@@ -21,9 +33,7 @@ def get_random_podcast() -> Podcast:
 def get_podcast_in_answer_type() -> Answer:
     """Получаем подкаст и упаковываем его для отправки пользователю"""
     podcast = get_random_podcast()
-    if file_id := podcast.audio.tg_file_id:
-        return Answer(tg_audio_id=file_id)
-    return Answer(podcast.audio.audio_link)
+    answer = get_audio_answer(podcast.audio)
 
 
 def get_ayat_by_sura_ayat(text: str) -> Ayat:
@@ -64,7 +74,7 @@ def get_keyboard_for_ayat(ayat: Ayat):
         prev_ayat = Ayat.objects.get(pk=ayat.pk - 1)
         buttons = (
             (('Добавить в избранное', f'add_in_favourites({ayat.pk})'),),
-            ( (str(prev_ayat), f'get_ayat({prev_ayat.pk})'),),
+            ((str(prev_ayat), f'get_ayat({prev_ayat.pk})'),),
         )
         return InlineKeyboard(buttons).keyboard
     else:
@@ -82,7 +92,7 @@ def get_keyboard_for_ayat(ayat: Ayat):
 
 def translate_ayat_into_answer(ayat: Ayat) -> List[Answer]:
     text = f'<b>({ayat.sura}:{ayat.ayat})</b>\n{ayat.arab_text}\n\n{ayat.content}\n\n<i>{ayat.trans}</i>\n\n'
-    return [Answer(text=text, keyboard=get_keyboard_for_ayat(ayat)), Answer(tg_audio_id=ayat.audio.tg_file_id)]
+    return [Answer(text=text, keyboard=get_keyboard_for_ayat(ayat)), get_audio_answer(ayat.audio)]
 
 
 def delete_messages_in_mailing(mailing_pk: int):
@@ -120,6 +130,8 @@ def text_message_service(chat_id: int, message_text: str) -> Answer:
         return get_unread_prayers(chat_id)
     elif city := City.objects.filter(name=message_text).first():
         answer = set_city_to_subscriber(city, chat_id)
+    elif 'Время намаза' in message_text:
+        answer = get_prayer_time_or_no(chat_id)
     else:
         raise UnknownMessage(message_text)
     return answer

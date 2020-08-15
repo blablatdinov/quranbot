@@ -78,5 +78,6 @@ def get_default_keyboard(additional_buttons=None):
     buttons = [
         ('Подкасты',),
         ('Избранное',),
+        ('Время намаза',),
     ] + additional_buttons
     return Keyboard(buttons).keyboard
