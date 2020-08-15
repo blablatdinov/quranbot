@@ -10,14 +10,11 @@ from bot_init.markup import InlineKeyboard
 from bot_init.models import Mailing, Subscriber
 from bot_init.schemas import Answer
 from bot_init.service import get_tbot_instance, get_admins_list
-<<<<<<< HEAD:bot_init/text_message_service.py
 from content.models import Podcast, Ayat
 from prayer.service import get_unread_prayers, set_city_to_subscriber
 from prayer.models import City
-=======
 from content.models import Podcast, Ayat, AudioFile
 from prayer.service import get_unread_prayers
->>>>>>> add-time-args-for-management-command:bot_init/services/text_message_service.py
 
 
 def get_audio_answer(audio: AudioFile) -> Answer:
