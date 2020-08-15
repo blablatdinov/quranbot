@@ -72,6 +72,11 @@ class Message(models.Model):
         else:
             return 'To bot'
 
+    def delete_in_tg(self):
+        from bot_init.service import delete_message_in_tg
+        delete_message_in_tg(self.chat_id, self.message_id)
+        return True
+
     class Meta:
         verbose_name = "Сообщение"
         verbose_name_plural = "Сообщения"
