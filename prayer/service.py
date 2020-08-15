@@ -46,9 +46,8 @@ def set_city_to_subscriber_by_location(location: tuple, chat_id: int) -> Answer:
     return Answer('Город не найден,\nвоспользуйтесь поиском', keyboard=keyboard)
 
 
-def get_prayer_time(city: City) -> QuerySet:
+def get_prayer_time(city: City, date: datetime = datetime.today() + timedelta(days=1)) -> QuerySet:
     """Возвращает время намазов для следующего дня"""
-    date = datetime.today() + timedelta(days=1)
     prayers = Prayer.objects.filter(city=city, day__date=date)
     return prayers
 
@@ -76,11 +75,13 @@ def get_buttons(
     return buttons
 
 
-def send_prayer_time() -> None:
+def send_prayer_time(date: datetime = None) -> None:
     """Рассылаем время намаза с кнопками"""
+    if date is None:
+        date = (datetime.today() + timedelta(days=1))
     for subscriber in Subscriber.objects.filter(city__isnull=False):
-        prayer_times = get_prayer_time(subscriber.city)
-        text = f'Время намаза для г. Казань ({(datetime.today() + timedelta(days=1)).strftime("%d.%m.%Y")}) \n\n'
+        prayer_times = get_prayer_time(subscriber.city, date)
+        text = f'Время намаза для г. Казань ({date.strftime("%d.%m.%Y")}) \n\n'
         for i in range(6):
             text += f'{prayer_times[i].get_name_display()}: {prayer_times[i].time.strftime("%H:%M")}\n'
         send_answer(Answer(text), subscriber.tg_chat_id)
