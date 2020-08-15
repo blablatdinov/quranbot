@@ -120,6 +120,8 @@ def text_message_service(chat_id: int, message_text: str) -> Answer:
         return get_unread_prayers(chat_id)
     elif city := City.objects.filter(name=message_text).first():
         answer = set_city_to_subscriber(city, chat_id)
+    elif 'Время намаза' in message_text:
+        answer = get_prayer_time_or_no(chat_id)
     else:
         raise UnknownMessage(message_text)
     return answer
