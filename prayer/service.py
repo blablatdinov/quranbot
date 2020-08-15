@@ -47,6 +47,7 @@ def set_city_to_subscriber_by_location(location: tuple, chat_id: int) -> Answer:
     for elem in address_split:
         if city := City.objects.filter(name__contains=elem).first():
             answer = set_city_to_subscriber(city, subscriber.tg_chat_id)
+            return answer
     print(location, address)  # TODO логгировать
     return get_city_not_found_answer()
 
