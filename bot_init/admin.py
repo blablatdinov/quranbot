@@ -1,6 +1,7 @@
 import json
 
 from django.contrib import admin
+from django.utils.safestring import mark_safe
 
 from bot_init.models import Message, Subscriber, Mailing, AdminMessage, SubscriberAction, CallbackData
 
@@ -14,7 +15,7 @@ class MessageAdmin(admin.ModelAdmin):
         if obj.text is None:
             json_ = json.loads(obj.json)
             if audio := json_['audio']:
-                return 'Аудио - ' + audio['title']
+                return mark_safe('<b>Аудио</b> - ' + audio['title'])
         if isinstance(obj.text, str):
             return obj.text[:50] + ('...' if len(obj.text) >= 50 else '')
         return '-'
