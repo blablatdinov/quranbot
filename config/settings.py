@@ -1,4 +1,5 @@
 import os
+import sys
 from collections import namedtuple
 
 from dotenv import load_dotenv
@@ -57,7 +58,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-if DEBUG:
+if DEBUG or 'test' in sys.argv:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
