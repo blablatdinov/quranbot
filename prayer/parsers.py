@@ -8,6 +8,10 @@ from prayer.models import City, Prayer, Day
 from prayer.schemas import PRAYER_NAMES
 
 
+def get_time_by_str(text: str) -> datetime:
+    return datetime.strptime(text, '%d.%m.%Y')
+
+
 def prayer_time_parser():
     for city in City.objects.all():
         r = requests.get(city.link_to_csv)
