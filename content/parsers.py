@@ -51,7 +51,10 @@ class AyatParser:
         text = ''
         text_block = soup.find('div', class_='text')
         for paragraph in text_block.find_all('p'):
-            if paragraph.text == '***' or paragraph.text == 'Ссылки на богословские первоисточники и комментарий:':
+            if (
+                '***' in paragraph.text or \
+                paragraph.text == 'Ссылки на богословские первоисточники и комментарий:' or \
+                'Подробнее см.' in paragraph.text):
                 return text
             text += re.sub(r'\[\d+\]', '', paragraph.text)
         return text
@@ -100,6 +103,7 @@ class AyatParser:
 
     def parse_content_from_ayats_in_db(self):
         for ayat in pbar(Ayat.objects.all().order_by('pk')):
+        # for ayat in Ayat.objects.filter(pk=209):
             soup = get_soup(ayat.html)
             new_content = self.get_content(soup)
             # try:
@@ -138,3 +142,4 @@ class AyatParser:
 def run_parser():
     parser = AyatParser()
     parser.run()
+
