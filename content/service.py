@@ -1,6 +1,7 @@
 from bot_init.models import Subscriber, Mailing
 from bot_init.schemas import Answer
-from bot_init.service import send_answer, send_message_to_admin
+from bot_init.service import send_answer, send_message_to_admin, get_default_keyboard
+from bot_init.markup import get_default_keyboard
 from content.models import MorningContent
 
 
@@ -22,7 +23,7 @@ def do_morning_content_distribution():
     mailing = Mailing.objects.create()
     for subscriber in active_subscribers:
         content = get_morning_content(subscriber.day)
-        answer = Answer(content)  # TODO впиши коммент про answers это же не ответ
+        answer = Answer(content, keyboard=get_default_keyboard())  # TODO впиши коммент про answers это же не ответ
 
         try:
             message_instance = send_answer(answer, subscriber.tg_chat_id)
