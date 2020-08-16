@@ -5,8 +5,10 @@ import re
 import requests
 import lxml
 from bs4 import BeautifulSoup
+from progressbar import progressbar as pbar
 
 from content.models import Ayat, AudioFile
+
 
 base_url = 'https://umma.ru'
 
@@ -46,10 +48,13 @@ class AyatParser:
 
     def get_content(self, soup: BeautifulSoup) -> str:
         """Возвращает содержание перевода"""
-        for paragraph in soup.find('div', class_='text').find_all('p'):
-            if paragraph.text == '***':
-                return
-            yield re.sub(r'\[\d+\]', '', paragraph.text)
+        text = ''
+        text_block = soup.find('div', class_='text')
+        for paragraph in text_block.find_all('p'):
+            if paragraph.text == '***' or paragraph.text == 'Ссылки на богословские первоисточники и комментарий:':
+                return text
+            text += re.sub(r'\[\d+\]', '', paragraph.text)
+        return text
 
     def get_ayat(self, soup: BeautifulSoup) -> str:
         """Возвращает аят"""
@@ -92,6 +97,17 @@ class AyatParser:
         headers = {'Content-Type': 'application/x-www-form-urlencoded'}
         response = requests.request("POST", url, headers=headers, data=payload)
         return response.text
+
+    def parse_content_from_ayats_in_db(self):
+        for ayat in pbar(Ayat.objects.all().order_by('pk')):
+            soup = get_soup(ayat.html)
+            new_content = self.get_content(soup)
+            # try:
+            ayat.content = new_content
+            ayat.save(update_fields=['content'])
+            # except Exception as e:
+                # print(ayat)
+                # print(new_content)
 
     def run(self):
         """Запуск парсера"""
