@@ -3,7 +3,7 @@ from celery.task import periodic_task
 from celery.schedules import crontab
 
 from content.service import do_morning_content_distribution
-from bot_init.service import upload_database_dump
+from bot_init.service import upload_database_dump, count_active_users
 
 
 @periodic_task(run_every=(crontab(hour=7, minute=30)), name='upload_dump')
