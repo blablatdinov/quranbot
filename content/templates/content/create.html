@@ -11,9 +11,8 @@
 <body>
 {% if request.user %}
 <div id="app">
-<h1>[[error]]</h1>
   <div class="row">
-    <div class="col-3">
+    <div class="col-lg-3 col-sm-12">
       <input placeholder='Сура' v-model='suraForGet'>
       <button v-on:click='getAyats()'>Получить аяты</button><br>
       <input placeholder='День' v-model='dayForSend'>
@@ -23,13 +22,12 @@
           <input
             type="checkbox"
             v-model="elem.isChecked"
-            v-on:click="countContentLength()"
           >
           [[elem.sura]]: [[elem.ayat]] ([[elem.content_length]])
         </li>
       </ul>
     </div>
-    <div class="col-9">
+    <div class="col-lg-9 col-sm-12">
       <ul>
         <li v-for="elem in content">
           [[elem.day]]) <span v-html="elem.content"></span>
@@ -45,12 +43,11 @@
     delimiters: ['[[', ']]'],
     el: '#app',
     data: {
-      baseUrl: 'https://' + '{{ request.get_host }}',
+      baseUrl: 'https://quranbot.blablatdinov.ru',
       content: [],
-      suraForGet: '50',
+      suraForGet: '1',
       ayats: [],
-      dayForSend: null,
-      error: ''
+      dayForSend: null
     },
     methods: {
       getContent () {
@@ -60,6 +57,7 @@
             for (let i = 0; i < data.length; i++) {
               this.$set(this.content, i, data[i])
             }
+            console.log(this.content)
         })
       },
       getAyats () {
@@ -81,36 +79,20 @@
         }
         data = {
           day: this.dayForSend,
+          // ayats: [i for (let i of this.ayats)]
           ayats: ayats_pk
         }
-        if (this.error.length === 0) {
-          fetch(this.baseUrl + `/content/api/sendAyats`, {
-            method: 'POST',
-            body: JSON.stringify(data)
-          })
-            .then(res => res.json()).then(res => {
-            this.ayats = []
-            this.getAyats()
-            this.getContent()
-            this.dayForSend++
-          })
-        }
-      },
-      countContentLength () {
-        if (this.contentLength >= 4096) {
-          this.error = 'Слишком много контента'
-        }
-      }
-    },
-    computed: {
-      contentLength: function () {
-        let result = 0
-        for (let i = 0; i < this.ayats.length; i++) {
-          if (this.ayats[i].isChecked){
-            result += this.ayats[i].content_length
-          }
-        }
-        return result
+        console.log(data)
+        fetch(this.baseUrl + `/content/api/sendAyats`, {
+          method: 'POST',
+          body: JSON.stringify(data)
+        })
+          .then(res => res.json()).then(res => {
+          this.ayats = []
+          this.getAyats()
+          this.getContent()
+          this.dayForSend++
+        })
       }
     },
     created () {
