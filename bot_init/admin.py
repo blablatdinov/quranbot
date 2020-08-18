@@ -9,7 +9,7 @@ from bot_init.models import Message, Subscriber, Mailing, AdminMessage, Subscrib
 @admin.register(Message)
 class MessageAdmin(admin.ModelAdmin):
     list_display = (
-        'get_mailing_or_source', 'date', 'from_user_id', 'message_id', 'chat_id', 'get_message_text', 
+        'get_mailing_or_source', 'date', 'message_id', 'get_message_text',
     )
     search_fields = ('text', 'from_user_id', 'chat_id')
 
@@ -24,7 +24,7 @@ class MessageAdmin(admin.ModelAdmin):
             except Exception:
                 return json_
         if isinstance(obj.text, str):
-            return obj.text[:50] + ('...' if len(obj.text) >= 50 else '')
+            return obj.text[:100] + ('...' if len(obj.text) >= 50 else '')
         return '-'
 
     def get_mailing_or_source(self, obj):
