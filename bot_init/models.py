@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 
 from bot_init.schemas import SUBSCRIBER_ACTIONS
 from content.models import Ayat
@@ -67,10 +68,9 @@ class Message(models.Model):
     mailing = models.ForeignKey(Mailing, related_name='messages', on_delete=models.PROTECT, blank=True, null=True)
 
     def __str__(self):
-        if self.from_user_id == 705810219:
-            return 'From bot'
-        else:
-            return 'To bot'
+        if self.from_user_id == settings.TG_BOT.id:
+            return f'to {self.chat_id}'
+        return f'from {self.chat_id}'
 
     def delete_in_tg(self):
         from bot_init.service import delete_message_in_tg
