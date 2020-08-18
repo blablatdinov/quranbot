@@ -1,6 +1,6 @@
 from bot_init.models import Subscriber, Mailing
 from bot_init.schemas import Answer
-from bot_init.service import send_answer, send_message_to_admin, get_default_keyboard
+from bot_init.service import send_answer, send_message_to_admin
 from bot_init.markup import get_default_keyboard
 from content.models import MorningContent
 
