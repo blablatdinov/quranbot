@@ -6,12 +6,27 @@ from django.utils.safestring import mark_safe
 from bot_init.models import Message, Subscriber, Mailing, AdminMessage, SubscriberAction, CallbackData
 
 
+class DisplayMailingFilter(admin.SimpleListFilter):
+    """Фильтр позволяет отключить отображение рассылок в административной панели"""
+    title = 'Отображать сообщения'
+    parameter_name = 'hz'
+
+    def lookups(self, request, model_admin):
+        return [('without_mailings', 'Без рассылок')]
+
+    def queryset(self, request, queryset):
+        if self.value() == 'without_mailings':
+            return queryset.filter(mailing__isnull=True)
+        return queryset
+
+
 @admin.register(Message)
 class MessageAdmin(admin.ModelAdmin):
     list_display = (
         'get_mailing_or_source', 'date', 'message_id', 'get_message_text',
     )
     search_fields = ('text', 'from_user_id', 'chat_id')
+    list_filter = (DisplayMailingFilter,)
 
     def get_message_text(self, obj):
         if obj.text is None:
@@ -33,6 +48,7 @@ class MessageAdmin(admin.ModelAdmin):
         return str(obj)
 
     get_message_text.short_description = 'Текст'
+    get_mailing_or_source.short_description = 'Источник или номер рассылки'
 
 
 @admin.register(Subscriber)
