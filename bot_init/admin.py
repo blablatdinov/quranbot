@@ -50,6 +50,8 @@ class MessageAdmin(admin.ModelAdmin):
     get_message_text.short_description = 'Текст'
     get_mailing_or_source.short_description = 'Источник или номер рассылки'
 
+    list_per_page = 50
+
 
 @admin.register(Subscriber)
 class SubscriberAdmin(admin.ModelAdmin):
