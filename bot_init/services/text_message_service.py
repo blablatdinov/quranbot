@@ -121,7 +121,7 @@ def text_message_service(chat_id: int, message_text: str) -> Answer:
     elif ':' in message_text:
         ayat = get_ayat_by_sura_ayat(message_text)
         answer = translate_ayat_into_answer(ayat)
-    elif regexp_result := re.search(r'/del\d+', message_text) and chat_id in get_admins_list():
+    elif (regexp_result := re.search(r'/del\d+', message_text)) and chat_id in get_admins_list():
         mailing_pk = re.search(r'\d+', regexp_result.group(0)).group(0)
         delete_messages_in_mailing(mailing_pk)
         answer = Answer('Рассылка удалена')
