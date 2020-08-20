@@ -1,7 +1,12 @@
+from datetime import datetime, timedelta, time
+# import time
+
 from django.test import TestCase
 
 from bot_init.models import Subscriber
-from prayer.service import set_city_to_subscriber_by_location
+from prayer.models import Day, City, Prayer, PrayerAtUserGroup, PrayerAtUser
+from prayer.schemas import PRAYER_NAMES
+from prayer.service import set_city_to_subscriber_by_location, count_unread_prayers, set_city_to_subscriber, get_now_prayer, get_unread_prayers_by_chat_id
 
 
 class GetSetCityTestCase(TestCase):
@@ -11,4 +16,98 @@ class GetSetCityTestCase(TestCase):
         text = 'Вам будет приходить время намаза для г. Казань'
         answer = set_city_to_subscriber_by_location(('55.81425', '49.078'), 123)
         self.assertEqual(text, answer.text)
+
+
+class CountUnreadPrayersTestCase(TestCase):
+
+    def test_ok(self):
+        subscriber = Subscriber.objects.create(tg_chat_id=123)
+        city = City.objects.create(name='Kazan')
+        set_city_to_subscriber(city, 123)
+        date_time = datetime(2020, 8, 20, 12, 51)
+        day1 = Day.objects.create(date=date_time - timedelta(days=1))
+        day2 = Day.objects.create(date=date_time - timedelta(days=2))
+        day3 = Day.objects.create(date=date_time)
+        times = [
+            time(hour=1, minute=5),
+            time(hour=4, minute=0),
+            time(hour=12, minute=5),
+            time(hour=15, minute=5),
+            time(hour=17, minute=5),
+            time(hour=20, minute=5),
+        ]
+        prayer_group = PrayerAtUserGroup.objects.create()
+
+        for i in range(6):
+            prayer = Prayer.objects.create(city=city, day=day1, time=times[i], name=PRAYER_NAMES[i][0])
+            if prayer.name != 'sunrise':
+                PrayerAtUser.objects.create(subscriber=subscriber, prayer_group=prayer_group, prayer=prayer)
+
+        for i in range(6):
+            prayer = Prayer.objects.create(city=city, day=day2, time=times[i], name=PRAYER_NAMES[i][0])
+            if prayer.name != 'sunrise':
+                PrayerAtUser.objects.create(subscriber=subscriber, prayer_group=prayer_group, prayer=prayer)
+
+        for i in range(6):
+            prayer = Prayer.objects.create(city=city, day=day3, time=times[i], name=PRAYER_NAMES[i][0])
+            if prayer.name != 'sunrise':
+                PrayerAtUser.objects.create(subscriber=subscriber, prayer_group=prayer_group, prayer=prayer)
+
+        status = [0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 0, 0, 1, 1]
+        queryset = PrayerAtUser.objects.all()
+        print(queryset.count())
+        counter = 0
+        for elem in queryset:
+            elem.is_read = bool(status[counter])
+            elem.save()
+            counter += 1
+        unread_prayers = get_unread_prayers_by_chat_id(123, datetime(2020, 8, 20, 12, 53))
+        print(unread_prayers.count())
+        self.assertEqual(6, unread_prayers.count())
+
+
+class GetNowPrayerTestCase(TestCase):
+
+    def test_ok(self):
+        subscriber = Subscriber.objects.create(tg_chat_id=123)
+        city = City.objects.create(name='Kazan')
+        set_city_to_subscriber(city, 123)
+        date_time = datetime.now()
+        day1 = Day.objects.create(date=date_time - timedelta(days=1))
+        day2 = Day.objects.create(date=date_time - timedelta(days=2))
+        day3 = Day.objects.create(date=date_time)
+        times = [
+            time(hour=1, minute=5),
+            time(hour=4, minute=0),
+            time(hour=12, minute=5),
+            time(hour=15, minute=5),
+            time(hour=17, minute=5),
+            time(hour=20, minute=5),
+        ]
+        prayer_group = PrayerAtUserGroup.objects.create()
+        for i in range(6):
+            prayer = Prayer.objects.create(city=city, day=day1, time=times[i], name=PRAYER_NAMES[i][0])
+            PrayerAtUser.objects.create(subscriber=subscriber, prayer_group=prayer_group, prayer=prayer)
+        for i in range(6):
+            prayer = Prayer.objects.create(city=city, day=day2, time=times[i], name=PRAYER_NAMES[i][0])
+            PrayerAtUser.objects.create(subscriber=subscriber, prayer_group=prayer_group, prayer=prayer)
+        for i in range(6):
+            prayer = Prayer.objects.create(city=city, day=day3, time=times[i], name=PRAYER_NAMES[i][0])
+            PrayerAtUser.objects.create(subscriber=subscriber, prayer_group=prayer_group, prayer=prayer)
+
+        test_now_value = datetime(day2.date.year, day2.date.month, day2.date.day, hour=2, minute=32)
+        now_prayer = get_now_prayer(123, test_now_value)
+        self.assertEqual(7, now_prayer.pk)
+
+        test_now_value = datetime(day1.date.year, day1.date.month, day1.date.day, hour=12, minute=32)
+        now_prayer = get_now_prayer(123, test_now_value)
+        self.assertEqual(3, now_prayer.pk)
+
+        test_now_value = datetime(day3.date.year, day3.date.month, day3.date.day, hour=17, minute=4)
+        now_prayer = get_now_prayer(123, test_now_value)
+        self.assertEqual(16, now_prayer.pk)
+
+        test_now_value = datetime(day3.date.year, day3.date.month, day3.date.day, hour=9, minute=30)
+        now_prayer = get_now_prayer(123, test_now_value)
+        self.assertEqual(14, now_prayer.pk)
 
