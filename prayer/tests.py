@@ -25,9 +25,11 @@ class CountUnreadPrayersTestCase(TestCase):
         city = City.objects.create(name='Kazan')
         set_city_to_subscriber(city, 123)
         date_time = datetime(2020, 8, 20, 12, 51)
-        day1 = Day.objects.create(date=date_time - timedelta(days=1))
-        day2 = Day.objects.create(date=date_time - timedelta(days=2))
-        day3 = Day.objects.create(date=date_time)
+        days = [
+            Day.objects.create(date=date_time - timedelta(days=1)),
+            Day.objects.create(date=date_time - timedelta(days=2)),
+            Day.objects.create(date=date_time)
+        ]
         times = [
             time(hour=1, minute=5),
             time(hour=4, minute=0),
@@ -38,32 +40,55 @@ class CountUnreadPrayersTestCase(TestCase):
         ]
         prayer_group = PrayerAtUserGroup.objects.create()
 
-        for i in range(6):
-            prayer = Prayer.objects.create(city=city, day=day1, time=times[i], name=PRAYER_NAMES[i][0])
-            if prayer.name != 'sunrise':
-                PrayerAtUser.objects.create(subscriber=subscriber, prayer_group=prayer_group, prayer=prayer)
+        for day in days:
+            for i in range(6):
+                prayer = Prayer.objects.create(city=city, day=day, time=times[i], name=PRAYER_NAMES[i][0])
+                if prayer.name != 'sunrise':
+                    PrayerAtUser.objects.create(subscriber=subscriber, prayer_group=prayer_group, prayer=prayer)
 
-        for i in range(6):
-            prayer = Prayer.objects.create(city=city, day=day2, time=times[i], name=PRAYER_NAMES[i][0])
-            if prayer.name != 'sunrise':
-                PrayerAtUser.objects.create(subscriber=subscriber, prayer_group=prayer_group, prayer=prayer)
-
-        for i in range(6):
-            prayer = Prayer.objects.create(city=city, day=day3, time=times[i], name=PRAYER_NAMES[i][0])
-            if prayer.name != 'sunrise':
-                PrayerAtUser.objects.create(subscriber=subscriber, prayer_group=prayer_group, prayer=prayer)
-
-        status = [0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 0, 0, 1, 1]
+        status = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
         queryset = PrayerAtUser.objects.all()
-        print(queryset.count())
         counter = 0
         for elem in queryset:
             elem.is_read = bool(status[counter])
             elem.save()
             counter += 1
         unread_prayers = get_unread_prayers_by_chat_id(123, datetime(2020, 8, 20, 12, 53))
-        print(unread_prayers.count())
-        self.assertEqual(6, unread_prayers.count())
+        self.assertEqual(0, unread_prayers.count())
+
+        status = [
+            0, 0, 1, 1, 1,
+            1, 1, 1, 1, 1,
+            1, 0, 0, 0, 0
+        ]
+        queryset = PrayerAtUser.objects.all()
+        counter = 0
+        for elem in queryset:
+            elem.is_read = bool(status[counter])
+            elem.save()
+            counter += 1
+        unread_prayers = get_unread_prayers_by_chat_id(123, datetime(2020, 8, 20, 12, 53))
+        self.assertEqual(2, unread_prayers.count())
+
+        status = [
+            1, 1, 0, 1, 1,
+            1, 0, 1, 1, 1,
+            1, 0, 0, 0, 0
+        ]
+        # time(hour=1, minute=5),
+        # time(hour=12, minute=5),
+        # time(hour=15, minute=5),
+        # time(hour=17, minute=5),
+        # time(hour=20, minute=5),
+        # 20.08.2020 16:55
+        queryset = PrayerAtUser.objects.all()
+        counter = 0
+        for elem in queryset:
+            elem.is_read = bool(status[counter])
+            elem.save()
+            counter += 1
+        unread_prayers = get_unread_prayers_by_chat_id(123, datetime(2020, 8, 20, 16, 53))
+        self.assertEqual(3, unread_prayers.count())
 
 
 class GetNowPrayerTestCase(TestCase):
