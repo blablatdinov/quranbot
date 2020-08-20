@@ -86,5 +86,5 @@ admin.site.register(Mailing)
 admin.site.register(AdminMessage)
 admin.site.register(CallbackData)
 
-admin.site.site_title = 'Административная панель Quran_365_bot'
-admin.site.site_header = 'Административная панель Quran_365_bot'
+admin.site.site_title = 'Административная панель Quran_365_bot v1.23'
+admin.site.site_header = 'Административная панель Quran_365_bot v1.23'
