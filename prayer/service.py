@@ -88,14 +88,22 @@ def get_text_prayer_times(prayer_times: QuerySet, city_name: str, date: datetime
     return res
 
 
-def send_prayer_time(date: datetime = None) -> None:
+def send_prayer_time(date: datetime = None) -> None:  # TODO одинаковы куски кода content.service.do_morning_content_distribution
     """Рассылаем время намаза с кнопками"""
     if date is None:
         date = (datetime.today() + timedelta(days=1))
+    mailing = Mailing.objects.create()
     for subscriber in Subscriber.objects.filter(city__isnull=False):
         prayer_times = get_prayer_time(subscriber.city, date)
         text = get_text_prayer_times(prayer_times, subscriber.city.name, date)
-        send_answer(Answer(text), subscriber.tg_chat_id)
+        message_instance = send_answer(Answer(text), subscriber.tg_chat_id)
+
+        message_instance.mailing = mailing
+        message_instance.save(update_fields=['mailing'])
+    text = f'Рассылка #{mailing.pk} завершена'
+    msg = send_message_to_admin(text)
+    msg.mailing = mailing
+    msg.save(update_fields=['mailing'])
 
 
 def get_unread_prayers_by_chat_id(chat_id: int) -> QuerySet:
