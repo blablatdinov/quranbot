@@ -132,10 +132,10 @@ def get_unread_prayers_by_chat_id(chat_id: int, date_time: datetime = None) -> Q
     now_prayer = get_now_prayer(chat_id, date_time)
     unread_prayers = PrayerAtUser.objects.filter(
         subscriber=subscriber,
-        # is_read=False
-    )
-    for x in unread_prayers:
-        print(x, x.is_read)
+        is_read=False,
+        prayer__day__date__lte=date_time,  # меньше или равно
+        prayer__time__lt=date_time.time()
+    ).order_by('-pk')[1:]
     return unread_prayers
 
 
