@@ -1,5 +1,4 @@
-from datetime import datetime
-from datetime import timedelta
+from datetime import datetime, timedelta, time
 from typing import List, Tuple
 
 from django.db.models import QuerySet
@@ -10,7 +9,7 @@ from bot_init.markup import InlineKeyboard
 from bot_init.models import Subscriber
 from bot_init.schemas import Answer
 from bot_init.service import send_answer, get_subscriber_by_chat_id
-from prayer.models import PrayerAtUser, PrayerAtUserGroup, City, Prayer
+from prayer.models import PrayerAtUser, PrayerAtUserGroup, City, Prayer, Day
 from prayer.schemas import PRAYER_NAMES
 
 
@@ -19,6 +18,14 @@ def get_address(x: str, y: str):
     geolocator = Nominatim(user_agent="qbot")
     location = geolocator.reverse(f"{x}, {y}")
     return location.address
+
+
+def count_unread_prayers(chat_id: int, date_time: datetime = None):
+    if date_time is None:
+        date_time = datetime.now()
+    ...
+    # subscriber_prayers = PrayerAtUser.objects.filter(subscriber__chat_id=chat_id)
+    # unread_prayers = subscriber_
 
 
 def set_city_to_subscriber(city: City, chat_id: int) -> Answer:
@@ -71,6 +78,7 @@ def get_buttons(
     if prayer_pk is None:
         prayer_group = PrayerAtUserGroup.objects.create()
         prayers = [PrayerAtUser.objects.create(subscriber=subscriber, prayer_group=prayer_group, prayer=prayer)
+        # TODO Почему намазы для пользователей генерируются в кнопках
                    for prayer in prayer_times]
     else:
         prayer = PrayerAtUser.objects.get(pk=prayer_pk)
@@ -106,10 +114,28 @@ def send_prayer_time(date: datetime = None) -> None:  # TODO одинаковы 
     msg.save(update_fields=['mailing'])
 
 
-def get_unread_prayers_by_chat_id(chat_id: int) -> QuerySet:
+def get_now_prayer(chat_id: int, date_time=None):
+    date_time = date_time if date_time is not None else datetime.now()
+    prayer_time = time(hour=date_time.hour, minute=date_time.minute)
+    prayer = Prayer.objects.filter(
+        day__date=date_time,
+        city__subscriber__tg_chat_id=chat_id,
+        time__lt=prayer_time
+    ).last()
+    return prayer
+
+
+def get_unread_prayers_by_chat_id(chat_id: int, date_time: datetime = None) -> QuerySet:
     """Получаем непрочитанные намазы у подписчика"""
+    date_time = date_time if date_time is not None else datetime.now()
     subscriber = Subscriber.objects.get(tg_chat_id=chat_id)
-    unread_prayers = PrayerAtUser.objects.filter(subscriber=subscriber, is_read=False)
+    now_prayer = get_now_prayer(chat_id, date_time)
+    unread_prayers = PrayerAtUser.objects.filter(
+        subscriber=subscriber,
+        # is_read=False
+    )
+    for x in unread_prayers:
+        print(x, x.is_read)
     return unread_prayers
 
 
