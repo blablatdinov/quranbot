@@ -1,3 +1,4 @@
+from pprint import pprint
 from datetime import datetime, timedelta, time
 from typing import List, Tuple
 
@@ -6,9 +7,9 @@ from geopy.geocoders import Nominatim
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from bot_init.markup import InlineKeyboard
-from bot_init.models import Subscriber
+from bot_init.models import Subscriber, Mailing
 from bot_init.schemas import Answer
-from bot_init.service import send_answer, get_subscriber_by_chat_id
+from bot_init.service import send_answer, get_subscriber_by_chat_id, send_message_to_admin
 from prayer.models import PrayerAtUser, PrayerAtUserGroup, City, Prayer, Day
 from prayer.schemas import PRAYER_NAMES
 
@@ -80,6 +81,7 @@ def get_buttons(
         prayers = [PrayerAtUser.objects.create(subscriber=subscriber, prayer_group=prayer_group, prayer=prayer)
         # TODO Почему намазы для пользователей генерируются в кнопках
                    for prayer in prayer_times]
+        # pprint(prayers)
     else:
         prayer = PrayerAtUser.objects.get(pk=prayer_pk)
         prayers = PrayerAtUser.objects.filter(prayer_group=prayer.prayer_group).order_by('pk')
@@ -98,13 +100,15 @@ def get_text_prayer_times(prayer_times: QuerySet, city_name: str, date: datetime
 
 def send_prayer_time(date: datetime = None) -> None:  # TODO одинаковы куски кода content.service.do_morning_content_distribution
     """Рассылаем время намаза с кнопками"""
+    # TODO написать тесты
     if date is None:
         date = (datetime.today() + timedelta(days=1))
     mailing = Mailing.objects.create()
     for subscriber in Subscriber.objects.filter(city__isnull=False):
         prayer_times = get_prayer_time(subscriber.city, date)
         text = get_text_prayer_times(prayer_times, subscriber.city.name, date)
-        message_instance = send_answer(Answer(text), subscriber.tg_chat_id)
+        keyboard = InlineKeyboard(get_buttons(subscriber, prayer_times.exclude(name='sunrise'))).keyboard
+        message_instance = send_answer(Answer(text, keyboard=keyboard), subscriber.tg_chat_id)
 
         message_instance.mailing = mailing
         message_instance.save(update_fields=['mailing'])
