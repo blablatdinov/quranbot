@@ -11,7 +11,7 @@ from bot_init.models import Mailing, Subscriber
 from bot_init.schemas import Answer
 from bot_init.service import get_tbot_instance, get_admins_list
 from content.models import Podcast, Ayat, AudioFile
-from prayer.service import get_unread_prayers, set_city_to_subscriber
+from prayer.service import get_unread_prayers, set_city_to_subscriber, get_prayer_time_or_no
 from prayer.models import City
 
 
