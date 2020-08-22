@@ -9,6 +9,10 @@ class Mailing(models.Model):
     """Класс объеденяющий сообщения для удобного удаления при некорректной рассылке"""
     pass
 
+    class Meta:
+        verbose_name = 'Рассылка'
+        verbose_name_plural = 'Рассылки'
+
 
 class AdminMessage(models.Model):
     """Административные сообщения"""
