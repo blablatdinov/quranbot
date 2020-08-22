@@ -46,6 +46,3 @@ class MorningContentGen(TestCase):
             )
         subscriber_content = get_subscribers_with_content()
 
-        from pprint import pprint
-
-        pprint(subscriber_content)
