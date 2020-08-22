@@ -110,29 +110,33 @@ class GetNowPrayerTestCase(TestCase):
             time(hour=20, minute=5),
         ]
         prayer_group = PrayerAtUserGroup.objects.create()
+        prayers = []
         for i in range(6):
             prayer = Prayer.objects.create(city=city, day=day1, time=times[i], name=PRAYER_NAMES[i][0])
             PrayerAtUser.objects.create(subscriber=subscriber, prayer_group=prayer_group, prayer=prayer)
+            prayers.append(prayer)
         for i in range(6):
             prayer = Prayer.objects.create(city=city, day=day2, time=times[i], name=PRAYER_NAMES[i][0])
             PrayerAtUser.objects.create(subscriber=subscriber, prayer_group=prayer_group, prayer=prayer)
+            prayers.append(prayer)
         for i in range(6):
             prayer = Prayer.objects.create(city=city, day=day3, time=times[i], name=PRAYER_NAMES[i][0])
             PrayerAtUser.objects.create(subscriber=subscriber, prayer_group=prayer_group, prayer=prayer)
+            prayers.append(prayer)
 
         test_now_value = datetime(day2.date.year, day2.date.month, day2.date.day, hour=2, minute=32)
         now_prayer = get_now_prayer(123, test_now_value)
-        self.assertEqual(7, now_prayer.pk)
+        self.assertEqual(prayers[6], now_prayer)
 
         test_now_value = datetime(day1.date.year, day1.date.month, day1.date.day, hour=12, minute=32)
         now_prayer = get_now_prayer(123, test_now_value)
-        self.assertEqual(3, now_prayer.pk)
+        self.assertEqual(prayers[2], now_prayer)
 
         test_now_value = datetime(day3.date.year, day3.date.month, day3.date.day, hour=17, minute=4)
         now_prayer = get_now_prayer(123, test_now_value)
-        self.assertEqual(16, now_prayer.pk)
+        self.assertEqual(prayers[15], now_prayer)
 
         test_now_value = datetime(day3.date.year, day3.date.month, day3.date.day, hour=9, minute=30)
         now_prayer = get_now_prayer(123, test_now_value)
-        self.assertEqual(14, now_prayer.pk)
+        self.assertEqual(prayers[13], now_prayer)
 
