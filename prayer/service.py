@@ -7,7 +7,7 @@ from geopy.geocoders import Nominatim
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from bot_init.markup import InlineKeyboard
-from bot_init.models import Subscriber
+from bot_init.models import Subscriber, Mailing
 from bot_init.schemas import Answer
 from bot_init.service import send_answer, get_subscriber_by_chat_id
 from prayer.models import PrayerAtUser, PrayerAtUserGroup, City, Prayer
