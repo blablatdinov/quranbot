@@ -27,8 +27,8 @@ def get_subscribers_with_content():
             select
                 s.tg_chat_id,
                 STRING_AGG(
-                    '<b>' || a.sura::character varying || ': ' || a.ayat || '</b>' || a .content || '\n',
-                    ','
+                    '<b>' || a.sura::character varying || ': ' || a.ayat || ')</b> ' || a .content || '\n',
+                    ''
                     order by a.id
                 ),
                 STRING_AGG(a.link_to_source, '|' order by a.id)
@@ -41,7 +41,7 @@ def get_subscribers_with_content():
         """)
         res = cursor.fetchall()
     data = [
-            {elem[0]: elem[1] + f'\n{elem[2].split("|")[0]}'}
+            {elem[0]: elem[1] + f'\nСсылка на источник: <a href="https://umma.ru{elem[2].split("|")[0]}">источник</a>'}
             for elem in res
     ]
     return data
@@ -51,21 +51,20 @@ def get_subscribers_with_content():
 def do_morning_content_distribution():
     """Выполняем рассылку утреннего контента"""
     # TODO можно заранее сгенерировать контент, Заранее оповещать админов, что контент кончается
-    active_subscribers = Subscriber.objects.filter(is_active=True)
     mailing = Mailing.objects.create()
-    for subscriber in active_subscribers:
-        content = get_morning_content(subscriber.day)
+    subscriber_content = get_subscribers_with_content()
+    for elem in subscriber_content:
+        chat_id, content = list(elem.items())[0]
+        print(content)
         answer = Answer(content, keyboard=get_default_keyboard())  # TODO впиши коммент про answers это же не ответ
 
         try:
-            message_instance = send_answer(answer, subscriber.tg_chat_id)
+            message_instance = send_answer(answer, chat_id)
             message_instance.mailing = mailing
             message_instance.save(update_fields=['mailing'])
-        except:
-            pass
+        except Exception as e:
+            print(e)
 
-    print(datetime.now() - start)
-    exit()
     text = f'Рассылка завершена, отправьте /del{mailing.pk} для ее удаления'
     msg = send_message_to_admin(text)
     msg.mailing = mailing
