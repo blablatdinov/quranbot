@@ -21,7 +21,6 @@ def get_morning_content(day_num: int) -> str:
 
 def get_subscribers_with_content():
     with connection.cursor() as cursor:
-        # cursor.execute('select * from bot_init_subscriber')
         cursor.execute("""
             select
                 s.tg_chat_id,
@@ -52,7 +51,6 @@ def do_morning_content_distribution():
     subscriber_content = get_subscribers_with_content()
     for elem in subscriber_content:
         chat_id, content = list(elem.items())[0]
-        # content = get_morning_content(subscriber.day)
         answer = Answer(content, keyboard=get_default_keyboard())  # TODO впиши коммент про answers это же не ответ
 
         try:
