@@ -2,26 +2,29 @@ from django.test import TestCase
 
 from bot_init.services.text_message_service import *
 from bot_init.models import Ayat
+from bot_init.exceptions import AyatDoesNotExists
 
 
 class GetAyatByTextTestCase(TestCase):
 
     def test_first(self):
         pairs = ['1:1-7', '2:1-5', '4:67, 68', '4:12', '5:1, 3']
+        ayats = []
         for elem in pairs:
-            Ayat.objects.create(
+            ayats.append(Ayat.objects.create(
                 content='asdf',
                 arab_text='asdf',
                 trans='asdf',
                 sura=int(elem.split(':')[0]),
                 ayat=elem.split(':')[1],
                 html='<html></html>',
-            )
+            ))
         test_data = ['1:1', '2:4', '4:67', '4:12']
         for i in range(4):
-            res1 = Ayat.objects.get(pk=i + 1)
+            res1 = ayats[i]
             res2 = get_ayat_by_sura_ayat(test_data[i])
             self.assertEqual(res1, res2)
+
         try:
             get_ayat_by_sura_ayat('5:2')
         except AyatDoesNotExists:
