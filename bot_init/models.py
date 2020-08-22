@@ -66,6 +66,7 @@ class Message(models.Model):
     text = models.TextField(null=True, verbose_name="Текст сообщения")
     json = models.TextField()
     mailing = models.ForeignKey(Mailing, related_name='messages', on_delete=models.PROTECT, blank=True, null=True)
+    is_unknown = models.BooleanField(default=False, verbose_name='Необработанное ли это сообщение')
 
     def __str__(self):
         if self.from_user_id == settings.TG_BOT.id:

@@ -112,7 +112,7 @@ def get_favourite_ayats(chat_id: int):
     return Answer('Вы еще не добавили аятов в "Избранное"')
 
 
-def text_message_service(chat_id: int, message_text: str) -> Answer:
+def text_message_service(chat_id: int, message_text: str, message_id: int = None) -> Answer:
     """Функция обрабатывает все текстовые сообщения"""
     if 'Подкасты' in message_text:
         answer = get_podcast_in_answer_type()
@@ -132,5 +132,5 @@ def text_message_service(chat_id: int, message_text: str) -> Answer:
     elif 'Время намаза' in message_text:
         answer = get_prayer_time_or_no(chat_id)
     else:
-        raise UnknownMessage(message_text)
+        raise UnknownMessage(message_text, message_id)
     return answer

@@ -41,7 +41,7 @@ def start_handler(message):
 def text_handler(message):
     """Обработчик тестовых сообщений в т. ч. некоторых комманд"""
     save_message(message)
-    answer = text_message_service(message.chat.id, message.text)
+    answer = text_message_service(message.chat.id, message.text, message.message_id)
     send_answer(answer, message.chat.id)
 
 
