@@ -12,11 +12,17 @@ class DisplayMailingFilter(admin.SimpleListFilter):
     parameter_name = 'hz'
 
     def lookups(self, request, model_admin):
-        return [('without_mailings', 'Без рассылок')]
+        res =  [
+            ('without_mailings', 'Без рассылок'),
+            ('unknown_messages', 'Необработанные сообщения'),
+        ]
+        return res
 
     def queryset(self, request, queryset):
         if self.value() == 'without_mailings':
             return queryset.filter(mailing__isnull=True)
+        elif self.value() == 'unknown_messages':
+            return queryset.filter(is_unknown=True)
         return queryset
 
 
