@@ -1,8 +1,7 @@
-from pprint import pprint
 from datetime import datetime, timedelta, time
 from typing import List, Tuple
 
-from django.db.models import QuerySet
+from django.db.models import QuerySet, Q
 from geopy.geocoders import Nominatim
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
@@ -19,14 +18,6 @@ def get_address(x: str, y: str):
     geolocator = Nominatim(user_agent="qbot")
     location = geolocator.reverse(f"{x}, {y}")
     return location.address
-
-
-def count_unread_prayers(chat_id: int, date_time: datetime = None):
-    if date_time is None:
-        date_time = datetime.now()
-    ...
-    # subscriber_prayers = PrayerAtUser.objects.filter(subscriber__chat_id=chat_id)
-    # unread_prayers = subscriber_
 
 
 def set_city_to_subscriber(city: City, chat_id: int) -> Answer:
@@ -62,8 +53,29 @@ def set_city_to_subscriber_by_location(location: tuple, chat_id: int) -> Answer:
 
 def get_prayer_time(city: City, date: datetime = datetime.today() + timedelta(days=1)) -> QuerySet:
     """Возвращает время намазов для следующего дня"""
-    prayers = Prayer.objects.filter(city=city, day__date=date)
+    prayers = Prayer.objects.filter(city=city, day__date=date).order_by('pk')
     return prayers
+
+
+def generate_prayer_at_user(chat_id: int, prayers: QuerySet):
+    """Функция должна генерировать новы PrayerAtUser или возвращать те, которые уже есть"""
+    # TODO подумать над названием (сгенерировать или вернуть то, что есть)
+    # TODO сделать тест на разные дни
+    subscriber = get_subscriber_by_chat_id(chat_id)
+    # Найти те, которые уже есть
+    if PrayerAtUser.objects.filter(subscriber=subscriber, prayer__day=prayers[0].day):
+        query = Q()
+        for prayer in prayers:
+            query = query | Q(prayer=prayer)
+        prayers_at_user = PrayerAtUser.objects.filter(subscriber=subscriber).filter(query)
+        return list(prayers_at_user)
+    # Генерировать
+    prayer_group = PrayerAtUserGroup.objects.create()
+    result = [
+        PrayerAtUser.objects.create(subscriber=subscriber, prayer_group=prayer_group, prayer=prayer)
+        for prayer in prayers.exclude(name='sunrise')
+    ]
+    return result
 
 
 def get_emoji_for_button(prayer: PrayerAtUser) -> str:
@@ -71,30 +83,36 @@ def get_emoji_for_button(prayer: PrayerAtUser) -> str:
     return '❌' if not prayer.is_read else '✅'
 
 
-def get_buttons(
+def get_buttons(  # FIXME если пользователь запрашивает время намаза два раза, ему каздый раз генерируется PrayerAtUser
         subscriber: Subscriber = None,
         prayer_times: QuerySet = None,
-        prayer_pk: int = None) -> List[List[Tuple[str, str]]]:
+        prayer_at_user_pk: int = None) -> List[List[Tuple[str, str]]]:
     """Возвращает кнопки со статусом намазов"""
-    if prayer_pk is None:
-        prayer_group = PrayerAtUserGroup.objects.create()
-        prayers = [PrayerAtUser.objects.create(subscriber=subscriber, prayer_group=prayer_group, prayer=prayer)
-        # TODO Почему намазы для пользователей генерируются в кнопках
-                   for prayer in prayer_times]
-        # pprint(prayers)
+    # TODO если пользователь получил 2 времени намаза в разных городах в один день, вероятно будет ошибка
+
+    # TODO добавить сортировку
+
+    text_for_read_prayer = 'set_prayer_status_to_unread({})'
+    text_for_unread_prayer = 'set_prayer_status_to_read({})'
+    if prayer_at_user_pk:
+        day = PrayerAtUser.objects.get(pk=prayer_at_user_pk).prayer.day
+        prayers = PrayerAtUser.objects.filter(prayer__day=day).order_by('pk')
     else:
-        prayer = PrayerAtUser.objects.get(pk=prayer_pk)
-        prayers = PrayerAtUser.objects.filter(prayer_group=prayer.prayer_group).order_by('pk')
-    buttons = [
-        [(get_emoji_for_button(x), f'change_prayer_status({x.pk})') for x in prayers]
-    ]
-    return buttons
+        prayers = generate_prayer_at_user(subscriber.tg_chat_id, prayer_times.order_by('pk'))
+    buttons = []
+    for x in prayers:
+        handle_text = text_for_read_prayer.format(x.pk) if x.is_read else text_for_unread_prayer.format(x.pk)
+        buttons.append(
+            (get_emoji_for_button(x), handle_text),
+        )
+    return [buttons]
 
 
 def get_text_prayer_times(prayer_times: QuerySet, city_name: str, date: datetime) -> str:
     res = f'Время намаза для г. {city_name} ({date.strftime("%d.%m.%Y")}) \n\n'
     for i in range(6):
-        res += f'{prayer_times[i].get_name_display()}: {prayer_times[i].time.strftime("%H:%M")}\n'
+        prayer = prayer_times[i]
+        res += f'{prayer.get_name_display()}: {prayer.time.strftime("%H:%M")}\n'
     return res
 
 
@@ -178,6 +196,7 @@ def get_prayer_time_or_no(chat_id: int) -> Answer:
     today = datetime.now()
     prayers = get_prayer_time(subscriber.city, today)
     text = get_text_prayer_times(prayers, subscriber.city.name, today)
-    answer = Answer(text)
+    keyboard = InlineKeyboard(get_buttons(subscriber, prayers)).keyboard
+    answer = Answer(text, keyboard=keyboard)
     return answer
 
