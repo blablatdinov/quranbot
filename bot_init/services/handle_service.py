@@ -7,10 +7,10 @@ from bot_init.markup import InlineKeyboard
 from bot_init.schemas import Answer
 from bot_init.services.text_message_service import translate_ayat_into_answer
 from bot_init.models import Subscriber
-from bot_init.service import get_tbot_instance
+from bot_init.service import get_tbot_instance, get_subscriber_by_chat_id
 from content.models import Ayat
 from prayer.models import PrayerAtUser
-from prayer.service import get_buttons, unread_prayer_type_minus_one, get_unread_prayers
+from prayer.service import get_buttons, unread_prayer_type_minus_one, get_unread_prayers, get_prayer_time
 
 
 def _get_ayat(text: str) -> List[Answer]:
@@ -45,13 +45,14 @@ def _add_ayat_in_favourites(text: str, chat_id: int) -> str:
     return 'Аят добавлен в избранные'
 
 
-def _change_prayer_status(text: str) -> InlineKeyboardMarkup:
+def _change_prayer_status(chat_id: int, text: str, to: bool) -> InlineKeyboardMarkup:
     """Меняем статус намаза на прочитанный или не прочитанный"""
+    subscriber = get_subscriber_by_chat_id(chat_id)
     prayer_pk = int(re.search(r'\d+', text).group(0))
     prayer = PrayerAtUser.objects.get(pk=prayer_pk)
-    prayer.is_read = not prayer.is_read
+    prayer.is_read = to
     prayer.save()
-    keyboard = InlineKeyboard(get_buttons(prayer_pk=prayer_pk)).keyboard
+    keyboard = InlineKeyboard(get_buttons(subscriber, prayer_at_user_pk=prayer_pk)).keyboard
     return keyboard
 
 
@@ -63,8 +64,16 @@ def handle_query_service(text: str, chat_id: int = None, call_id: int = None, me
     elif 'add_in_favourites' in text:
         text = _add_ayat_in_favourites(text, chat_id)
         get_tbot_instance().answer_callback_query(call_id, show_alert=True, text=text)
-    elif 'change_prayer_status' in text:
-        keyboard = _change_prayer_status(text)
+    elif 'set_prayer_status_to_read' in text:
+        keyboard = _change_prayer_status(chat_id, text, True)
+        get_tbot_instance().edit_message_text(
+            text=message_text,
+            chat_id=chat_id,
+            message_id=message_id,
+            reply_markup=keyboard
+        )
+    elif 'set_prayer_status_to_unread' in text:
+        keyboard = _change_prayer_status(chat_id, text, False)
         get_tbot_instance().edit_message_text(
             text=message_text,
             chat_id=chat_id,
