@@ -184,8 +184,9 @@ def get_unread_prayers(chat_id) -> Answer:
     text = 'Непрочитано\n\n'
     unread_prayers = get_unread_prayers_by_chat_id(chat_id)
     for i in [0, 2, 3, 4, 5]:
-        prayer_type_group = unread_prayers.filter(prayer__name=PRAYER_NAMES[i][0])
-        text += f'{PRAYER_NAMES[i][1]}: {prayer_type_group.count()}\n'
+        prayer_name = PRAYER_NAMES[i][0]
+        prayer_type_group = [prayer for prayer in unread_prayers if prayer.prayer.name == prayer_name]
+        text += f'{PRAYER_NAMES[i][1]}: {len(prayer_type_group)}\n'
     return Answer(text, keyboard=get_keyboard_for_unread_prayers(chat_id))
 
 
