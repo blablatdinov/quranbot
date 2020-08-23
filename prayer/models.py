@@ -56,7 +56,9 @@ class PrayerAtUser(models.Model):
     prayer_group = models.ForeignKey(
         PrayerAtUserGroup, on_delete=models.CASCADE, verbose_name='Сгруппированные по 5 намазы для пользователя'
     )
-    prayer = models.ForeignKey(Prayer, on_delete=models.CASCADE, verbose_name='')
+    prayer = models.ForeignKey(
+        Prayer, on_delete=models.CASCADE, verbose_name='', related_name='prayers_at_user'
+    )
 
     def __str__(self):
         return f'{self.subscriber} {self.prayer}'
