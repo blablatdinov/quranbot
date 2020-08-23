@@ -7,9 +7,8 @@ cachetools==4.1.1
 celery==4.4.7
 certifi==2020.6.20
 chardet==3.0.4
-coverage==5.2.1
 decorator==4.4.2
-Django==3.0.7
+Django==3.0.9
 geographiclib==1.50
 geopy==2.0.0
 google-api-core==1.19.0
@@ -24,6 +23,7 @@ ipython==7.16.1
 ipython-genutils==0.2.0
 jedi==0.17.2
 kombu==4.6.11
+loguru==0.5.1
 lxml==4.5.2
 parso==0.7.1
 pexpect==4.8.0
