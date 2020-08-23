@@ -53,7 +53,7 @@ def set_city_to_subscriber_by_location(location: tuple, chat_id: int) -> Answer:
 
 def get_prayer_time(city: City, date: datetime = datetime.today() + timedelta(days=1)) -> QuerySet:
     """Возвращает время намазов для следующего дня"""
-    prayers = Prayer.objects.filter(city=city, day__date=date)
+    prayers = Prayer.objects.filter(city=city, day__date=date).order_by('pk')
     return prayers
 
 
@@ -103,10 +103,8 @@ def get_buttons(  # FIXME если пользователь запрашивае
     for x in prayers:
         handle_text = text_for_read_prayer.format(x.pk) if x.is_read else text_for_unread_prayer.format(x.pk)
         buttons.append(
-            (get_emoji_for_button(x) + str(x.pk), handle_text),
+            (get_emoji_for_button(x), handle_text),
         )
-    from pprint import pprint
-    pprint(buttons)
     return [buttons]
 
 
@@ -114,7 +112,7 @@ def get_text_prayer_times(prayer_times: QuerySet, city_name: str, date: datetime
     res = f'Время намаза для г. {city_name} ({date.strftime("%d.%m.%Y")}) \n\n'
     for i in range(6):
         prayer = prayer_times[i]
-        res += f'{prayer.pk} {prayer.get_name_display()}: {prayer.time.strftime("%H:%M")} {prayer.day}\n'
+        res += f'{prayer.get_name_display()}: {prayer.time.strftime("%H:%M")}\n'
     return res
 
 
