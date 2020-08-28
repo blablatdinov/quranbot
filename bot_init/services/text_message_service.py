@@ -10,6 +10,7 @@ from bot_init.markup import InlineKeyboard
 from bot_init.models import Mailing, Subscriber
 from bot_init.schemas import Answer
 from bot_init.service import get_tbot_instance, get_admins_list
+from bot_init.exceptions import AyatDoesNotExists
 from content.models import Podcast, Ayat, AudioFile
 from prayer.service import get_unread_prayers, set_city_to_subscriber, get_prayer_time_or_no
 from prayer.models import City
@@ -119,8 +120,11 @@ def text_message_service(chat_id: int, message_text: str, message_id: int = None
     elif 'Избранное' in message_text:
         answer = get_favourite_ayats(chat_id)
     elif ':' in message_text:
-        ayat = get_ayat_by_sura_ayat(message_text)
-        answer = translate_ayat_into_answer(ayat)
+        try:
+            ayat = get_ayat_by_sura_ayat(message_text)
+            answer = translate_ayat_into_answer(ayat)
+        except AyatDoesNotExists:
+            answer = Answer('Аят не найден')
     elif (regexp_result := re.search(r'/del\d+', message_text)) and chat_id in get_admins_list():
         mailing_pk = re.search(r'\d+', regexp_result.group(0)).group(0)
         delete_messages_in_mailing(mailing_pk)
