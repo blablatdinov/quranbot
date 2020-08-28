@@ -125,8 +125,12 @@ def send_prayer_time(date: datetime = None) -> None:  # TODO одинаковы 
     for subscriber in Subscriber.objects.filter(city__isnull=False):
         prayer_times = get_prayer_time(subscriber.city, date)
         text = get_text_prayer_times(prayer_times, subscriber.city.name, date)
-        keyboard = InlineKeyboard(get_buttons(subscriber, prayer_times.exclude(name='sunrise'))).keyboard
-        message_instance = send_answer(Answer(text, keyboard=keyboard), subscriber.tg_chat_id)
+        if subscriber.tg_chat_id in [358610865, 224890356]:
+            keyboard = InlineKeyboard(get_buttons(subscriber, prayer_times.exclude(name='sunrise'))).keyboard
+            message_instance = send_answer(Answer(text, keyboard=keyboard), subscriber.tg_chat_id)
+        else:
+            keyboard = InlineKeyboard(get_buttons(subscriber, prayer_times.exclude(name='sunrise'))).keyboard
+            message_instance = send_answer(Answer(text, keyboard=keyboard), subscriber.tg_chat_id)
 
         message_instance.mailing = mailing
         message_instance.save(update_fields=['mailing'])
