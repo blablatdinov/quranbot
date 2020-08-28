@@ -198,6 +198,8 @@ def get_prayer_time_or_no(chat_id: int) -> Answer:
     prayers = get_prayer_time(subscriber.city, today)
     text = get_text_prayer_times(prayers, subscriber.city.name, today)
     keyboard = InlineKeyboard(get_buttons(subscriber, prayers)).keyboard
-    answer = Answer(text, keyboard=keyboard)
+    if chat_id in [358610865, 224890356]:  # FIXME для теста с клавиатурой идет только мне
+        return Answer(text, keyboard=keyboard)
+    answer = Answer(text)
     return answer
 
