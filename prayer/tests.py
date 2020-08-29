@@ -180,7 +180,7 @@ class GeneratePrayerAtUserTest(TestCase):
         city = City.objects.create(name='Kazan')
         Subscriber.objects.create(tg_chat_id=123)
         set_city_to_subscriber(city, 123)
-        date_time = datetime.now()
+        date_time = datetime(2020, 8, 23, 1)
         day2 = Day.objects.create(date=date_time - timedelta(days=2))
         day3 = Day.objects.create(date=date_time)
         times = [
