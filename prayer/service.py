@@ -96,7 +96,8 @@ def get_buttons(  # FIXME если пользователь запрашивае
     text_for_unread_prayer = 'set_prayer_status_to_read({})'
     if prayer_at_user_pk:
         day = PrayerAtUser.objects.get(pk=prayer_at_user_pk).prayer.day
-        prayers = PrayerAtUser.objects.filter(prayer__day=day).order_by('pk')
+        subscriber = PrayerAtUser.objects.get(pk=prayer_at_user_pk).subscriber
+        prayers = PrayerAtUser.objects.filter(subscriber=subscriber, prayer__day=day).order_by('pk')
     else:
         prayers = generate_prayer_at_user(subscriber.tg_chat_id, prayer_times.order_by('pk'))
     buttons = []
