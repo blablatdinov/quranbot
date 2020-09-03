@@ -9,13 +9,14 @@ from prayer.schemas import PRAYER_NAMES
 
 
 def get_time_by_str(text: str) -> datetime:
+    """Генерируем datetime по строке"""
     return datetime.strptime(text, '%d.%m.%Y')
 
 
 def prayer_time_parser():
+    """Функция парсит данные с сайта http://dum.rt/"""
     for city in City.objects.all():
         r = requests.get(city.link_to_csv)
-        # with open(r.co) as f:
         decoded_content = r.content.decode('utf-8')
         csv_reader = csv.reader(decoded_content.splitlines(), delimiter=';')
         for row in csv_reader:
