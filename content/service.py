@@ -29,14 +29,15 @@ def get_subscribers_with_content():
             select
                 s.tg_chat_id,
                 STRING_AGG(
-                    '<b>' || a.sura::character varying || ': ' || a.ayat || ')</b> ' || a .content || '\n',
+                    '<b>' || sura::character varying || ': ' || a.ayat || ')</b> ' || a .content || '\n',
                     ''
                     order by a.id
                 ),
-                STRING_AGG(a.link_to_source, '|' order by a.id)
+                STRING_AGG(sura.link, '|' order by a.id)
             from bot_init_subscriber as s
             left join content_morningcontent as mc on s.day=mc.day
             left join content_ayat as a on a.one_day_content_id=mc.id
+            left join content_sura as sura on a.sura_id=sura.id
             where s.is_active='t'
             group by s.tg_chat_id
         """)
