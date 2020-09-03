@@ -23,6 +23,7 @@ def get_morning_content(day_num: int) -> str:
 
 
 def get_subscribers_with_content():
+    """Получаем данные для утренней рассылки одним запросом"""
     with connection.cursor() as cursor:
         cursor.execute("""
             select

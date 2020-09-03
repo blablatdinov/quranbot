@@ -21,6 +21,7 @@ def get_address(x: str, y: str):
 
 
 def set_city_to_subscriber(city: City, chat_id: int) -> Answer:
+    """Присваивает город подписчику по инстансу города и идентификатору чата с пользователем"""
     subscriber = get_subscriber_by_chat_id(chat_id)
     subscriber.city = city
     subscriber.save(update_fields=['city'])
@@ -28,6 +29,7 @@ def set_city_to_subscriber(city: City, chat_id: int) -> Answer:
 
 
 def get_city_not_found_answer(text: str = None) -> Answer:
+    """Генерирует ответ если подписчик с неустановленным городом пытается получить время намаза"""
     if text is None:
         text = 'Город не найден,\nвоспользуйтесь поиском'
     keyboard = InlineKeyboardMarkup()
@@ -110,6 +112,7 @@ def get_buttons(  # FIXME если пользователь запрашивае
 
 
 def get_text_prayer_times(prayer_times: QuerySet, city_name: str, date: datetime) -> str:
+    """Преобразует QuerySet намазов в текст для отправки пользователю"""
     res = f'Время намаза для г. {city_name} ({date.strftime("%d.%m.%Y")}) \n\n'
     for i in range(6):
         prayer = prayer_times[i]
@@ -137,7 +140,8 @@ def send_prayer_time(date: datetime = None) -> None:  # TODO одинаковы 
     msg.save(update_fields=['mailing'])
 
 
-def get_now_prayer(chat_id: int, date_time=None):
+def get_now_prayer(chat_id: int, date_time=None) -> Prayer:
+    """Получаем текущий намаз"""
     date_time = date_time if date_time is not None else datetime.now()
     prayer_time = time(hour=date_time.hour, minute=date_time.minute)
     prayer = Prayer.objects.filter(
@@ -192,6 +196,7 @@ def get_unread_prayers(chat_id) -> Answer:
 
 
 def get_prayer_time_or_no(chat_id: int) -> Answer:
+    """Возвращает ответ с временами намазов или приглашением к поиску, если не установлен город"""
     subscriber = get_subscriber_by_chat_id(chat_id)
     if subscriber.city is None:
         return get_city_not_found_answer(text='Вы не указали город, отправьте местоположение или воспользуйтесь поиском')
@@ -200,6 +205,3 @@ def get_prayer_time_or_no(chat_id: int) -> Answer:
     text = get_text_prayer_times(prayers, subscriber.city.name, today)
     keyboard = InlineKeyboard(get_buttons(subscriber, prayers)).keyboard
     return Answer(text, keyboard=keyboard)
-    answer = Answer(text)
-    return answer
-
