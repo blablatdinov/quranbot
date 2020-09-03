@@ -2,6 +2,7 @@ from django.test import TestCase
 
 from bot_init.services.text_message_service import *
 from bot_init.models import Ayat
+from content.models import Sura
 from bot_init.exceptions import AyatDoesNotExists
 
 
@@ -11,11 +12,12 @@ class GetAyatByTextTestCase(TestCase):
         pairs = ['1:1-7', '2:1-5', '4:67, 68', '4:12', '5:1, 3']
         ayats = []
         for elem in pairs:
+            sura = Sura.objects.create(number=int(elem.split(':')[0]), link='some_link', child_elements_count=5)
             ayats.append(Ayat.objects.create(
                 content='asdf',
                 arab_text='asdf',
                 trans='asdf',
-                sura=int(elem.split(':')[0]),
+                sura=sura,
                 ayat=elem.split(':')[1],
                 html='<html></html>',
             ))
@@ -24,7 +26,6 @@ class GetAyatByTextTestCase(TestCase):
             res1 = ayats[i]
             res2 = get_ayat_by_sura_ayat(test_data[i])
             self.assertEqual(res1, res2)
-
         try:
             get_ayat_by_sura_ayat('5:2')
         except AyatDoesNotExists:
@@ -35,11 +36,12 @@ class TranslateAyatIntoAnswerTestCase(TestCase):
 
     def test_ok(self):
         audio = AudioFile.objects.create(audio_link='some_link')
+        sura = Sura.objects.create(number=3, link='some_link', child_elements_count=5)
         a1 = Ayat.objects.create(
-            content='asdf', arab_text='asdf', trans='asdf', sura=7, ayat='10', html='<html></html>', audio=audio
+            content='asdf', arab_text='asdf', trans='asdf', sura=sura, ayat='10', html='<html></html>', audio=audio
         )
         Ayat.objects.create(
-            content='asdf', arab_text='asdf', trans='asdf', sura=7, ayat='15', html='<html></html>',
+            content='asdf', arab_text='asdf', trans='asdf', sura=sura, ayat='15', html='<html></html>',
         )
         res = translate_ayat_into_answer(a1)
         text_for_a1 = f'<b>({a1.sura}:{a1.ayat})</b>\n{a1.arab_text}\n\n{a1.content}\n\n<i>{a1.trans}</i>\n\n'

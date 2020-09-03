@@ -4,6 +4,7 @@ import random
 
 from dotenv import load_dotenv
 from telebot import TeleBot
+from django.test import TestCase
 
 from bot_init.service import get_admins_list, get_tbot_instance, _subscriber_unsubscribed, _not_created_subscriber_service, _created_subscriber_service
 from bot_init.service import *
@@ -11,7 +12,7 @@ from bot_init.service import _create_action
 # from bot_init.models import Subscriber, SubscriberAction, AdminMessage
 from bot_init.models import *
 from bot_init.schemas import Answer
-from django.test import TestCase
+from content.models import Sura
 
 
 load_dotenv('.env')
@@ -93,11 +94,12 @@ class NewSubscriberServiceTestCase(TestCase):
         start_message_text = 'Hello'
         AdminMessage.objects.create(key='start', text=start_message_text, title=start_message_text)
         m = MorningContent.objects.create(day=1)
+        sura = Sura.objects.create(number=3, link='some_link', child_elements_count=5)
         Ayat.objects.create(
             content='asdf',
             arab_text='asdf',
             trans='asdf',
-            sura=5,
+            sura=sura,
             ayat='3',
             html='<html></html>',
             one_day_content=m
