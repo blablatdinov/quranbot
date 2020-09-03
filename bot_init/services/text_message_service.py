@@ -46,7 +46,7 @@ def get_ayat_by_sura_ayat(text: str) -> Ayat:
     if not 1 <= sura_num <= 114:
         raise SuraDoesNotExists
 
-    ayats_in_sura = Ayat.objects.filter(sura=sura_num)  # TODO разнести функцию, не читаемый код
+    ayats_in_sura = Ayat.objects.filter(sura__number=sura_num)  # TODO разнести функцию, не читаемый код
     for ayat in ayats_in_sura:
         if '-' in str(ayat):
             low_limit, up_limit = [int(x) for x in str(ayat).split(':')[1].split('-')]

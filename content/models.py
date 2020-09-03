@@ -16,9 +16,9 @@ class MorningContent(models.Model):
         if self.additional_content != '':
             result += f'{self.additional_content}\n\n'
         for ayat in ayats:
-            result += f'<b>{ayat.sura}:{ayat.ayat})</b> {ayat.content}\n'
+            result += f'<b>{ayat.sura.number}:{ayat.ayat})</b> {ayat.content}\n'
         if result != '':
-            result += f'\nСсылка на источник: <a href="https://umma.ru{ayats[0].link_to_source}">umma.ru</a>'
+            result += f'\nСсылка на источник: <a href="https://umma.ru{ayats[0].sura.link}">umma.ru</a>'
         return result
 
     class Meta:
@@ -35,27 +35,35 @@ class AudioFile(models.Model):
         return self.audio_link
 
 
+class Sura(models.Model):
+    number = models.IntegerField(verbose_name='Номер суры')
+    pars_hash = models.CharField(max_length=64, blank=True, null=True, verbose_name='Хэш после предыдущей сессии парсинга')
+    link = models.CharField(max_length=128, verbose_name='Ссылка на суру')
+    child_elements_count = models.IntegerField(verbose_name='Кол-во записей аятов в суре')
+
+
 class Ayat(models.Model):
     """Аят священного Корана"""
     additional_content = models.TextField(blank=True, verbose_name='Допопнительный контент')
     content = models.TextField(verbose_name='Текст аята', blank=True)
     arab_text = models.TextField(verbose_name='Арабский текст', blank=True)
     trans = models.TextField(verbose_name='Транслитерация', blank=True)
-    sura = models.IntegerField(verbose_name='Номер суры', null=True)
+    # sura = models.IntegerField(verbose_name='Номер суры', null=True)
+    sura = models.ForeignKey(Sura, on_delete=models.CASCADE, verbose_name='Номер суры')
     ayat = models.CharField(max_length=16, verbose_name='Номер аята', null=True)
     html = models.TextField(verbose_name='Спарсенный HTML текст')
     audio = models.OneToOneField(AudioFile, on_delete=models.PROTECT, verbose_name='Аудио файл', blank=True, null=True)
     one_day_content = models.ForeignKey(
         MorningContent, blank=True, null=True, on_delete=models.SET_NULL, verbose_name='Ежедневный контент'
     )
-    link_to_source = models.CharField(max_length=512, verbose_name='Ссылка на источник')
+    # link_to_source = models.CharField(max_length=512, verbose_name='Ссылка на источник')
 
     def get_content(self) -> str:
         """Рендерим аят для отправки в HTML"""
         return f'<b>({self.sura}:{self.ayat})</b>\n{self.arab_text}\n\n{self.content}\n\n<i>{self.trans}</i>\n\n'
 
     def __str__(self):
-        return f'{self.sura}:{self.ayat}'
+        return f'{self.sura.number}:{self.ayat}'
 
     class Meta:
         verbose_name = 'Аят Священного Корана'
