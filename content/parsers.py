@@ -97,17 +97,20 @@ class AyatParser:
 
             blocks = self.get_sura_html(page)
             for block in blocks:
-                Ayat.objects.create(
+                ayat, created = Ayat.objects.get_or_create(
                     arab_text=self.get_arab_text(block),
-                    trans=self.get_transcription(block),
-                    content=''.join([x for x in self.get_content(block)]).replace(  # FIXME починить очистку текста
+                    sura=sura,
+                    ayat=self.get_ayat(block),
+                )
+                if not created:
+                    ayat.trans = self.get_transcription(block),
+                    ayat.content = ''.join([x for x in self.get_content(block)]).replace(  # FIXME починить очистку текста
                         'Ссылки на богословские первоисточники и комментарий:',
                         ''
                     ),
-                    sura=sura,
-                    ayat=self.get_ayat(block),
-                    html=str(block),
-                )
+                    ayat.html = str(block)
+                    ayat.save()
+
             print(f'Sura {sura.number} was parsed')
 
 
