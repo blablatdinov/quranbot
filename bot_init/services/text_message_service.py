@@ -91,7 +91,7 @@ def get_keyboard_for_ayat(ayat: Ayat):
 
 
 def translate_ayat_into_answer(ayat: Ayat) -> List[Answer]:
-    text = f'<b>({ayat.sura}:{ayat.ayat})</b>\n{ayat.arab_text}\n\n{ayat.content}\n\n<i>{ayat.trans}</i>\n\n'
+    text = f'<a href="https://umma.ru{ayat.sura.link}">({ayat.sura.number}:{ayat.ayat})</a>\n{ayat.arab_text}\n\n{ayat.content}\n\n<i>{ayat.trans}</i>\n\n'
     return [Answer(text=text, keyboard=get_keyboard_for_ayat(ayat)), get_audio_answer(ayat.audio)]
 
 

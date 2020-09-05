@@ -29,7 +29,7 @@ def get_subscribers_with_content():
             select
                 s.tg_chat_id,
                 STRING_AGG(
-                    '<b>' || sura::character varying || ': ' || a.ayat || ')</b> ' || a .content || '\n',
+                    '<b>' || sura.number::character varying || ': ' || a.ayat || ')</b> ' || a .content || '\n',
                     ''
                     order by a.id
                 ),
