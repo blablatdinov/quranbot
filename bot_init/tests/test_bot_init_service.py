@@ -9,7 +9,7 @@ from django.test import TestCase
 from bot_init.service import get_admins_list, get_tbot_instance, _subscriber_unsubscribed, _not_created_subscriber_service, _created_subscriber_service
 from bot_init.service import *
 from bot_init.service import _create_action
-# from bot_init.models import Subscriber, SubscriberAction, AdminMessage
+from bot_init.models import Subscriber, SubscriberAction, AdminMessage
 from bot_init.models import *
 from bot_init.schemas import Answer
 from content.models import Sura
@@ -91,8 +91,6 @@ class NewSubscriberServiceTestCase(TestCase):
 
     def test_ok(self):
         chat_id = 8439934
-        start_message_text = 'Hello'
-        AdminMessage.objects.create(key='start', text=start_message_text, title=start_message_text)
         m = MorningContent.objects.create(day=1)
         sura = Sura.objects.create(number=3, link='some_link', child_elements_count=5)
         Ayat.objects.create(
@@ -111,7 +109,7 @@ class NewSubscriberServiceTestCase(TestCase):
         self.assertEqual(True, s.is_active)
         self.assertEqual(True, isinstance(answer, list))
         self.assertEqual(2, len(answer))
-        self.assertEqual(start_message_text, answer[0].text)
+        self.assertEqual(AdminMessage.objects.get(key='start').text, answer[0].text)
 
 
 # class TestCase(TestCase):
