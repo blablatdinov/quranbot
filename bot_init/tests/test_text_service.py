@@ -44,7 +44,7 @@ class TranslateAyatIntoAnswerTestCase(TestCase):
             content='asdf', arab_text='asdf', trans='asdf', sura=sura, ayat='15', html='<html></html>',
         )
         res = translate_ayat_into_answer(a1)
-        text_for_a1 = f'<b>({a1.sura}:{a1.ayat})</b>\n{a1.arab_text}\n\n{a1.content}\n\n<i>{a1.trans}</i>\n\n'
+        text_for_a1 = f'<a href="https://umma.rusome_link">(3:10)</a>\nasdf\n\n{a1.content}\n\n<i>{a1.trans}</i>\n\n'
         self.assertEqual(text_for_a1, res[0].text)
         keyboard_for_a1 = get_keyboard_for_ayat(a1)
         self.assertEqual(keyboard_for_a1.to_json(), res[0].keyboard.to_json())
