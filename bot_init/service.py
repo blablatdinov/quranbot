@@ -174,7 +174,7 @@ def upload_database_dump():
     service = build('drive', 'v3', credentials=credentials)
     folder_id = '1G_NYTKUHkQixdElU1hOCg4PR2c66zJPB'
 
-    command = f'/var/lib/postgresql/bin/pg_dump -U qbot qbot_db -h localhost | gzip -c --best > {settings.BASE_DIR}/deploy/qbot_db.sql.gz'
+    command = f'pg_dump -U qbot qbot_db -h localhost | gzip -c --best > {settings.BASE_DIR}/deploy/qbot_db.sql.gz'
     os.system(command)
 
     name = 'qbot_db.sql.gz'
