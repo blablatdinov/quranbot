@@ -3,12 +3,16 @@ from datetime import datetime
 from django.db import connection
 from django.db import connection
 from django.db.models import F
+from loguru import logger
 
 from bot_init.models import Subscriber, Mailing
 from bot_init.schemas import Answer
 from bot_init.service import send_answer, send_message_to_admin
 from bot_init.markup import get_default_keyboard
 from content.models import MorningContent
+
+
+logger.add('logs/app.log')
 
 
 def get_morning_content(day_num: int) -> str:
@@ -19,7 +23,7 @@ def get_morning_content(day_num: int) -> str:
     except MorningContent.DoesNotExist:
         text = f'Ежедневный контент для дня {day_num} не найден'
         send_message_to_admin(text)
-        # TODO log
+        logger.warning(text)
 
 
 def get_subscribers_with_content():
@@ -63,7 +67,7 @@ def do_morning_content_distribution():
             message_instance.mailing = mailing
             message_instance.save(update_fields=['mailing'])
         except Exception as e:
-            print(e)
+            logger.error(e)
 
     for subscriber in Subscriber.objects.filter(is_active=True):
         subscriber.day += 1
