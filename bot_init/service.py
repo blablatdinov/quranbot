@@ -20,7 +20,7 @@ def delete_message_in_tg(chat_id: int, message_id: int) -> bool:
 
 
 def get_admins_list():
-    return settings.TG_BOT.admins
+    return settings.TG_BOT.admins + [admin.subscriber.tg_chat_id for admin in Admin.objects.all()]
 
 
 def _create_action(subscriber: Subscriber, action: str):
@@ -58,8 +58,8 @@ def _send_answer(answer: Answer, chat_id: int):  # TODO где будет рег
             send_message_to_admin('Закончился ежедневный контент')
             raise Exception('Закончился ежедневный контент')
         else:
+            print(e)
             send_message_to_admin(f'Непредвиденная ошибка\n\n{e}')
-            # TODO log
             raise e
 
 
@@ -86,7 +86,7 @@ def send_answer(answer, chat_id) -> Message:
 def send_message_to_admin(message_text: str) -> Message:
     """Отправляем сообщение админу"""
     answer = Answer(message_text)
-    admins_tg_chat_ids = settings.TG_BOT.admins + [admin.subscriber.tg_chat_id for admin in Admin.objects.all()]
+    admins_tg_chat_ids = get_admins_list()
     for admin_tg_chat_id in admins_tg_chat_ids:
         message_instance = send_answer(answer, admin_tg_chat_id)
     return message_instance
