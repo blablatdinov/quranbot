@@ -6,6 +6,12 @@ from django.utils.safestring import mark_safe
 from bot_init.models import Message, Subscriber, Mailing, AdminMessage, SubscriberAction, CallbackData
 
 
+class SubscriberActionInline(admin.StackedInline):
+    model = SubscriberAction
+    extra = 0
+
+
+
 class DisplayMailingFilter(admin.SimpleListFilter):
     """Фильтр позволяет отключить отображение рассылок в административной панели"""
     title = 'Отображать сообщения'
@@ -61,6 +67,7 @@ class MessageAdmin(admin.ModelAdmin):
 
 @admin.register(Subscriber)
 class SubscriberAdmin(admin.ModelAdmin):
+    inlines = [SubscriberActionInline]
     search_fields = (
         'tg_chat_id',
     )
