@@ -8,8 +8,12 @@ import requests
 import lxml
 from bs4 import BeautifulSoup
 from progressbar import progressbar as pbar
+from loguru import logger
 
 from content.models import Ayat, AudioFile, Sura
+
+
+logger.add('logs/app.log')
 
 
 base_url = 'https://umma.ru'
@@ -111,7 +115,7 @@ class AyatParser:
                     ayat.html = str(block)
                     ayat.save()
 
-            print(f'Sura {sura.number} was parsed')
+            logger.info(f'Sura {sura.number} was parsed')
 
 
 def run_parser():
