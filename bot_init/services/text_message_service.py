@@ -12,6 +12,7 @@ from bot_init.schemas import Answer
 from bot_init.service import get_tbot_instance, get_admins_list
 from bot_init.exceptions import AyatDoesNotExists
 from content.models import Podcast, Ayat, AudioFile
+from content.service import search_ayat, find_ayat_by_text
 from prayer.service import get_unread_prayers, set_city_to_subscriber, get_prayer_time_or_no
 from prayer.models import City
 from loguru import logger
@@ -137,6 +138,12 @@ def text_message_service(chat_id: int, message_text: str, message_id: int = None
         answer = set_city_to_subscriber(city, chat_id)
     elif 'Время намаза' in message_text:
         answer = get_prayer_time_or_no(chat_id)
+    elif 'Найти аят' in message_text:
+        sub = Subscriber.objects.get(tg_chat_id=chat_id)
+        sub.step = 'search_ayat'
+        sub.save()
+    elif Subscriber.objects.get(tg_chat_id=chat_id).step == 'search_ayat':
+        answer = find_ayat_by_text(message_text)
     else:
         raise UnknownMessage(message_text, message_id)
     return answer

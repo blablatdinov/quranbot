@@ -138,7 +138,8 @@ def update_webhook(host=f'{settings.TG_BOT.webhook_host}/{settings.TG_BOT.token}
     tbot = get_tbot_instance()
     tbot.remove_webhook()
     sleep(1)
-    web = tbot.set_webhook(host)
+    tbot.set_webhook(host)
+    logger.info(tbot.get_webhook_info())
 
 
 def get_subscriber_by_chat_id(chat_id: int):
@@ -147,7 +148,6 @@ def get_subscriber_by_chat_id(chat_id: int):
         return subscriber
     except Subscriber.DoesNotExist:
         logger.info(f'Subscriber {chat_id} does not exist')
-
 
 
 def check_user_status_by_typing(chat_id: int):
