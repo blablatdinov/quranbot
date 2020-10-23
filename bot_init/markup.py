@@ -77,7 +77,7 @@ def get_default_keyboard(additional_buttons=None):
         additional_buttons = []
     buttons = [
         ('🎧 Подкасты',),
-        ('🌟 Избранное',),
-        ('🕋  Время намаза',),
+        ('🕋 Время намаза',),
+        ('🌟 Избранное', '🔍 Найти аят'),
     ] + additional_buttons
     return Keyboard(buttons).keyboard
