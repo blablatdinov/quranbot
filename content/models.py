@@ -60,7 +60,7 @@ class Ayat(models.Model):
 
     def get_content(self) -> str:
         """Рендерим аят для отправки в HTML"""
-        return f'<b>({self.sura}:{self.ayat})</b>\n{self.arab_text}\n\n{self.content}\n\n<i>{self.trans}</i>\n\n'
+        return f'<b>({self.sura.number}:{self.ayat})</b>\n{self.arab_text}\n\n{self.content}\n\n<i>{self.trans}</i>\n\n'
 
     def __str__(self):
         return f'{self.sura.number}:{self.ayat}'
