@@ -11,3 +11,4 @@ db.sqlite3
 celerybeat*
 .env
 .coverage
+.DS_Store

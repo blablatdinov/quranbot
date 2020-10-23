@@ -1,16 +1,11 @@
-from datetime import datetime
-
 from django.db import connection
-from django.db import connection
-from django.db.models import F
 from loguru import logger
 
 from bot_init.models import Subscriber, Mailing
 from bot_init.schemas import Answer
-from bot_init.service import send_answer, send_message_to_admin
-from bot_init.markup import get_default_keyboard
-from content.models import MorningContent
-
+from bot_init.service import send_answer, send_message_to_admin, get_tbot_instance
+from bot_init.markup import get_default_keyboard, InlineKeyboard
+from content.models import MorningContent, Ayat
 
 logger.add('logs/app.log')
 
@@ -78,3 +73,31 @@ def do_morning_content_distribution():
     msg.mailing = mailing
     msg.save(update_fields=['mailing'])
     # FIXME чет дофига длинная функция получается
+
+
+def search_ayat(text: str) -> Answer:
+    queryset = Ayat.objects.filter(content__icontains=text).order_by("pk")
+    return queryset
+
+
+def find_ayat_by_text(query_text: str, offset: int = None) -> list:
+    queryset = search_ayat(query_text)
+    logger.debug(queryset)
+    result = []
+    ayats_count = queryset.count()
+    if offset is None:
+        offset = 1
+        text = f"По вашему запросу найдено {ayats_count} аятов:"
+        result.append(Answer(text))
+    buttons = [
+        (
+            ("<", f"change_query_ayat('{query_text}',{offset - 1})"),
+            (f"{offset}/{ayats_count}", "asdf"),
+            (">", f"change_query_ayat('{query_text}',{offset + 1})"),
+        )
+    ]
+    keyboard = InlineKeyboard(buttons).keyboard
+    ayat = queryset[offset - 1]
+    text = ayat.get_content()
+    result.append(Answer(text, keyboard))
+    return result
