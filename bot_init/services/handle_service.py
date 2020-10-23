@@ -2,6 +2,7 @@ import re
 from typing import List
 
 from telebot.types import InlineKeyboardMarkup
+from loguru import logger
 
 from bot_init.markup import InlineKeyboard
 from bot_init.schemas import Answer
@@ -9,6 +10,7 @@ from bot_init.services.text_message_service import translate_ayat_into_answer
 from bot_init.models import Subscriber
 from bot_init.service import get_tbot_instance, get_subscriber_by_chat_id
 from content.models import Ayat
+from content.service import find_ayat_by_text
 from prayer.models import PrayerAtUser
 from prayer.service import get_buttons, unread_prayer_type_minus_one, get_unread_prayers, get_prayer_time
 
@@ -87,4 +89,14 @@ def handle_query_service(text: str, chat_id: int = None, call_id: int = None, me
             chat_id=chat_id,
             message_id=message_id,
             reply_markup=answer.keyboard
+        )
+    elif "change_query_ayat" in text:
+        query_text, offset = eval(re.search(r'\(.+\)', text).group(0))
+        answer = find_ayat_by_text(query_text, offset)[0]
+        get_tbot_instance().edit_message_text(
+            text=answer.text,
+            reply_markup=answer.keyboard,
+            message_id=message_id,
+            chat_id=chat_id,
+            parse_mode='HTML'
         )

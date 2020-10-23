@@ -32,6 +32,7 @@ class Subscriber(models.Model):
     """ Модель подписчика бота """
     tg_chat_id = models.IntegerField(verbose_name="Идентификатор подписчика", unique=True)
     is_active = models.BooleanField(default=True, verbose_name="Подписан ли польователь на бота")
+    step = models.CharField(max_length=100, verbose_name="Шаг пользователя", blank=True, null=True)
     comment = models.TextField(blank=True, null=True, verbose_name="Комментарий к подписчику")
     day = models.IntegerField(default=2, verbose_name="День, для рассылки утреннего контента")
     favourite_ayats = models.ManyToManyField(
