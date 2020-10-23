@@ -14,6 +14,7 @@ from bot_init.exceptions import AyatDoesNotExists
 from content.models import Podcast, Ayat, AudioFile
 from prayer.service import get_unread_prayers, set_city_to_subscriber, get_prayer_time_or_no
 from prayer.models import City
+from loguru import logger
 
 
 def get_audio_answer(audio: AudioFile) -> Answer:
@@ -26,6 +27,7 @@ def get_audio_answer(audio: AudioFile) -> Answer:
 def get_random_podcast() -> Podcast:
     """Возвращает рандомный подкаст"""
     podcast = choice(Podcast.objects.all())
+    logger.debug(podcast)
     return podcast
 
 

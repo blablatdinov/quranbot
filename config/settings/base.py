@@ -3,6 +3,7 @@ from collections import namedtuple
 
 from dotenv import load_dotenv
 import requests
+from loguru import logger
 
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -86,19 +87,19 @@ TG_BOT.token = os.getenv('BOT_TOKEN')
 TG_BOT.webhook_host = os.getenv('HOST')
 r = requests.get(f'https://api.telegram.org/bot{TG_BOT.token}/getMe').json()
 if not r.get('ok'):
-    print(r)  # TODO Нормальное логгирование
+    logger.info(r)
     exit()
 try:
     if os.getenv('ADMINS') == '':
         TG_BOT.admins = []
     else:
         TG_BOT.admins = [int(chat_id) for chat_id in os.getenv('ADMINS').split(',')]
-except ValueError:
-    print('Пожалуйста проверьте переменную ADMINS в файле .env')
-    exit()
-except AttributeError:
-    print('Пожалуйста проверьте переменную ADMINS в файле .env')
-    exit()
+except ValueError as e:
+    logger.error('Пожалуйста проверьте переменную ADMINS в файле .env')
+    raise e
+except AttributeError as e:
+    logger.error('Пожалуйста проверьте переменную ADMINS в файле .env')
+    raise e
 TG_BOT.name = r['result']['username']
 TG_BOT.id = r['result']['id']
 
@@ -106,3 +107,4 @@ CELERY_BROKER_URL = 'redis://localhost:6379/1'
 
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASKS_SERIALIZER = 'json'
+

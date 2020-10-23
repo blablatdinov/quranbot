@@ -1,4 +1,5 @@
 import os
+import datetime
 from time import sleep
 
 from telebot import TeleBot
@@ -7,12 +8,16 @@ from google.oauth2 import service_account
 from googleapiclient.http import MediaIoBaseDownload, MediaFileUpload
 from googleapiclient.discovery import build
 from progressbar import progressbar as pbar
+from loguru import logger
 
 from django.conf import settings
 from bot_init.models import Subscriber, SubscriberAction, Message, AdminMessage, Admin
 from bot_init.utils import save_message
 from bot_init.schemas import Answer, SUBSCRIBER_ACTIONS
 from content.models import MorningContent
+
+
+logger.add('logs/app.log')
 
 
 def delete_message_in_tg(chat_id: int, message_id: int) -> bool:
@@ -58,7 +63,7 @@ def _send_answer(answer: Answer, chat_id: int):  # TODO где будет рег
             send_message_to_admin('Закончился ежедневный контент')
             raise Exception('Закончился ежедневный контент')
         else:
-            print(e)
+            logger.error(e)
             send_message_to_admin(f'Непредвиденная ошибка\n\n{e}')
             raise e
 
@@ -141,7 +146,7 @@ def get_subscriber_by_chat_id(chat_id: int):
         subscriber = Subscriber.objects.get(tg_chat_id=chat_id)
         return subscriber
     except Subscriber.DoesNotExist:
-        pass  # TODO что будем делать в этом случае
+        logger.info(f'Subscriber {chat_id} does not exist')
 
 
 
@@ -173,6 +178,7 @@ def upload_database_dump():
     credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
     service = build('drive', 'v3', credentials=credentials)
     folder_id = '1G_NYTKUHkQixdElU1hOCg4PR2c66zJPB'
+    start_time = datetime.datetime.now()
 
     command = f'pg_dump -U qbot qbot_db -h localhost | gzip -c --best > {settings.BASE_DIR}/deploy/qbot_db.sql.gz'
     os.system(command)
@@ -185,5 +191,5 @@ def upload_database_dump():
     }
     media = MediaFileUpload(file_path, resumable=True)
     r = service.files().create(body=file_metadata, media_body=media, fields='id').execute()
-    print('Dump uploaded succesful')
+    logger.info(f"Dump uploaded successful {datetime.datetime.now() - start_time}")
 
