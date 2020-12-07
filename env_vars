@@ -3,6 +3,7 @@ export SECRET_KEY=
 export HOST=
 export ADMINS=
 export DEBUG=
+export REDIS_CONNECTION=
 
 # Опционально, если при разработке БД Postgres
 

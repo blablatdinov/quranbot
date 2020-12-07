@@ -103,7 +103,7 @@ except AttributeError as e:
 TG_BOT.name = r['result']['username']
 TG_BOT.id = r['result']['id']
 
-CELERY_BROKER_URL = 'redis://localhost:6379/1'
+CELERY_BROKER_URL = os.getenv("REDIS_CONNECTION")
 
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASKS_SERIALIZER = 'json'
