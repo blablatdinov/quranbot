@@ -85,6 +85,8 @@ def find_ayat_by_text(query_text: str, offset: int = None) -> list:
     logger.debug(queryset)
     result = []
     ayats_count = queryset.count()
+    if ayats_count < 1:
+        return Answer('Аятов не найдено')
     if offset is None:
         offset = 1
         text = f"По вашему запросу найдено {ayats_count} аятов:"
