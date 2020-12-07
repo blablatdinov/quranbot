@@ -142,8 +142,11 @@ def text_message_service(chat_id: int, message_text: str, message_id: int = None
         sub = Subscriber.objects.get(tg_chat_id=chat_id)
         sub.step = 'search_ayat'
         sub.save()
-    elif Subscriber.objects.get(tg_chat_id=chat_id).step == 'search_ayat':
+        return Answer("Введите слово для поиска")
+    elif (sub := Subscriber.objects.get(tg_chat_id=chat_id)).step == 'search_ayat':
         answer = find_ayat_by_text(message_text)
+        sub.step = ''
+        sub.save()
     else:
         raise UnknownMessage(message_text, message_id)
     return answer
