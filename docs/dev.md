@@ -34,3 +34,26 @@ docker-compose -f ./docker/dev/docker-compose.yml up -d
 docker exec -ti qbot_db bash
 psql -U qbot -d qbot_db < some_file.sql
 ```
+
+```
+ngrok http 8000
+```
+
+Копируем url, который имеет протокол https, в моем случае было https://7db5d686bee3.ngrok.io
+Этот url вставляем в поле HOST в файле .env
+
+```
+./.env
+    export HOST=https://7db5d686bee3.ngrok.io
+```
+Создаем суперпользвоателя
+
+```
+./manage.py createsuperuser
+```
+
+Запускаем сервер
+
+```
+./manage.py runserver
+```
