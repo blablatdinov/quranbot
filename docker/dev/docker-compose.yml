@@ -1,7 +1,7 @@
 version: '3.7'
 services:
   qbot_db:
-    image: postgres:12.0-alpine
+    build: db
     container_name: qbot_db
     volumes:
       - postgres_data:/var/lib/postgresql/data/

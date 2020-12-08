@@ -1,12 +1,12 @@
 export BOT_TOKEN=
-export SECRET_KEY=
+export SECRET_KEY=asdf
 export HOST=
-export ADMINS=
-export DEBUG=
-export REDIS_CONNECTION=
+export ADMINS=358610865
+export DEBUG=true
+export REDIS_CONNECTION=redis://localhost:6380/0
 
 # Опционально, если при разработке БД Postgres
 
-export DB_NAME=
-export DB_USERNAME=
-export DB_PASSWORD=
+export DB_NAME=qbot_db
+export DB_USERNAME=qbot
+export DB_PASSWORD=qbot
