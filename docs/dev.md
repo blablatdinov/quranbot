@@ -28,13 +28,6 @@ docker-compose -f ./docker/dev/docker-compose.yml up -d
 
 Поднимется 2 контейнера с БД и брокером для celery
 
-Подключаемся к контейнеру с БД и загружаем дампы
-
-```
-docker exec -ti qbot_db bash
-psql -U qbot -d qbot_db < some_file.sql
-```
-
 ```
 ngrok http 8000
 ```
