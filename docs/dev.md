@@ -22,8 +22,7 @@ cp env_vars .env
 ```
 
 ```
-docker-compose -f ./docker/dev/docker-compose.yml build
-docker-compose -f ./docker/dev/docker-compose.yml up -d
+docker-compose -f ./docker/dev/docker-compose.yml build && docker-compose -f ./docker/dev/docker-compose.yml up -d
 ```
 
 Поднимется 2 контейнера с БД и брокером для celery
