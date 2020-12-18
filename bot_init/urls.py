@@ -5,5 +5,5 @@ from bot_init.views import bot
 
 
 urlpatterns = [
-    path(f'{settings.TG_BOT.token}', bot)
+    path(f"{settings.TG_BOT.token}", bot)
 ]
