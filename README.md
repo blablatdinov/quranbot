@@ -7,3 +7,5 @@
 
 Ссылка на бота: [Quran_365_bot](https://t.me/Quran_365_bot?start=github)
 Если хотитите поучавствовать в разработке пишите [сюда](https://t.me/ilaletdinov)
+
+[Документация](docs/dev.md) для разработчиков.

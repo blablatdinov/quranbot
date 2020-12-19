@@ -1,14 +1,15 @@
-import re
-import json
-
+"""Утилиты для работы бота."""
 from datetime import datetime
-from django.utils.timezone import make_aware
-from bot_init.models import Message, CallbackData
+import json
+import re
+
+from bot_init.models import CallbackData, Message
 from django.conf import settings
+from django.utils.timezone import make_aware
 
 
 def save_message(msg):
-    """ Сохранение сообщения от пользователя """
+    """Сохранение сообщения от пользователя."""
     date = make_aware(datetime.fromtimestamp(msg.date))
     from_user_id = msg.from_user.id
     message_id = msg.message_id
@@ -16,7 +17,7 @@ def save_message(msg):
     text = msg.text
     try:
         json_str = msg.json
-    except:
+    except:  # TODO конкретезировать ошибку
         json_str = str(msg)
     json_text = json.dumps(json_str, indent=2, ensure_ascii=False)
     message_instance = Message.objects.create(date=date, from_user_id=from_user_id, message_id=message_id,
@@ -25,15 +26,15 @@ def save_message(msg):
 
 
 def save_callback_data(call) -> CallbackData:
-    """Функция для сохранения данных из inline кнопки"""
+    """Функция для сохранения данных из inline кнопки."""
     date = make_aware(datetime.fromtimestamp(call.message.date))
     call_id = call.id
     chat_id = str(call.from_user.id)
     call_data = call.data
     json_ = str(call)
-    json_ = re.sub(r'<telebot\.types\.User[^>]+>', f"'{settings.TG_BOT.name}'", json_)
-    json_ = re.sub(r'<telebot\.types\.Chat[^>]+>', str(chat_id), json_)
-    json_ = re.sub(r'<telebot\.types\.[^>]+>', 'None', json_)
+    json_ = re.sub(r"<telebot\.types\.User[^>]+>", f"'{settings.TG_BOT.name}'", json_)
+    json_ = re.sub(r"<telebot\.types\.Chat[^>]+>", str(chat_id), json_)
+    json_ = re.sub(r"<telebot\.types\.[^>]+>", "None", json_)
     try:
         json_ = eval(json_)
         json_ = json.dumps(json_, indent=2, ensure_ascii=False)
@@ -50,7 +51,7 @@ def save_callback_data(call) -> CallbackData:
 
 
 def stop_retry(func):
-    """Декоратор, предотвращает повторный ответ на одно сообщение"""
+    """Декоратор, предотвращает повторный ответ на одно сообщение."""
     def wrapper(message):
         if Message.objects.filter(message_id=message.message_id):
             return
