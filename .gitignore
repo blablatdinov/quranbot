@@ -12,3 +12,4 @@ celerybeat*
 .env
 .coverage
 .DS_Store
+dumps/
