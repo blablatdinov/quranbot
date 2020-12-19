@@ -59,6 +59,7 @@ ngrok http 8000
 Чтобы проверить покрытие нужно запустить следующие команды
 
 ```
+coverage run --source='.' ./manage.py test ; \
 coverage report
 ```
 
