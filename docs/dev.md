@@ -49,3 +49,24 @@ ngrok http 8000
 ```
 ./manage.py runserver
 ```
+
+## Тестирование
+
+```
+./manage.py test
+```
+
+Чтобы проверить покрытие нужно запустить следующие команды
+
+```
+coverage report
+```
+
+В html версии покрытие выглядит нагляднее
+
+```
+coverage run --source='.' ./manage.py test ; \
+coverage html ; \
+cd htmlcov ; \
+open index.html
+```

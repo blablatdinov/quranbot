@@ -1,28 +1,29 @@
+"""Бизнес логика для контента."""
 from django.db import connection
 from loguru import logger
 
-from bot_init.models import Subscriber, Mailing
-from bot_init.schemas import Answer
-from bot_init.service import send_answer, send_message_to_admin, get_tbot_instance
+from bot_init.models import Mailing, Subscriber
 from bot_init.markup import get_default_keyboard, InlineKeyboard
-from content.models import MorningContent, Ayat
+from bot_init.schemas import Answer
+from bot_init.service import send_answer, send_message_to_admin
+from content.models import Ayat, MorningContent
 
-logger.add('logs/app.log')
+logger.add("logs/app.log")
 
 
 def get_morning_content(day_num: int) -> str:
-    """Получаем утренний контент по номеру дня"""
+    """Получаем утренний контент по номеру дня."""
     try:
         content = MorningContent.objects.get(day=day_num).content_for_day()
         return content
     except MorningContent.DoesNotExist:
-        text = f'Ежедневный контент для дня {day_num} не найден'
+        text = f"Ежедневный контент для дня {day_num} не найден"
         send_message_to_admin(text)
         logger.warning(text)
 
 
 def get_subscribers_with_content():
-    """Получаем данные для утренней рассылки одним запросом"""
+    """Получаем данные для утренней рассылки одним запросом."""
     with connection.cursor() as cursor:
         cursor.execute("""
             select
@@ -42,14 +43,14 @@ def get_subscribers_with_content():
         """)
         res = cursor.fetchall()
     data = [
-            {elem[0]: elem[1] + f'\nСсылка на источник: <a href="https://umma.ru{elem[2].split("|")[0]}">источник</a>'}
+            {elem[0]: elem[1] + f"\nСсылка на источник: <a href='https://umma.ru{elem[2].split('|')[0]}'>источник</a>"}
             for elem in res
     ]
     return data
 
 
 def do_morning_content_distribution():
-    """Выполняем рассылку утреннего контента"""
+    """Выполняем рассылку утреннего контента."""
     # TODO можно заранее сгенерировать контент, Заранее оповещать админов, что контент кончается
     mailing = Mailing.objects.create()
     subscriber_content = get_subscribers_with_content()
@@ -60,33 +61,39 @@ def do_morning_content_distribution():
         try:
             message_instance = send_answer(answer, chat_id)
             message_instance.mailing = mailing
-            message_instance.save(update_fields=['mailing'])
+            message_instance.save(update_fields=["mailing"])
         except Exception as e:
             logger.error(e)
 
     for subscriber in Subscriber.objects.filter(is_active=True):
         subscriber.day += 1
-        subscriber.save(update_fields=['day'])
+        subscriber.save(update_fields=["day"])
 
-    text = f'Рассылка завершена, отправьте /del{mailing.pk} для ее удаления'
+    text = f"Рассылка завершена, отправьте /del{mailing.pk} для ее удаления"
     msg = send_message_to_admin(text)
     msg.mailing = mailing
-    msg.save(update_fields=['mailing'])
+    msg.save(update_fields=["mailing"])
     # FIXME чет дофига длинная функция получается
 
 
 def search_ayat(text: str) -> Answer:
+    """Функция для поиска аята."""
     queryset = Ayat.objects.filter(content__icontains=text).order_by("pk")
     return queryset
 
 
-def find_ayat_by_text(query_text: str, offset: int = None) -> list:
+def find_ayat_by_text(query_text: str, offset: int = None):
+    """Найти аят по тексту.
+
+    Функция находит аят и определяет страницу
+
+    """
     queryset = search_ayat(query_text)
     logger.debug(queryset)
     result = []
     ayats_count = queryset.count()
     if ayats_count < 1:
-        return Answer('Аятов не найдено')
+        return Answer("Аятов не найдено")
     if offset is None:
         offset = 1
         text = f"По вашему запросу найдено {ayats_count} аятов:"
