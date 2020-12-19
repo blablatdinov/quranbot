@@ -33,7 +33,7 @@ class AudioFile(models.Model):
 
     # TODO добавить путь к файлу если есть, verbose_name
     audio_link = models.CharField(max_length=512, verbose_name="Ссылка на аудио")
-    tg_file_id = models.CharField(max_length=512, verbose_name="Идентификатор файла в телеграмм", blank=True)
+    tg_file_id = models.CharField(max_length=512, verbose_name="Идентификатор файла в телеграмм", blank=True, null=True)
 
     def __str__(self):
         return self.audio_link
@@ -58,7 +58,7 @@ class Ayat(models.Model):
     arab_text = models.TextField(verbose_name="Арабский текст", blank=True)
     trans = models.TextField(verbose_name="Транслитерация", blank=True)
     sura = models.ForeignKey(Sura, on_delete=models.CASCADE, verbose_name="Номер суры")
-    ayat = models.CharField(max_length=16, verbose_name="Номер аята", blank=True)
+    ayat = models.CharField(max_length=16, verbose_name="Номер аята", blank=True, null=True)
     html = models.TextField(verbose_name="Спарсенный HTML текст")
     audio = models.OneToOneField(AudioFile, on_delete=models.PROTECT, verbose_name="Аудио файл", blank=True, null=True)
     one_day_content = models.ForeignKey(
