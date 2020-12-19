@@ -39,8 +39,8 @@ class Subscriber(models.Model):
 
     tg_chat_id = models.IntegerField(verbose_name="Идентификатор подписчика", unique=True)
     is_active = models.BooleanField(default=True, verbose_name="Подписан ли польователь на бота")
-    step = models.CharField(max_length=100, verbose_name="Шаг пользователя", blank=True)
-    comment = models.TextField(blank=True, verbose_name="Комментарий к подписчику")
+    step = models.CharField(max_length=100, verbose_name="Шаг пользователя", blank=True, null=True)
+    comment = models.TextField(null=True, blank=True, verbose_name="Комментарий к подписчику")
     day = models.IntegerField(default=2, verbose_name="День, для рассылки утреннего контента")
     favourite_ayats = models.ManyToManyField(
         Ayat, related_name="favorit_ayats", blank=True, verbose_name="Избранные аяты"
@@ -77,7 +77,7 @@ class Message(models.Model):
     from_user_id = models.IntegerField(verbose_name="Идентификатор отправителя")
     message_id = models.IntegerField(verbose_name="Идентификатор сообщения")
     chat_id = models.IntegerField(verbose_name="Идентификатор чата, в котором идет общение")
-    text = models.TextField(blank=True, verbose_name="Текст сообщения")
+    text = models.TextField(null=True, blank=True, verbose_name="Текст сообщения")
     json = models.TextField()
     mailing = models.ForeignKey(Mailing, related_name="messages", on_delete=models.PROTECT, blank=True, null=True)
     is_unknown = models.BooleanField(default=False, verbose_name="Необработанное ли это сообщение")
@@ -126,7 +126,7 @@ class CallbackData(models.Model):
     date = models.DateTimeField(null=True, verbose_name="Дата отправки")
     call_id = models.CharField(max_length=500, verbose_name="Идентификатор данных")
     chat_id = models.IntegerField(verbose_name="Идентификатор чата из которого пришли данные")
-    text = models.TextField(blank=True, verbose_name="Текст сообщения")
+    text = models.TextField(null=True, blank=True, verbose_name="Текст сообщения")
     json = models.TextField()
 
     class Meta:
