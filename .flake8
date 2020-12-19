@@ -1,0 +1,6 @@
+[flake8]
+exclude = .git,__pycache__,docs/source/conf.py,old,build,dist,migrations,venv,apps.py
+max-line-length = 120
+import-order-style = google
+ignore = D101, B001, D105, D106, D107
+inline-quotes = "
