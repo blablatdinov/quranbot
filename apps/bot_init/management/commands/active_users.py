@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
 from loguru import logger
 
-from bot_init.service import get_tbot_instance, count_active_users
+from apps.bot_init.service import get_tbot_instance, count_active_users
 
 
 class Command(BaseCommand):
