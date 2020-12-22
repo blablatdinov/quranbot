@@ -180,6 +180,7 @@ def count_active_users():
 
 def upload_database_dump():
     """Функция снимает дамп базы данных и загружет его на облако."""
+    logger.info("dump start")
     credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
     service = build("drive", "v3", credentials=credentials)
     folder_id = "1G_NYTKUHkQixdElU1hOCg4PR2c66zJPB"
