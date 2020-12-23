@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand, CommandError
 
-from content.service import do_morning_content_distribution
+from apps.content.service import do_morning_content_distribution
 
 
 class Command(BaseCommand):
