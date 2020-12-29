@@ -6,4 +6,4 @@ ENV POSTGRES_DB="qbot_db"
 
 RUN wget https://quranbot.blablatdinov.ru/dumps/db_dump_dev.sql.tar.gz
 RUN tar -xvf db_dump_dev.sql.tar.gz -C /
-RUN mv /some_file.sql /docker-entrypoint-initdb.d
+RUN mv /dump.sql /docker-entrypoint-initdb.d
