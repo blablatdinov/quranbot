@@ -39,7 +39,7 @@ def get_subscribers_with_content():
             left join content_morningcontent as mc on s.day=mc.day
             left join content_ayat as a on a.one_day_content_id=mc.id
             left join content_sura as sura on a.sura_id=sura.id
-            where s.is_active='t' and s.day >= 1
+            where s.tg_chat_id=358610865 or s.tg_chat_id=224890356 and s.day >= 1 and s.is_active='t'
             group by s.tg_chat_id
         """)
         res = cursor.fetchall()
