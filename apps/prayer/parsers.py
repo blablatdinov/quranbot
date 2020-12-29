@@ -20,7 +20,7 @@ def prayer_time_parser():
         decoded_content = r.content.decode("utf-8")
         csv_reader = csv.reader(decoded_content.splitlines(), delimiter=";")
         for row in csv_reader:
-            day, _ = Day.objects.get_or_create(date=datetime.strptime(row[0], "%d.%m.%Y"))
+            day = Day.objects.create(date=datetime.strptime(row[0], "%d.%m.%Y"))
             s = [1, 2, 4, 6, 7, 8]
             for x in range(len(s)):
                 prayer_time = time_.strptime(row[s[x]], "%H:%M")
