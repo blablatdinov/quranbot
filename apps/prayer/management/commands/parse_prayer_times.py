@@ -1,7 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from prayer.parsers import prayer_time_parser
-from prayer.service import send_prayer_time
+from apps.prayer.parsers import prayer_time_parser
 
 
 class Command(BaseCommand):
