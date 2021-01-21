@@ -1,6 +1,6 @@
 import telebot
 
-from apps.bot_init.service import get_tbot_instance
+from apps.bot_init.utils import get_tbot_instance
 from apps.prayer.models import City
 
 

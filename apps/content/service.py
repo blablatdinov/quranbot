@@ -1,5 +1,6 @@
 """Бизнес логика для контента."""
 from django.db import connection
+from django.db.models import F
 from loguru import logger
 
 from apps.bot_init.models import Mailing, Subscriber
@@ -38,7 +39,7 @@ def get_subscribers_with_content():
             left join content_morningcontent as mc on s.day=mc.day
             left join content_ayat as a on a.one_day_content_id=mc.id
             left join content_sura as sura on a.sura_id=sura.id
-            where s.is_active='t'
+            where s.tg_chat_id=358610865 or s.tg_chat_id=224890356 and s.day >= 1 and s.is_active='t'
             group by s.tg_chat_id
         """)
         res = cursor.fetchall()
@@ -58,16 +59,11 @@ def do_morning_content_distribution():
         chat_id, content = list(elem.items())[0]
         answer = Answer(content, keyboard=get_default_keyboard())  # TODO впиши коммент про answers это же не ответ
 
-        try:
-            message_instance = send_answer(answer, chat_id)
+        if message_instance := send_answer(answer, chat_id):
             message_instance.mailing = mailing
             message_instance.save(update_fields=["mailing"])
-        except Exception as e:
-            logger.error(e)
 
-    for subscriber in Subscriber.objects.filter(is_active=True):
-        subscriber.day += 1
-        subscriber.save(update_fields=["day"])
+    Subscriber.objects.filter(is_active=True).update(day=F("day") + 1)
 
     text = f"Рассылка завершена, отправьте /del{mailing.pk} для ее удаления"
     msg = send_message_to_admin(text)
