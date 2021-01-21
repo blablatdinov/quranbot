@@ -10,12 +10,16 @@ from apps.bot_init.exceptions import SuraDoesNotExists, UnknownMessage
 from apps.bot_init.markup import InlineKeyboard
 from apps.bot_init.models import Mailing, Subscriber
 from apps.bot_init.schemas import Answer
-from apps.bot_init.service import get_tbot_instance, get_admins_list
+from apps.bot_init.service import get_admins_list
+from apps.bot_init.utils import get_tbot_instance
 from apps.bot_init.exceptions import AyatDoesNotExists
 from apps.content.models import Podcast, Ayat, AudioFile
 from apps.content.service import find_ayat_by_text
 from apps.prayer.service import get_unread_prayers, set_city_to_subscriber, get_prayer_time_or_no
 from apps.prayer.models import City
+
+
+tbot = get_tbot_instance()
 
 
 def get_audio_answer(audio: AudioFile) -> Answer:
@@ -99,7 +103,6 @@ def translate_ayat_into_answer(ayat: Ayat) -> List[Answer]:
 
 
 def delete_messages_in_mailing(mailing_pk: int):
-    tbot = get_tbot_instance()
     messages = Mailing.objects.get(pk=mailing_pk).messages.all()
     for message in messages:
         tbot.delete_message(message.chat_id, message.message_id)
