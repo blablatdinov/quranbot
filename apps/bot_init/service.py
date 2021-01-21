@@ -13,7 +13,7 @@ from telebot.apihelper import ApiException
 
 from django.conf import settings
 from apps.bot_init.models import Subscriber, SubscriberAction, Message, AdminMessage, Admin
-from apps.bot_init.utils import save_message
+from apps.bot_init.utils import save_message, get_tbot_instance
 from apps.bot_init.schemas import Answer, SUBSCRIBER_ACTIONS
 from apps.content.models import MorningContent
 
@@ -21,11 +21,12 @@ from apps.content.models import MorningContent
 logger.add("logs/app.log")
 SCOPES = ["https://www.googleapis.com/auth/drive"]
 SERVICE_ACCOUNT_FILE = settings.BASE_DIR + "/deploy/quranbot-keys.json"
+tbot = get_tbot_instance()
 
 
 def delete_message_in_tg(chat_id: int, message_id: int) -> None:
     """Функция для удаления сообщения в телеграмм."""
-    get_tbot_instance().delete_message(chat_id, message_id)
+    tbot.delete_message(chat_id, message_id)
 
 
 def get_admins_list():
@@ -38,11 +39,6 @@ def _create_action(subscriber: Subscriber, action: str):
     SubscriberAction.objects.create(subscriber=subscriber, action=action)
 
 
-def get_tbot_instance() -> TeleBot:
-    """Получаем экземпляр класса TeleBot для удобной работы с API."""
-    return TeleBot(settings.TG_BOT.token)
-
-
 def _subscriber_unsubscribed(chat_id: int):
     """Действия, выполняемые при блокировке бота пользователем."""
     subscriber = Subscriber.objects.get(tg_chat_id=chat_id)
@@ -53,7 +49,6 @@ def _subscriber_unsubscribed(chat_id: int):
 
 def _send_answer(answer: Answer, chat_id: int):  # TODO где будет регистрация tbot
     """Отправляем сообщение пользователю."""
-    tbot = get_tbot_instance()
     try:
         if answer.tg_audio_id:
             msg = tbot.send_audio(chat_id, audio=answer.tg_audio_id)
@@ -139,7 +134,6 @@ def registration_subscriber(chat_id: int) -> Answer:
 
 def update_webhook(host=f"{settings.TG_BOT.webhook_host}/{settings.TG_BOT.token}"):
     """Обновляем webhook."""
-    tbot = get_tbot_instance()
     tbot.remove_webhook()
     sleep(1)
     tbot.set_webhook(host)
@@ -159,7 +153,7 @@ def check_user_status_by_typing(chat_id: int):
     """Определить подписан ли пользователь на бота, попробовав отправить сигнал о печати."""
     sub = get_subscriber_by_chat_id(chat_id)
     try:
-        get_tbot_instance().send_chat_action(sub.tg_chat_id, "typing")
+        tbot.send_chat_action(sub.tg_chat_id, "typing")
         if not sub.is_active:
             sub.is_active = True
             sub.save(update_fields=["is_active"])
@@ -186,6 +180,8 @@ def upload_database_dump():
     start_time = datetime.datetime.now()
 
     command = f"pg_dump -U qbot qbot_db -h localhost | gzip -c --best > {settings.BASE_DIR}/deploy/qbot_db.sql.gz"
+    os.system(command)
+    command = f"pg_dump -U qbot qbot_db -h localhost --exclude-table='bot_init_message,bot_init_callbackdata' > {settings.BASE_DIR}/dumps/dump.sql && tar -cvzf {settings.BASE_DIR}/dumps/db_dump_dev.sql.tar.gz {settings.BASE_DIR}/dumps/dump.sql"
     os.system(command)
 
     name = "qbot_db.sql.gz"

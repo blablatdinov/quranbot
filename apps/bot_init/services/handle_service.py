@@ -7,11 +7,15 @@ from apps.bot_init.markup import InlineKeyboard
 from apps.bot_init.schemas import Answer
 from apps.bot_init.services.text_message_service import translate_ayat_into_answer
 from apps.bot_init.models import Subscriber
-from apps.bot_init.service import get_tbot_instance, get_subscriber_by_chat_id
+from apps.bot_init.service import get_subscriber_by_chat_id
+from apps.bot_init.utils import get_tbot_instance
 from apps.content.models import Ayat
 from apps.content.service import find_ayat_by_text
 from apps.prayer.models import PrayerAtUser
 from apps.prayer.service import get_buttons, unread_prayer_type_minus_one, get_unread_prayers, get_prayer_time
+
+
+tbot = get_tbot_instance()
 
 
 def _get_ayat(text: str) -> List[Answer]:
@@ -64,10 +68,10 @@ def handle_query_service(text: str, chat_id: int = None, call_id: int = None, me
         return answer
     elif 'add_in_favourites' in text:
         text = _add_ayat_in_favourites(text, chat_id)
-        get_tbot_instance().answer_callback_query(call_id, show_alert=True, text=text)
+        tbot.answer_callback_query(call_id, show_alert=True, text=text)
     elif 'set_prayer_status_to_read' in text:
         keyboard = _change_prayer_status(chat_id, text, True)
-        get_tbot_instance().edit_message_text(
+        tbot.edit_message_text(
             text=message_text,
             chat_id=chat_id,
             message_id=message_id,
@@ -75,7 +79,7 @@ def handle_query_service(text: str, chat_id: int = None, call_id: int = None, me
         )
     elif 'set_prayer_status_to_unread' in text:
         keyboard = _change_prayer_status(chat_id, text, False)
-        get_tbot_instance().edit_message_text(
+        tbot.edit_message_text(
             text=message_text,
             chat_id=chat_id,
             message_id=message_id,
@@ -83,7 +87,7 @@ def handle_query_service(text: str, chat_id: int = None, call_id: int = None, me
         )
     elif 'unread_prayer_type_minus_one' in text:
         answer = _unread_prayer_type_minus_one(text)
-        get_tbot_instance().edit_message_text(
+        tbot.edit_message_text(
             text=answer.text,
             chat_id=chat_id,
             message_id=message_id,
@@ -92,7 +96,7 @@ def handle_query_service(text: str, chat_id: int = None, call_id: int = None, me
     elif "change_query_ayat" in text:
         query_text, offset = eval(re.search(r'\(.+\)', text).group(0))
         answer = find_ayat_by_text(query_text, offset)[0]
-        get_tbot_instance().edit_message_text(
+        tbot.edit_message_text(
             text=answer.text,
             reply_markup=answer.keyboard,
             message_id=message_id,
