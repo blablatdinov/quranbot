@@ -6,6 +6,7 @@ import re
 from apps.bot_init.models import CallbackData, Message
 from django.conf import settings
 from django.utils.timezone import make_aware
+from telebot import TeleBot
 
 
 def save_message(msg):
@@ -23,6 +24,11 @@ def save_message(msg):
     message_instance = Message.objects.create(date=date, from_user_id=from_user_id, message_id=message_id,
                            chat_id=chat_id, text=text, json=json_text)
     return message_instance
+
+
+def get_tbot_instance() -> TeleBot:
+    """Получаем экземпляр класса TeleBot для удобной работы с API."""
+    return TeleBot(settings.TG_BOT.token)
 
 
 def save_callback_data(call) -> CallbackData:
