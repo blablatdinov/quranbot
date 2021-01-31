@@ -42,7 +42,7 @@ class AyatParser:
 
     @staticmethod
     def get_transcription(soup: BeautifulSoup) -> str:
-        """Возвращает суру."""
+        """Возвращает транслитерацию аята."""
         return soup.find("div", class_="transcription").text.strip()
 
     @staticmethod
@@ -61,12 +61,12 @@ class AyatParser:
                     paragraph.text == "Ссылки на богословские первоисточники и комментарий:" or
                     "Подробнее см." in paragraph.text):
                 return text
-            text += re.sub(r"\[\d+\]", "", paragraph.text)
+            text += re.sub(r"\[\d+\]", "", paragraph.text) . # TODO вынести в очищение контента
         return text
 
     @staticmethod
     def get_ayat(soup: BeautifulSoup) -> str:
-        """Возвращает аят."""
+        """Возвращает номер аята."""
         return soup.find("h3").text.split(":")[1]
 
     def get_sura_links(self):
