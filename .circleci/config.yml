@@ -14,8 +14,14 @@ jobs:
       - run:
           command: ./manage.py test
           name: Test
+  deploy:
+    executor: python/default
+    steps:
+      - run:
+          command: ssh www@iman.blablatdinov.ru '/home/www/code/quranbot/deploy/restart.sh'
 
 workflows:
   main:
     jobs:
       - build-and-test
+      - deploy
