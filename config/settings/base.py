@@ -88,7 +88,7 @@ TG_BOT.webhook_host = os.getenv("HOST")
 r = requests.get(f"https://api.telegram.org/bot{TG_BOT.token}/getMe").json()
 if not r.get("ok"):
     logger.info(r)
-    exit()
+    exit(1)
 try:
     if os.getenv("ADMINS") == "":
         TG_BOT.admins = []
