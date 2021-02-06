@@ -13,3 +13,5 @@ celerybeat*
 .coverage
 .DS_Store
 dumps/
+.vscode
+.pytest_cache
