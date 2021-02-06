@@ -1,6 +1,7 @@
 amqp==2.6.1
 appnope==0.1.2
 asgiref==3.3.1
+attrs==20.3.0
 backcall==0.2.0
 beautifulsoup4==4.9.3
 billiard==3.6.3.0
@@ -16,11 +17,10 @@ coverage==5.3
 decorator==4.4.2
 Django==3.1.4
 flake8==3.8.4
-flake8-builtins==1.5.3
-flake8-django==1.1.1
-flake8-docstrings==1.5.0
-flake8-import-order==0.18.1
-flake8-quotes==3.2.0
+flake8-bugbear==20.11.1
+flake8-commas==2.0.0
+flake8-isort==4.0.0
+flake8-print==4.0.0
 geographiclib==1.50
 geopy==2.0.0
 google-api-core==1.24.1
@@ -31,8 +31,10 @@ googleapis-common-protos==1.52.0
 gunicorn==20.0.4
 httplib2==0.18.1
 idna==2.10
+iniconfig==1.1.1
 ipython==7.19.0
 ipython-genutils==0.2.0
+isort==5.7.0
 jedi==0.17.2
 kombu==4.6.11
 loguru==0.5.3
@@ -42,11 +44,13 @@ packaging==20.8
 parso==0.7.1
 pexpect==4.8.0
 pickleshare==0.7.5
+pluggy==0.13.1
 progressbar2==3.53.1
 prompt-toolkit==3.0.8
 protobuf==3.14.0
 psycopg2-binary==2.8.6
 ptyprocess==0.6.0
+py==1.10.0
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
 pycodestyle==2.6.0
@@ -55,6 +59,8 @@ pyflakes==2.2.0
 Pygments==2.7.3
 pyparsing==2.4.7
 pyTelegramBotAPI==3.7.4
+pytest==6.2.2
+pytest-django==4.1.0
 python-dotenv==0.15.0
 python-utils==2.4.0
 pytz==2020.4
@@ -65,6 +71,8 @@ six==1.15.0
 snowballstemmer==2.0.0
 soupsieve==2.1
 sqlparse==0.4.1
+testfixtures==6.17.1
+toml==0.10.2
 traitlets==5.0.5
 uritemplate==3.0.1
 urllib3==1.26.2
