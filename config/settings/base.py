@@ -19,6 +19,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 
+    "rest_framework",
+
     "apps.api",
     "apps.bot_init",
     "apps.content",
@@ -109,3 +111,7 @@ CELERY_BROKER_URL = os.getenv("REDIS_CONNECTION")
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASKS_SERIALIZER = "json"
 
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 100
+}
