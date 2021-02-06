@@ -3,7 +3,7 @@ import json
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from apps.bot_init.models import AdminMessage, CallbackData, Mailing, Message, Subscriber, SubscriberAction
+from apps.bot_init.models import AdminMessage, CallbackData, Mailing, Message, Subscriber, SubscriberAction, Admin
 
 
 class SubscriberActionInline(admin.StackedInline):
@@ -108,6 +108,7 @@ class SubscriberActionAdmin(admin.ModelAdmin):
 admin.site.register(Mailing)
 admin.site.register(AdminMessage)
 admin.site.register(CallbackData)
+admin.site.register(Admin)
 
 admin.site.site_title = "Административная панель Quran_365_bot v2.3.2"
 admin.site.site_header = "Административная панель Quran_365_bot v2.3.2"
