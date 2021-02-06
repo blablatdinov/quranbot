@@ -57,7 +57,7 @@ class Subscriber(models.Model):
         return str(self.tg_chat_id)
 
 
-class Admin(models.Model):
+class Admin(models.Model):  # TODO создавать админов из .env при загрузке приложения
     """Модель администратора бота."""
 
     subscriber = models.OneToOneField(Subscriber, on_delete=models.CASCADE)
