@@ -6,6 +6,7 @@ import re
 from bs4 import BeautifulSoup
 from loguru import logger
 import requests
+from progressbar import progressbar as pbar
 
 from apps.content.models import Ayat, Sura
 
@@ -61,8 +62,17 @@ class AyatParser:
                     paragraph.text == "Ссылки на богословские первоисточники и комментарий:" or
                     "Подробнее см." in paragraph.text):
                 return text
-            text += re.sub(r"\[\d+\]", "", paragraph.text) . # TODO вынести в очищение контента
-        return text
+            text += re.sub(r"\[\d+\]", "", paragraph.text)  # TODO вынести в очищение контента
+        return text  # TODO откуда берутся скобки
+
+    def parse_content_from_db(self):
+        for ayat in pbar(Ayat.objects.all()):
+            ayat.content = "".join([x for x in self.get_content(get_soup(ayat.html))]).replace(
+                # FIXME починить очистку текста
+                "Ссылки на богословские первоисточники и комментарий:",
+                ""
+            )
+            ayat.save()
 
     @staticmethod
     def get_ayat(soup: BeautifulSoup) -> str:
