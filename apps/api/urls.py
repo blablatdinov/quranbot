@@ -5,7 +5,7 @@ from apps.api.views import AyatViewSet
 
 
 router = DefaultRouter()
-router.register(r"getSura", AyatViewSet)
+router.register(r"getAyat", AyatViewSet)
 
 urlpatterns = [
     path("v1/", include(router.urls))
