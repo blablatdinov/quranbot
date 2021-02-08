@@ -14,21 +14,8 @@ jobs:
       - run:
           command: pytest
           name: Test
-  deploy:
-    executor: python/default
-    steps:
-      - add_ssh_keys:
-          fingerprints:
-            - "5f:5f:60:b9:85:f9:df:a2:6a:e2:4c:10:97:5f:7e:8d"
-      - run:
-          command: echo "iman.blablatdinov.ru ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBKm1Y6Jhofk/Rut/8z+0LA+FO8THw/j9m0eHrDqEyYCFTATAWJ0asFodGDw6tkkVkc1PGruMoAyiFHFvH17MMBk=" > ~/.ssh/known_hosts
-      - run:
-          command: ssh www@iman.blablatdinov.ru '/home/www/code/quranbot/deploy/restart.sh'
 
 workflows:
   main:
     jobs:
       - build-and-test
-      - deploy:
-          requires:
-            - build-and-test
