@@ -37,6 +37,12 @@ def start_handler(message):
     send_answer(answer, message.chat.id)
 
 
+@tbot.message_handler(commands=["aigul"])
+@stop_retry
+def aigul_handler(message):
+    tbot.send_message(message.chat.id, "I love you! ❤️")
+
+
 @tbot.message_handler(content_types=["text"])
 @stop_retry
 def text_handler(message):
