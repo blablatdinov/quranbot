@@ -139,4 +139,4 @@ class PytestTestRunner:
         argv.extend(test_labels)
         return pytest.main(argv)
 
-TEST_RUNNER = 'config.settings.base.PytestTestRunner'
+TEST_RUNNER = 'config.test_runner.PytestTestRunner'
