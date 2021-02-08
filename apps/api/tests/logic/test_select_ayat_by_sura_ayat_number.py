@@ -31,24 +31,20 @@ def test_controller(client, ayat):
 
 
 @pytest.mark.parametrize("sura_num,ayat_num,expected_ayat_num", [
-    (4, "5", "5"),
-    (2, "3", "1-5"),
-    (8, "666", "666"),
-    (114, "2", "1, 2"),
+    (4, 5, "5"),
+    (2, 3, "1-5"),
+    (8, 666, "666"),
+    (114, 2, "1, 2"),
 ])
 def test_logic(ayat, sura_num, ayat_num, expected_ayat_num):
-    queryset = AyatSearcher(sura_num, ayat_num)
-    
-    queryset = queryset()
+    gotted_ayat = AyatSearcher(sura_num, ayat_num)()
 
-    gotted_ayat = queryset[0]
-
-    assert gotted_ayat.ayat == "5"
-    assert gotted_ayat.sura.number == 4
+    assert gotted_ayat.ayat == expected_ayat_num
+    assert gotted_ayat.sura.number == sura_num
 
 
 def test_undefined_ayat_searching():
     with pytest.raises(AyatDoesNotExists) as exc:
         queryset = AyatSearcher(sura_number=10, ayat_number="101")()
 
-    assert "AyatDoesNotExist" in str(exc.value)
+    assert "AyatDoesNotExist" in str(exc)
