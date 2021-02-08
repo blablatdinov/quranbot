@@ -30,7 +30,11 @@ jobs:
 workflows:
   main:
     jobs:
-      - build-and-test
+      - build-and-test:
+          filters:
+            branches:
+              only:
+                - "master"
       - deploy:
           requires:
             - build-and-test
