@@ -12,7 +12,9 @@ jobs:
       - python/install-deps
       - python/save-cache
       - run:
-          command: pytest
+          command: "export DJANGO_SETTINGS_MODULE=config.settings.dev"
+      - run:
+          command: ./manage.py test
           name: Test
   deploy:
     executor: python/default
