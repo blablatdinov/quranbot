@@ -108,3 +108,5 @@ CELERY_BROKER_URL = os.getenv("REDIS_CONNECTION")
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASKS_SERIALIZER = "json"
 
+
+TEST_RUNNER = 'config.test_runner.PytestTestRunner'
