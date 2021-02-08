@@ -5,7 +5,7 @@ from loguru import logger
 from apps.content.service import find_ayat_by_text, get_random_podcast
 from apps.api.serializers import AyatSerializer
 from apps.content.models import Ayat
-from apps.api.services.ayat_search import get_ayat_by_sura_ayat_numbers
+from apps.content.services.ayat_search import get_ayat_by_sura_ayat_numbers
 
 
 class AyatViewSet(viewsets.ReadOnlyModelViewSet):
