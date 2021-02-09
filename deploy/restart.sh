@@ -1,6 +1,6 @@
 cd /home/www/code/quranbot
 
-/home/www/code/quranbot/venv/bin/python /home/www/code/quranbot/manage.py dump
+# /home/www/code/quranbot/venv/bin/python /home/www/code/quranbot/manage.py dump
 
 git pull
 source /home/www/code/quranbot/venv/bin/activate
