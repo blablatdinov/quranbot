@@ -14,7 +14,7 @@ logger.add("logs/app.log")
 
 def get_random_podcast() -> Podcast:
     """Возвращает рандомный подкаст"""
-    podcast = choice(Podcast.objects.all())
+    podcast = Podcast.objects.order_by("?").first()
     logger.debug(podcast)
     return podcast
 
