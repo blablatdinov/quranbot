@@ -14,6 +14,10 @@ jobs:
       - run:
           command: "export DJANGO_SETTINGS_MODULE=config.settings.dev"
       - run:
+          command: ./manage.py runserver
+          name: server test
+          background: true
+      - run:
           command: ./manage.py test
           name: Test
   deploy:
