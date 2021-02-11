@@ -41,7 +41,6 @@ def start_handler(message):
 @stop_retry
 def fun_handler(message):
     save_message(message)
-    answer = registration_subscriber(chat_id=message.chat.id)
     send_answer(Answer(text="Бросай Навального и женись"), message.chat.id)
 
 
