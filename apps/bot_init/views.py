@@ -42,13 +42,7 @@ def start_handler(message):
 def fun_handler(message):
     save_message(message)
     answer = registration_subscriber(chat_id=message.chat.id)
-    send_answer("Бросай Навального и женись", message.chat.id)
-
-
-@tbot.message_handler(commands=["aigul"])
-@stop_retry
-def aigul_handler(message):
-    tbot.send_message(message.chat.id, "I love you! ❤️")
+    send_answer(Answer(text="Бросай Навального и женись"), message.chat.id)
 
 
 @tbot.message_handler(content_types=["text"])
