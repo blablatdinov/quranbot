@@ -37,6 +37,14 @@ def start_handler(message):
     send_answer(answer, message.chat.id)
 
 
+@tbot.message_handler(commands=["ayrat", "marat"])
+@stop_retry
+def fun_handler(message):
+    save_message(message)
+    answer = registration_subscriber(chat_id=message.chat.id)
+    send_answer("Бросай Навального и женись", message.chat.id)
+
+
 @tbot.message_handler(commands=["aigul"])
 @stop_retry
 def aigul_handler(message):
