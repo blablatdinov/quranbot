@@ -23,6 +23,4 @@ class PodcastViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = PodcastSerializer
 
     def get_queryset(self):
-        order = self.request.GET.get("order")
-        if order == "random":
-            return get_random_podcast()
+        return get_random_podcast()
