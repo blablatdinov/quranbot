@@ -1,6 +1,8 @@
+from apps.prayer.models import PrayerAtUser
 from rest_framework import serializers
 
 from apps.content.models import Ayat, Podcast, AudioFile
+from apps.prayer.models import PrayerAtUser
 
 
 class AyatSerializer(serializers.ModelSerializer):
@@ -36,3 +38,13 @@ class PodcastSerializer(serializers.ModelSerializer):
             "audio",
         )
         model = Podcast
+
+
+class PrayerAtUserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        fields = (
+            "is_read",
+            "prayer",
+        )
+        model = PrayerAtUser
