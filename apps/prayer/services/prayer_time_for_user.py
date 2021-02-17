@@ -5,7 +5,7 @@ from django.db.models import QuerySet
 
 from apps.bot_init.service import get_subscriber_by_chat_id
 from apps.prayer.models import Prayer, City
-
+from apps.prayer.exceptions.subscriber_not_set_city import SubscriberNotSetCity
 
 class PrayerAtUserGenerator:
 
@@ -27,4 +27,12 @@ class PrayerAtUserGenerator:
         return prayers
 
     def _get_city_not_found_answer(self):
+        """Этот метод возвращает приглашение указать город.
+
+        {
+            text: "Вы не указали город, отправьте местоположение или воспользуйтесь поиском",
+            button = InlineKeyboardButton("Поиск города", switch_inline_query_current_chat="")
+        }
+
+        """
         ...

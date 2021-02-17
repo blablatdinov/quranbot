@@ -4,6 +4,7 @@ import pytest
 from mixer.backend.django import mixer
 
 from apps.prayer.services.prayer_time_for_user import PrayerAtUserGenerator
+from apps.prayer.exceptions.subscriber_not_set_city import SubscriberNotSetCity
 
 pytestmark = [pytest.mark.django_db]
 
@@ -21,6 +22,11 @@ def city():
 @pytest.fixture()
 def subscriber(chat_id, city):
     return mixer.blend("bot_init.Subscriber", tg_chat_id=chat_id, city=city)
+ 
+
+@pytest.fixture()
+def subscriber_without_city(chat_id, city):
+    return mixer.blend("bot_init.Subscriber", tg_chat_id=39842359)
 
 
 @pytest.fixture()
@@ -33,10 +39,21 @@ def prayers_at_user(subscriber, city):
     )
 
 
-def test_serialized_data_structure(chat_id, prayers_at_user):  # FIXME перенести в сериализаторы
-    ...
+# def test_serialized_data_structure(chat_id, prayers_at_user):  # FIXME перенести в сериализаторы
+#     ...
 
-def test_logic(chat_id, prayers_at_user):  # FIXME naming
+
+def test_get_exist_prayer_times(chat_id, prayers_at_user, subscriber):
     gotted = PrayerAtUserGenerator(chat_id)()
     prayer = gotted[0]
     assert prayer.city.name, "Жопинск"
+
+
+# def test_get_prayer_times_without_city(chat_id):
+#     gotted = PrayerAtUserGenerator(chat_id)()
+#     prayer = gotted[0]
+#     assert prayer.city.name, "Жопинск"
+
+
+# def test_get_prayer_with_non_exist_city(subscriber_without_city):
+#     ...
