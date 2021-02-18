@@ -1,11 +1,9 @@
 from rest_framework import viewsets
-from rest_framework.permissions import AllowAny
-from loguru import logger
 
 from apps.content.services.podcast_services import get_random_podcast
-from apps.api.serializers import AyatSerializer, PodcastSerializer, PrayerAtUserSerializer
+from apps.api.serializers import AyatSerializer, PodcastSerializer, PrayerAtUserGroupSerializer
 from apps.content.models import Ayat, Podcast
-from apps.prayer.models import PrayerAtUser
+from apps.prayer.models import PrayerAtUserGroup
 from apps.content.services.ayat_search import get_ayat_by_sura_ayat_numbers
 
 
@@ -27,13 +25,10 @@ class PodcastViewSet(viewsets.ReadOnlyModelViewSet):
         return get_random_podcast()
 
 
-class PrayerAtUserViewSet(viewsets.ReadOnlyModelViewSet):
+class PrayerAtUserGroupViewSet(viewsets.ReadOnlyModelViewSet):
     """
-
     Вьюха должна возвращать время намаза по chat_id или по городу
     """
-    queryset = PrayerAtUser.objects.all()
-    serializer_class = PrayerAtUserSerializer
-
-    # def get_queryset(self):
-    #     ...
+    queryset = PrayerAtUserGroup.objects.filter(prayeratuser__subscriber__tg_chat_id=1500)
+    serializer_class = PrayerAtUserGroupSerializer
+    pagination_class = None
