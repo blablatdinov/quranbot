@@ -2,6 +2,7 @@ from datetime import datetime
 
 import pytest
 from mixer.backend.django import mixer
+from rest_framework.test import APIClient
 
 from apps.prayer.services.prayer_time_for_user import PrayerAtUserGenerator
 from apps.prayer.exceptions.subscriber_not_set_city import SubscriberNotSetCity
@@ -26,6 +27,7 @@ def subscriber(chat_id, city):
 
 @pytest.fixture()
 def subscriber_without_city(chat_id, city):
+    mixer.cycle(5).blend("bot_init.Subscriber")
     return mixer.blend("bot_init.Subscriber", tg_chat_id=39842359)
 
 
@@ -39,8 +41,16 @@ def prayers_at_user(subscriber, city):
     )
 
 
-# def test_serialized_data_structure(chat_id, prayers_at_user):  # FIXME перенести в сериализаторы
-#     ...
+@pytest.fixture()
+def client():
+    return APIClient()
+
+
+def test_serialized_data_structure(chat_id, prayers_at_user, client):  # FIXME перенести в сериализаторы
+    got = client.get(f"/api/v1/getPrayerAtUser/?chat_id={chat_id}")
+    data = got.json()
+
+    assert got.status_code == 200
 
 
 def test_get_exist_prayer_times(chat_id, prayers_at_user, subscriber):
