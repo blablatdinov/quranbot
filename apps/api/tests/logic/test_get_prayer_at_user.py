@@ -1,3 +1,4 @@
+# FIXME тесты на получение для разных городов и пользователей
 from datetime import datetime
 
 import pytest
@@ -42,6 +43,15 @@ def prayers_at_user(subscriber, city):
 
 
 @pytest.fixture()
+def prayers(city):
+    mixer.cycle(5).blend(
+        "prayer.Prayer",
+        city=city,
+        day__date=datetime.now(),
+    )
+
+
+@pytest.fixture()
 def client():
     return APIClient()
 
@@ -57,6 +67,13 @@ def test_get_exist_prayer_times(chat_id, prayers_at_user, subscriber):
     gotted = PrayerAtUserGenerator(chat_id)()
     prayer = gotted[0]
     assert prayer.city.name, "Жопинск"
+
+
+def test_get_notexists_prayer_times(client, prayers, chat_id):
+    got = client.get(f"/api/v1/getPrayerAtUser/?chat_id={chat_id}")
+    data = got.json()
+
+    assert False, data
 
 
 # def test_get_prayer_times_without_city(chat_id):
