@@ -26,9 +26,3 @@ def test_get_random_podcast(client, podcast):
     response = client.get(f'/api/v1/getPodcast/')
 
     assert response.status_code == 200
-
-
-def test_get_prayer_time(client, podcast):
-    response = client.get(f'/api/v1/getPrayerAtUser/')
-
-    assert response.status_code == 200
