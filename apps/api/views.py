@@ -1,12 +1,17 @@
 from rest_framework import viewsets
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from loguru import logger
 
 from apps.content.services.podcast_services import get_random_podcast
 from apps.content.models import Ayat, Podcast
 from apps.content.services.ayat_search import get_ayat_by_sura_ayat_numbers
-from apps.api.serializers import AyatSerializer, PodcastSerializer, PrayerAtUserGroupSerializer
+from apps.api.serializers import AyatSerializer, PodcastSerializer, PrayerAtSubscriberSerializer, PrayerTimesSerializer
+from apps.api.exceptions.chat_id_or_city_not_gived import ChatIdOrCityNotGived, SubscriberNotDefinedCityAPIException
 from apps.prayer.models import PrayerAtUserGroup
 from apps.prayer.services.prayer_time_for_user import PrayerAtUserGenerator
+from apps.prayer.services.get_prayer_times_for_city import PrayerTimeGetter
+from apps.prayer.exceptions.subscriber_not_set_city import SubscriberNotSetCity
 
 
 class AyatViewSet(viewsets.ReadOnlyModelViewSet):
@@ -27,17 +32,32 @@ class PodcastViewSet(viewsets.ReadOnlyModelViewSet):
         return get_random_podcast()
 
 
-class PrayerAtUserGroupViewSet(viewsets.ReadOnlyModelViewSet):
+class PrayerTimeView(APIView):
     """
     Вьюха должна возвращать время намаза по chat_id или по городу
     """
-    queryset = PrayerAtUserGroup.objects.all()
-    serializer_class = PrayerAtUserGroupSerializer
-    pagination_class = None
+    # TODO кейс если закончилось время намаза
 
-    def get_queryset(self):
-        chat_id = self.request.query_params.get("chat_id")
-        queryset = PrayerAtUserGenerator(chat_id)()
-        logger.debug(f"{queryset=}")
-        # queryset = PrayerAtUserGroup.objects.filter(prayeratuser__subscriber__tg_chat_id=chat_id)
-        return queryset
+    def get(self, request):
+        chat_id = request.query_params.get("chat_id")
+        city = request.query_params.get("city")
+        if not (chat_id or city):
+            raise ChatIdOrCityNotGived
+
+        if chat_id:
+            try:
+                prayers_data = PrayerAtUserGenerator(int(chat_id))()
+                serialized_data = PrayerAtSubscriberSerializer(
+                    prayers_data
+                ).data
+                return Response(serialized_data)
+            except SubscriberNotSetCity:
+                raise SubscriberNotDefinedCityAPIException
+        elif city:
+            prayers_data = PrayerTimeGetter(city)()
+            serialized_data = PrayerTimesSerializer(
+                prayers_data
+            ).data
+            from pprint import pprint
+            pprint(serialized_data)
+            return Response(serialized_data)
