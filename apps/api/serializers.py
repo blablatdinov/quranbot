@@ -2,7 +2,7 @@ from apps.prayer.models import PrayerAtUser, PrayerAtUserGroup
 from rest_framework import serializers
 
 from apps.content.models import Ayat, Podcast, AudioFile
-from apps.prayer.models import PrayerAtUser
+from apps.prayer.models import PrayerAtUser, Prayer
 from apps.prayer.service import get_text_prayer_times
 
 
@@ -41,29 +41,50 @@ class PodcastSerializer(serializers.ModelSerializer):
         model = Podcast
 
 
-class PrayerAtUserSerializer(serializers.ModelSerializer):
-    subscriber_chat_id = serializers.SerializerMethodField()
+class PrayerTimeAtUserInstanceSerializer(serializers.ModelSerializer):
+    prayer_name = serializers.SerializerMethodField()
+    prayer_time = serializers.SerializerMethodField()
+
+    def get_prayer_name(self, obj):
+        return obj.prayer.get_name_display()
+
+    def get_prayer_time(self, obj):
+        return obj.prayer.time
 
     class Meta:
         fields = (
-            "subscriber_chat_id",
+            "prayer_name",
+            "prayer_time",
             "is_read",
-            "prayer",
         )
         model = PrayerAtUser
 
-    def get_subscriber_chat_id(self, obj):
-        return obj.subscriber.tg_chat_id
+class PrayerAtSubscriberSerializer(serializers.Serializer):
+    city = serializers.CharField()
+    subscriber_chat_id = serializers.IntegerField()
+    sunrise_time = serializers.CharField()
+    prayers = PrayerTimeAtUserInstanceSerializer(many=True)
 
 
-class PrayerAtUserGroupSerializer(serializers.ModelSerializer):  # FIXME выкинуть пагинацию
-    prayer_data = serializers.SerializerMethodField()
+class PrayerTimeSerializer(serializers.ModelSerializer):
+    prayer_time = serializers.SerializerMethodField()
+    prayer_name = serializers.SerializerMethodField()
+
+    def get_prayer_name(self, obj):
+        return obj.get_name_display()
+
+    def get_prayer_time(self, obj):
+        return obj.time
 
     class Meta:
+        model = Prayer
         fields = (
-            "prayer_data",
+            "prayer_name",
+            "prayer_time",
         )
-        model = PrayerAtUserGroup
 
-    def get_prayer_data(self, prayer_group):
-        return PrayerAtUserSerializer(prayer_group.prayeratuser_set.all(), many=True).data
+
+class PrayerTimesSerializer(serializers.Serializer):
+    city = serializers.CharField()
+    sunrise_time = serializers.CharField()
+    prayers = PrayerTimeSerializer(many=True)
