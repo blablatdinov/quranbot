@@ -1,8 +1,7 @@
 import pytest
-from rest_framework.test import APIClient
 from mixer.backend.django import mixer
+from rest_framework.test import APIClient
 
-from apps.content.services.ayat_search import get_ayat_by_sura_ayat_numbers, AyatSearcher
 from apps.content.services.podcast_services import get_random_podcast
 
 pytestmark = [pytest.mark.django_db]

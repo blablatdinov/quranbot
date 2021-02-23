@@ -1,6 +1,6 @@
 import pytest
-from rest_framework.test import APIClient
 from mixer.backend.django import mixer
+from rest_framework.test import APIClient
 
 pytestmark = [pytest.mark.django_db]
 
@@ -19,6 +19,6 @@ def ayat():
     "additional_content",
 ])
 def test_get_sura(ayat, client, field):
-    response = client.get(f'/api/v1/getAyat/').json()
+    response = client.get('/api/v1/getAyat/').json()
 
     assert field in response.get("results")[0]
