@@ -1,5 +1,8 @@
 cd /home/www/code/quranbot
-git pull
+
+# /home/www/code/quranbot/venv/bin/python /home/www/code/quranbot/manage.py dump
+
+git reset --hard origin/master
 source /home/www/code/quranbot/venv/bin/activate
 export DJANGO_SETTINGS_MODULE=config.settings.prod
 
@@ -8,5 +11,5 @@ export DJANGO_SETTINGS_MODULE=config.settings.prod
 /home/www/code/quranbot/venv/bin/python /home/www/code/quranbot/manage.py migrate
 # /home/www/code/quranbot/venv/bin/pytest
 
-# supervisorctl restart qbot
+supervisorctl restart qbot
 supervisorctl restart qbot_worker
