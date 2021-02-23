@@ -3,6 +3,7 @@ ignore = E501, E265, F811, B010
 max-line-length = 120
 exclude =
       static,
+      venv,
       migrations,
       frontend,
       .git,
