@@ -1,4 +1,3 @@
-from apps.prayer.models import PrayerAtUser, PrayerAtUserGroup
 from rest_framework import serializers
 
 from apps.content.models import Ayat, Podcast, AudioFile
@@ -53,11 +52,13 @@ class PrayerTimeAtUserInstanceSerializer(serializers.ModelSerializer):
 
     class Meta:
         fields = (
+            "id",
             "prayer_name",
             "prayer_time",
             "is_read",
         )
         model = PrayerAtUser
+
 
 class PrayerAtSubscriberSerializer(serializers.Serializer):
     city = serializers.CharField()
@@ -88,3 +89,9 @@ class PrayerTimesSerializer(serializers.Serializer):
     city = serializers.CharField()
     sunrise_time = serializers.CharField()
     prayers = PrayerTimeSerializer(many=True)
+
+
+class SetPrayerStatusSerializer(serializers.Serializer):  # FIXME докинуть валидацию на совпадение id и chat_id
+    id = serializers.IntegerField()
+    is_read = serializers.BooleanField()
+    chat_id = serializers.IntegerField()

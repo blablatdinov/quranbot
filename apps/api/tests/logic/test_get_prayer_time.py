@@ -1,55 +1,9 @@
 # FIXME тесты на получение для разных городов и пользователей
 import re
-from datetime import datetime
 
 import pytest
-from mixer.backend.django import mixer
-
-from apps.prayer.schemas import PRAYER_NAMES
 
 pytestmark = [pytest.mark.django_db]
-
-
-@pytest.fixture()
-def chat_id():
-    return 234892342
-
-
-@pytest.fixture()
-def city():
-    return mixer.blend("prayer.City", name="Мухосранск")
-
-
-@pytest.fixture()
-def subscriber(chat_id, city):
-    return mixer.blend("bot_init.Subscriber", tg_chat_id=chat_id, city=city)
-
-
-@pytest.fixture()
-def subscriber_without_city(chat_id):
-    return mixer.blend("bot_init.Subscriber", tg_chat_id=chat_id)
-
-
-@pytest.fixture()
-def prayers(city):
-    for x in PRAYER_NAMES:
-        prayer_name = x[0]
-        mixer.blend("prayer.Prayer", name=prayer_name, city=city, day__date=datetime.today())
-    return
-
-
-@pytest.fixture()
-def prayer_at_subscriber(subscriber, city):
-    for x in PRAYER_NAMES:
-        prayer_name = x[0]
-        mixer.blend(
-            "prayer.PrayerAtUser", 
-            subscriber=subscriber, 
-            prayer__name=prayer_name,
-            prayer__day__date=datetime.today(),
-            prayer__city=city,
-        )
-    return 
 
 
 def test_without_params(client):
@@ -65,7 +19,7 @@ def test_chat_id(client, subscriber, prayer_at_subscriber):
 
     assert list(gotted_data.keys()) == ["city", "subscriber_chat_id", "sunrise_time", "prayers"]
     assert len(gotted_data.get("prayers")) == 5
-    assert list(gotted_data.get("prayers")[0].keys()) == ["prayer_name", "prayer_time", "is_read"]
+    assert list(gotted_data.get("prayers")[0].keys()) == ["id", "prayer_name", "prayer_time", "is_read"]
     assert [x.get("prayer_name") for x in gotted_data.get("prayers")] == ['Иртәнге', 'Өйлә', 'Икенде', 'Ахшам', 'Ястү']
     assert re.match(r"^\d{2}:\d{2}:\d{2}$", gotted_data.get("sunrise_time"))
 
