@@ -17,7 +17,7 @@ def client():
 
 
 def test_get_sura(client):
-    response = client.get('/api/v1/getAyat/')
+    response = client.get('/api/v1/getAyat')
 
     assert response.status_code == 200
 
