@@ -7,6 +7,7 @@ from apps.bot_init.exceptions import AyatDoesNotExists
 
 
 def get_ayat_by_sura_ayat_numbers(sura_number: int, ayat_number: int):
+    logger.info(f"{sura_number}:{ayat_number}")
     if sura_number and ayat_number:
         logger.info(f"Search {sura_number}:{ayat_number}")
         queryset = Ayat.objects.filter(sura__number=sura_number, ayat=ayat_number)

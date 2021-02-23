@@ -1,6 +1,7 @@
 from django.utils.decorators import method_decorator
 from loguru import logger
 from rest_framework import viewsets
+from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -12,7 +13,7 @@ from apps.api.serializers import (AyatSerializer, PodcastSerializer,
                                   PrayerTimeAtUserInstanceSerializer,
                                   PrayerTimesSerializer,
                                   SetPrayerStatusSerializer)
-from apps.content.models import Ayat, Podcast
+from apps.content.models import Podcast
 from apps.content.services.ayat_search import get_ayat_by_sura_ayat_numbers
 from apps.content.services.podcast_services import get_random_podcast
 from apps.prayer.exceptions.subscriber_not_set_city import SubscriberNotSetCity
@@ -21,14 +22,15 @@ from apps.prayer.services.get_prayer_times_for_city import PrayerTimeGetter
 from apps.prayer.services.prayer_time_for_user import PrayerAtUserGenerator
 
 
-class AyatViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Ayat.objects.all()
+class AyatAPIView(ListAPIView):
     serializer_class = AyatSerializer
 
     def get_queryset(self):
-        sura_num = self.request.POST.get("sura")
-        ayat_num = self.request.POST.get("ayat")
-        return get_ayat_by_sura_ayat_numbers(sura_num, ayat_num)
+        sura_num = self.request.query_params.get("sura")
+        ayat_num = self.request.query_params.get("ayat")
+        res = get_ayat_by_sura_ayat_numbers(sura_num, ayat_num)
+        logger.debug(f"{res=}")
+        return res
 
 
 class PodcastViewSet(viewsets.ReadOnlyModelViewSet):
