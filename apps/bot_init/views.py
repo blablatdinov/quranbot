@@ -37,6 +37,13 @@ def start_handler(message):
     send_answer(answer, message.chat.id)
 
 
+@tbot.message_handler(commands=["ayrat", "marat"])
+@stop_retry
+def fun_handler(message):
+    save_message(message)
+    send_answer(Answer(text="Бросай Навального и женись"), message.chat.id)
+
+
 @tbot.message_handler(content_types=["text"])
 @stop_retry
 def text_handler(message):
