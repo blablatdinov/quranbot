@@ -88,7 +88,7 @@ TG_BOT.webhook_host = os.getenv("HOST")
 r = requests.get(f"https://api.telegram.org/bot{TG_BOT.token}/getMe").json()
 if not r.get("ok"):
     logger.info(r)
-    exit()
+    exit(1)
 try:
     if os.getenv("ADMINS") == "":
         TG_BOT.admins = []
@@ -108,3 +108,35 @@ CELERY_BROKER_URL = os.getenv("REDIS_CONNECTION")
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASKS_SERIALIZER = "json"
 
+
+class PytestTestRunner:
+    """Runs pytest to discover and run tests."""
+
+    def __init__(self, verbosity=1, failfast=False, keepdb=False, **kwargs):
+        self.verbosity = verbosity
+        self.failfast = failfast
+        self.keepdb = keepdb
+
+    def run_tests(self, test_labels):
+        """Run pytest and return the exitcode.
+
+        It translates some of Django's test command option to pytest's.
+        """
+        import pytest
+
+        argv = []
+        if self.verbosity == 0:
+            argv.append('--quiet')
+        if self.verbosity == 2:
+            argv.append('--verbose')
+        if self.verbosity == 3:
+            argv.append('-vv')
+        if self.failfast:
+            argv.append('--exitfirst')
+        if self.keepdb:
+            argv.append('--reuse-db')
+
+        argv.extend(test_labels)
+        return pytest.main(argv)
+
+TEST_RUNNER = 'config.test_runner.PytestTestRunner'
