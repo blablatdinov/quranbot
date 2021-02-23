@@ -1,8 +1,7 @@
 from rest_framework import serializers
 
-from apps.content.models import Ayat, Podcast, AudioFile
-from apps.prayer.models import PrayerAtUser, Prayer
-from apps.prayer.service import get_text_prayer_times
+from apps.content.models import AudioFile, Ayat, Podcast
+from apps.prayer.models import Prayer, PrayerAtUser
 
 
 class AyatSerializer(serializers.ModelSerializer):
