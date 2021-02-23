@@ -2,6 +2,7 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from loguru import logger
+from django.utils.decorators import method_decorator
 
 from apps.content.services.podcast_services import get_random_podcast
 from apps.content.models import Ayat, Podcast
@@ -12,6 +13,7 @@ from apps.prayer.models import PrayerAtUserGroup
 from apps.prayer.services.prayer_time_for_user import PrayerAtUserGenerator
 from apps.prayer.services.get_prayer_times_for_city import PrayerTimeGetter
 from apps.prayer.exceptions.subscriber_not_set_city import SubscriberNotSetCity
+from apps.api.schemas.swagger_schemas import get_prayer_time_doc
 
 
 class AyatViewSet(viewsets.ReadOnlyModelViewSet):
@@ -32,6 +34,7 @@ class PodcastViewSet(viewsets.ReadOnlyModelViewSet):
         return get_random_podcast()
 
 
+@method_decorator(**get_prayer_time_doc)
 class PrayerTimeView(APIView):
     """
     Вьюха должна возвращать время намаза по chat_id или по городу
