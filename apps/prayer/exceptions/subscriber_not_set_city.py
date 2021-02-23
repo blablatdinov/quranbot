@@ -1,0 +1,2 @@
+class SubscriberNotSetCity(Exception):
+    pass
