@@ -5,6 +5,10 @@ from apps.prayer.models import Prayer, PrayerAtUser
 
 
 class AyatSerializer(serializers.ModelSerializer):
+    sura = serializers.SerializerMethodField()
+
+    def get_sura(self, obj):
+        return obj.sura.number
 
     class Meta:
         fields = (

@@ -17,14 +17,13 @@ def ayat():
     mixer.blend("content.Ayat", ayat="1-5", sura__number=2)
     mixer.blend("content.Ayat", ayat="1, 2", sura__number=114)
 
-    return mixer.blend("content.Ayat", ayat="5", sura__number=4)
+    return mixer.blend("content.Ayat", additional_content="target ayat", ayat="5", sura__number=4)
 
 
 def test_controller(client, ayat):
-    response = client.get(f'/api/v1/getAyat/?sura={ayat.sura.number}&ayat={ayat.ayat}').json()
+    response = client.get(f'/api/v1/getAyat?sura={ayat.sura.number}&ayat={ayat.ayat}').json()
     response_data = response.get("results")[0]
 
+    assert len(response.get("results")) == 1
     assert response_data.get("sura") == 4
-    assert response_data.get("ayat") == 5
-    # assert ayat.sura.number == 4  # TODO почему падает если получать из словаря
-    # assert ayat.ayat == "5"
+    assert response_data.get("ayat") == "5"
