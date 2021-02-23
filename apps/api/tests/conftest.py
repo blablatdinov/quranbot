@@ -1,8 +1,8 @@
 from datetime import datetime
 
 import pytest
-from rest_framework.test import APIClient
 from mixer.backend.django import mixer
+from rest_framework.test import APIClient
 
 from apps.prayer.schemas import PRAYER_NAMES
 
@@ -46,8 +46,8 @@ def prayers(city):
 def prayer_at_subscriber(subscriber, city):
     return [
         mixer.blend(
-            "prayer.PrayerAtUser", 
-            subscriber=subscriber, 
+            "prayer.PrayerAtUser",
+            subscriber=subscriber,
             prayer__name=x[0],
             prayer__day__date=datetime.today(),
             prayer__city=city,

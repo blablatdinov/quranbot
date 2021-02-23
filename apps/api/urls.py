@@ -1,9 +1,8 @@
-from apps.prayer.models import Prayer
-from django.urls import path, include
+from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from apps.api.views import AyatViewSet, PodcastViewSet, PrayerTimeView
 from apps.api.api_docs import api_docs_urls
+from apps.api.views import AyatViewSet, PodcastViewSet, PrayerTimeView
 
 router = DefaultRouter()
 router.register(r"getAyat", AyatViewSet)
