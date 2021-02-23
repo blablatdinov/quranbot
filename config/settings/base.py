@@ -19,10 +19,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 
-    "rest_framework",
-    "drf_yasg",
-
-    "apps.api",
     "apps.bot_init",
     "apps.content",
     "apps.prayer"
@@ -112,9 +108,35 @@ CELERY_BROKER_URL = os.getenv("REDIS_CONNECTION")
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASKS_SERIALIZER = "json"
 
-REST_FRAMEWORK = {
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 100
-}
+
+class PytestTestRunner:
+    """Runs pytest to discover and run tests."""
+
+    def __init__(self, verbosity=1, failfast=False, keepdb=False, **kwargs):
+        self.verbosity = verbosity
+        self.failfast = failfast
+        self.keepdb = keepdb
+
+    def run_tests(self, test_labels):
+        """Run pytest and return the exitcode.
+
+        It translates some of Django's test command option to pytest's.
+        """
+        import pytest
+
+        argv = []
+        if self.verbosity == 0:
+            argv.append('--quiet')
+        if self.verbosity == 2:
+            argv.append('--verbose')
+        if self.verbosity == 3:
+            argv.append('-vv')
+        if self.failfast:
+            argv.append('--exitfirst')
+        if self.keepdb:
+            argv.append('--reuse-db')
+
+        argv.extend(test_labels)
+        return pytest.main(argv)
 
 TEST_RUNNER = 'config.test_runner.PytestTestRunner'

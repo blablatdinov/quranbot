@@ -14,7 +14,7 @@ from apps.bot_init.service import get_admins_list
 from apps.bot_init.utils import get_tbot_instance
 from apps.bot_init.exceptions import AyatDoesNotExists
 from apps.content.models import Podcast, Ayat, AudioFile
-from apps.content.service import find_ayat_by_text, get_random_podcast
+from apps.content.service import find_ayat_by_text
 from apps.prayer.service import get_unread_prayers, set_city_to_subscriber, get_prayer_time_or_no
 from apps.prayer.models import City
 
@@ -27,6 +27,13 @@ def get_audio_answer(audio: AudioFile) -> Answer:
         # Если включен режим отладки, и это не основной бот, file_id работать не будут
         return Answer(tg_audio_id=file_id)
     return Answer(audio.audio_link)
+
+
+def get_random_podcast() -> Podcast:
+    """Возвращает рандомный подкаст"""
+    podcast = choice(Podcast.objects.all())
+    logger.debug(podcast)
+    return podcast
 
 
 def get_podcast_in_answer_type() -> Answer:
