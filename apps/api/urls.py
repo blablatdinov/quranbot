@@ -8,10 +8,9 @@ from apps.api.api_docs import api_docs_urls
 router = DefaultRouter()
 router.register(r"getAyat", AyatViewSet)
 router.register(r"getPodcast", PodcastViewSet)
-# router.register(r"getPrayerAtUser", PrayerAtUserGroupViewSet)
-# router.register(r"getPrayerTime", PrayerTimeView)
 
 urlpatterns = [
     path("v1/", include(router.urls)),
     path("v1/getPrayerTime", PrayerTimeView.as_view()),
+    path("v1/setPrayerStatus", PrayerTimeView.as_view()),
 ] + api_docs_urls
