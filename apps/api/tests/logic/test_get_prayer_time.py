@@ -3,17 +3,11 @@ import re
 from datetime import datetime
 
 import pytest
-from rest_framework.test import APIClient
 from mixer.backend.django import mixer
 
 from apps.prayer.schemas import PRAYER_NAMES
 
 pytestmark = [pytest.mark.django_db]
-
-
-@pytest.fixture()
-def client():
-    return APIClient()
 
 
 @pytest.fixture()
