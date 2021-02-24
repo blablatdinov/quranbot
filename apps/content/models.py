@@ -49,6 +49,9 @@ class Sura(models.Model):
     link = models.CharField(max_length=128, verbose_name="Ссылка на суру")
     child_elements_count = models.IntegerField(verbose_name="Кол-во записей аятов в суре")
 
+    def __str__(self):
+        return f"Сура {self.number}"
+
 
 class Ayat(models.Model):
     """Аят священного Корана."""

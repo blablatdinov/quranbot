@@ -7,9 +7,16 @@ from apps.bot_init.models import Mailing, Subscriber
 from apps.bot_init.markup import get_default_keyboard, InlineKeyboard
 from apps.bot_init.schemas import Answer
 from apps.bot_init.service import send_answer, send_message_to_admin
-from apps.content.models import Ayat, MorningContent
+from apps.content.models import Ayat, MorningContent, Podcast
 
 logger.add("logs/app.log")
+
+
+def get_random_podcast() -> Podcast:
+    """Возвращает рандомный подкаст"""
+    podcast = Podcast.objects.order_by("?").first()
+    logger.debug(podcast)
+    return podcast
 
 
 def get_morning_content(day_num: int) -> str:
