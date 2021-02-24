@@ -4,29 +4,11 @@ from collections import namedtuple
 from dotenv import load_dotenv
 import requests
 from loguru import logger
+from split_settings.tools import include
 
+from config.splitted_settings.environ import env
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-load_dotenv(".env")
-
-SECRET_KEY = os.getenv("SECRET_KEY")
-
-INSTALLED_APPS = [
-    "django.contrib.admin",
-    "django.contrib.auth",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
-    "django.contrib.staticfiles",
-
-    "rest_framework",
-    "drf_yasg",
-
-    "apps.api",
-    "apps.bot_init",
-    "apps.content",
-    "apps.prayer"
-]
+DEBUG = env("DEBUG")
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -38,25 +20,14 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "config.urls"
-
-TEMPLATES = [
-    {
-        "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
-        "APP_DIRS": True,
-        "OPTIONS": {
-            "context_processors": [
-                "django.template.context_processors.debug",
-                "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages",
-            ],
-        },
-    },
-]
-
-WSGI_APPLICATION = "config.wsgi.application"
+include(
+    "splitted_settings/boilerplate.py",
+    "splitted_settings/db.py",
+    "splitted_settings/installed_apps.py",
+    "splitted_settings/static.py",
+    "splitted_settings/templates.py",
+    "splitted_settings/rest_framework.py",
+)
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -83,9 +54,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-STATIC_URL = "/static/"
-STATIC_ROOT = "static/"
-
 TG_BOT = namedtuple("Bot", ["token", "webhook_host", "name", "id", "admins"])
 TG_BOT.token = os.getenv("BOT_TOKEN")
 TG_BOT.webhook_host = os.getenv("HOST")
@@ -111,10 +79,3 @@ CELERY_BROKER_URL = os.getenv("REDIS_CONNECTION")
 
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASKS_SERIALIZER = "json"
-
-REST_FRAMEWORK = {
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 100
-}
-
-TEST_RUNNER = 'config.test_runner.PytestTestRunner'

@@ -19,10 +19,11 @@ def podcast():
 
 
 def test_controller(client, podcast):
-    gotted = client.get("/api/v1/getPodcast/").json().get("results")[0]
+    gotted = client.get("/api/v1/getPodcast/")
+    data = gotted.json().get("results")[0]
 
-    assert list(gotted.keys()) == ["title", "audio"]
-    assert list(gotted.get("audio").keys()) == ["audio_link", "tg_file_id"]
+    assert list(data.keys()) == ["title", "audio"]
+    assert list(data.get("audio").keys()) == ["audio_link", "tg_file_id"]
 
 
 def test_randomize_in_controller(client, podcast):
