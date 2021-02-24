@@ -3,18 +3,10 @@
 import os
 import sys
 
-from dotenv import load_dotenv
-
-
-load_dotenv(".env")
-
 
 def main():
     """Главная функция работы с django-cli."""
-    if os.getenv("DEBUG") == "true":
-        using_settings = "config.settings.dev"
-    else:
-        using_settings = "config.settings.prod"
+    using_settings = "config.settings"
     os.environ["DJANGO_SETTINGS_MODULE"] = using_settings
     try:
         from django.core.management import execute_from_command_line
