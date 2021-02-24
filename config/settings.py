@@ -26,6 +26,7 @@ include(
     "splitted_settings/installed_apps.py",
     "splitted_settings/static.py",
     "splitted_settings/templates.py",
+    "splitted_settings/rest_framework.py",
 )
 
 AUTH_PASSWORD_VALIDATORS = [
