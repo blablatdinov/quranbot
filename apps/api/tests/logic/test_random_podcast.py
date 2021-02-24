@@ -51,10 +51,3 @@ def test_get_random_podcast(podcast):
         prev_result = gotted_podcast
 
     assert flag
-
-"""
-apps/api/tests/logic/test_random_podcast.py::test_controller
-apps/api/tests/logic/test_random_podcast.py::test_randomize_in_controller
-apps/api/tests/logic/test_select_ayat_by_sura_ayat_number.py::test_controller
-apps/api/tests/serializers/serializers_test.py::test_get_sura[additional_content]
-"""
