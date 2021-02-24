@@ -1,12 +1,8 @@
-export BOT_TOKEN=452230948:AAGgl86AHCdTCXf8XGD6lkj9rQhoV4xrf5E
-export SECRET_KEY=asdf
-export HOST=
-export ADMINS=358610865
-export DEBUG=true
-export REDIS_CONNECTION=
+BOT_TOKEN=
+SECRET_KEY=asdf
+HOST=
+ADMINS=358610865
+DEBUG=on
+REDIS_CONNECTION=
 
-# Опционально, если при разработке БД Postgres
-
-export DB_NAME=
-export DB_USERNAME=
-export DB_PASSWORD=
+DATABASE_URL=psql://qbot:qbot@localhost:5123/qbot_db
