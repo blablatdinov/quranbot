@@ -26,3 +26,9 @@ def test_get_random_podcast(client, podcast):
     response = client.get('/api/v1/getPodcast/')
 
     assert response.status_code == 200
+
+
+def test_daily_content(client, daily_content):
+    response = client.get('/api/v1/getDailyContent/')
+
+    assert response.status_code == 200

@@ -1,3 +1,5 @@
+from django.db import connection
+from django.http.response import JsonResponse
 from django.utils.decorators import method_decorator
 from loguru import logger
 from rest_framework import viewsets
@@ -12,9 +14,11 @@ from apps.api.serializers import (AyatSerializer, PodcastSerializer,
                                   PrayerAtSubscriberSerializer,
                                   PrayerTimeAtUserInstanceSerializer,
                                   PrayerTimesSerializer,
-                                  SetPrayerStatusSerializer)
-from apps.content.models import Podcast
+                                  SetPrayerStatusSerializer, MorningContentSerializer)
+from apps.bot_init.models import Subscriber
+from apps.content.models import Podcast, MorningContent
 from apps.content.services.ayat_search import get_ayat_by_sura_ayat_numbers
+from apps.content.service import get_subscribers_with_content
 from apps.content.services.podcast_services import get_random_podcast
 from apps.prayer.exceptions.subscriber_not_set_city import SubscriberNotSetCity
 from apps.prayer.models import PrayerAtUser
@@ -31,6 +35,44 @@ class AyatAPIView(ListAPIView):
         res = get_ayat_by_sura_ayat_numbers(sura_num, ayat_num)
         logger.debug(f"{res=}")
         return res
+
+
+class DailyContentView(APIView):
+    queryset = MorningContent.objects.all()
+    serializer_class = MorningContentSerializer
+
+    def get(self, obj):
+        # from django.db import connection
+        # with connection.cursor() as cursor:
+        #     cursor.execute("select day from content_morningcontent")
+        #     logger.debug(str(cursor.fetchall()))
+        # with connection.cursor() as cursor:
+        #     cursor.execute("select day from bot_init_subscriber")
+        #     logger.debug(str(cu    with connection.cursor() as cursor:
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                select
+                    s.tg_chat_id,
+                    STRING_AGG(
+                        '<b>' || sura.number::character varying || ': ' || a.ayat || ')</b> ' || a .content || '\n',
+                        ''
+                        order by a.id
+                    ),
+                    STRING_AGG(sura.link, '|' order by a.id)
+                from bot_init_subscriber as s
+                left join content_morningcontent as mc on s.day=mc.day
+                left join content_ayat as a on a.one_day_content_id=mc.id
+                left join content_sura as sura on a.sura_id=sura.id
+                where s.tg_chat_id=358610865 or s.tg_chat_id=224890356 and s.day >= 1 and s.is_active='t'
+                group by s.tg_chat_id
+            """)
+            res = cursor.fetchall()
+            logger.debug(str(res))
+        # for s in Subscriber.objects.all():
+        #     logger.debug(f"{s.tg_chat_id} {s.day} {MorningContent.objects.get(day=s.day)}")
+        data = get_subscribers_with_content()
+        logger.debug(f"{data=}")
+        return JsonResponse({"res":"4309"})
 
 
 class PodcastViewSet(viewsets.ReadOnlyModelViewSet):

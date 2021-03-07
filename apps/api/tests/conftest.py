@@ -1,4 +1,5 @@
 from datetime import datetime
+from random import randint
 
 import pytest
 from mixer.backend.django import mixer
@@ -53,3 +54,17 @@ def prayer_at_subscriber(subscriber, city):
             prayer__city=city,
         ) for x in PRAYER_NAMES
     ]
+
+
+@pytest.fixture()
+def daily_content():
+    mixer.cycle(10).blend(
+        "content.MorningContent", 
+        day=(x for x in range(1, 11)),
+        ayats=mixer.cycle(3).blend("content.Ayat")
+    )
+    mixer.cycle(30).blend(
+        "bot_init.Subscriber",
+        day=(randint(1, 10) for _ in range(30)),
+        is_active=True
+    )

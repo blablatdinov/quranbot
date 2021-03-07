@@ -30,6 +30,10 @@ include(
     "splitted_settings/allowed_hosts.py",
 )
 
+TEMPLATE_LOADERS = (
+    'django.template.loaders.eggs.Loader',
+)
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
