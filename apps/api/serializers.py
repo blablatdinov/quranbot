@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from apps.content.models import AudioFile, Ayat, Podcast
+from apps.content.models import AudioFile, Ayat, Podcast, MorningContent
 from apps.prayer.models import Prayer, PrayerAtUser
 
 
@@ -98,3 +98,15 @@ class SetPrayerStatusSerializer(serializers.Serializer):  # FIXME докинут
     id = serializers.IntegerField()
     is_read = serializers.BooleanField()
     chat_id = serializers.IntegerField()
+
+
+class MorningContentSerializer(serializers.ModelSerializer):
+    # ayats = AyatSerializer(many=True)
+
+    class Meta:
+        model = MorningContent
+        fields = (
+            "additional_content",
+            "day",
+            # "ayats",
+        )
