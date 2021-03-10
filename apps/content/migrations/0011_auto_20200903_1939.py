@@ -24,5 +24,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(fill_suras),
+        # migrations.RunPython(fill_suras),
     ]
