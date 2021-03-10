@@ -2,6 +2,7 @@
 import datetime
 import os
 from time import sleep
+from typing import List
 
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
@@ -29,7 +30,7 @@ def delete_message_in_tg(chat_id: int, message_id: int) -> None:
     tbot.delete_message(chat_id, message_id)
 
 
-def get_admins_list():
+def get_admins_list() -> List[int]:
     """Функция возвращает список администраторов."""
     return settings.TG_BOT.admins + [admin.subscriber.tg_chat_id for admin in Admin.objects.all()]
 
