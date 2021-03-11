@@ -64,5 +64,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(write_cities)
+        # migrations.RunPython(write_cities)
     ]
