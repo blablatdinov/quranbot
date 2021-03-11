@@ -1,3 +1,4 @@
+# TODO добавить тестов, чтоб не спарсить лишнего
 import re
 import pytest
 import requests_mock
@@ -21,9 +22,16 @@ def get_html(file_name):
         return f.read()
 
 
-def get_podcast(podcast_title: str = "Как терпеть?"):
+def get_podcast(podcast_title: str = None):
+    if podcast_title is None:
+        podcast_title = "Как терпеть?"
+        podcast_audio_link = "https://umma.ru/uploads/audio/t2b2gsqq5b.mp3"
+    else:
+        # podcast_audio_link = f"https://umma.ru/uploads/audio/{podcast_title}.mp3"
+        podcast_audio_link = "https://umma.ru/uploads/audio/t2b2gsqq5b.mp3"
+
     with open(f"{settings.BASE_DIR}/apps/content/tests/fixtures/podcast_single.html", "r") as f:
-        return Template(f.read()).render(podcast_title=podcast_title)
+        return Template(f.read()).render(podcast_title=podcast_title, podcast_audio_link=podcast_audio_link)
 
 def get_audio():
     with open(f"{settings.BASE_DIR}/apps/content/tests/fixtures/empty.mp3", "rb") as f:
@@ -65,7 +73,7 @@ def tg_audio_answer():
 
 def test_parse_podasts(subscriber):
     with requests_mock.Mocker() as m:
-        m.get("https://umma.ru/audlo/shamil-alyautdinov/", text=get_html("podcasts_page.html"))
+        m.get("https://umma.ru/audlo/shamil-alyautdinov/page/1", text=get_html("podcasts_page.html"))
         m.get("https://umma.ru/audlo/shamil-alyautdinov/page/2", text=get_html("podcasts_page.html"))
         m.get("https://umma.ru/audlo/shamil-alyautdinov/page/3", status_code=404)
 
@@ -93,7 +101,7 @@ def test_parse_podasts(subscriber):
 
 def test_parse_new_podcasts(subscriber):
     with requests_mock.Mocker() as m:
-        m.get("https://umma.ru/audlo/shamil-alyautdinov/", text=get_html("podcast_2_page.html"))
+        m.get("https://umma.ru/audlo/shamil-alyautdinov/page/1", text=get_html("podcast_2_page.html"))
         m.get("https://umma.ru/audlo/shamil-alyautdinov/page/2", status_code=404)
 
         m.get("https://umma.ru/nevezhestvo-muzika-tavassul/", text=get_podcast("nevezhestvo-muzika-tavassul"))
@@ -114,9 +122,10 @@ def test_parse_new_podcasts(subscriber):
         print(1)
 
     with requests_mock.Mocker() as m:
-        m.get("https://umma.ru/audlo/shamil-alyautdinov/", text=get_html("podcasts_page.html"))
+        m.get("https://umma.ru/audlo/shamil-alyautdinov/page/1", text=get_html("podcasts_page.html"))
         m.get("https://umma.ru/audlo/shamil-alyautdinov/page/2", text=get_html("podcast_2_page.html"))
         m.get("https://umma.ru/audlo/shamil-alyautdinov/page/3", status_code=404)
+        m.get("https://umma.ru/uploads/audio/t2b2gsqq5b.mp3", content=get_audio())
 
         m.get("https://umma.ru/kak-terpet/", text=get_podcast("kak-terpet"))
         m.get("https://umma.ru/dela-i-molitva-hadis/", text=get_podcast("dela-i-molitva-hadis"))

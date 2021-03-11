@@ -9,6 +9,11 @@ from apps.bot_init.service import get_admins_list
 from apps.bot_init.utils import save_message
 from apps.bot_init.views import tbot
 from apps.content.models import AudioFile, Podcast
+from apps.content.parsers import get_html, get_soup
+
+
+class AchievedLastPageException(Exception):
+    pass
 
 
 class PodcastParser:
@@ -20,9 +25,24 @@ class PodcastParser:
     def get_subscriber_for_first_sending():
         return Subscriber.objects.get(tg_chat_id=get_admins_list()[0])
 
-    @staticmethod
-    def get_last_parsed_podcast_link():
-        return AudioFile.objects.last().audio_link if AudioFile.objects.exists() else None
+    def is_last_page(self, status_code):
+        if status_code == 404:
+            raise AchievedLastPageException("Достигнута последняя страница")
+
+    def get_articles_links_from_page(self):
+        return [
+            "https://umma.ru" + x.find("div", class_="main").find("a")["href"] for x in self.article_page_soup.find_all("article")
+        ]
+
+    def get_article_info(self, article_link):
+        soup = get_soup(get_html(article_link))
+        self.audio_link = soup.find('audio').find('a')['href']
+        self.title = soup.find('h1').text.strip()
+
+    def get_articles_page(self):
+        response = requests.get(f"https://umma.ru/audlo/shamil-alyautdinov/page/{self.page_num}")
+        self.is_last_page(response.status_code)
+        self.article_page_soup = get_soup(response.text)
 
     def send_audio_to_telegram(self, content, title):
         msg = tbot.send_audio(
@@ -34,74 +54,39 @@ class PodcastParser:
         )
         return msg
 
-    def create_podcast_instance(self, title, audio_link, msg):
+    def download_and_send_audio_file(self):
+        logger.info(f"Download and send {self.audio_link}")
+        r = requests.get(self.audio_link)
+        if sys.getsizeof(r.content) < 50 * 1024 * 1024:
+            self.sending_audio_message_instance = self.send_audio_to_telegram(r.content, self.title)
+            save_message(self.sending_audio_message_instance)
+        else:
+            AudioFile.objects.create(title=self.title, audio_link=self.audio_link)
+
+    def create_podcast(self):
         Podcast.objects.create(
-            title=title, 
+            title=self.title, 
             audio=AudioFile.objects.create(
-                audio_link=audio_link,
-                tg_file_id=msg.audio.file_id,
+                audio_link=self.audio_link,
+                tg_file_id=self.sending_audio_message_instance.audio.file_id,
             ),
-            flag_for_parser=self.is_first_article
         )
 
-    def create_audio(self, audio_link, title):
-        r = requests.get(audio_link)
-        if sys.getsizeof(r.content) < 50 * 1024 * 1024:
-            msg = self.send_audio_to_telegram(r.content, title)
-            save_message(msg)
-            self.create_podcast_instance(title, audio_link, msg)
-        else:
-            AudioFile.objects.create(title=title, audio_link=audio_link)
-
-    def parse_article(self, block):
-        link = 'https://umma.ru' + block.find('div', class_='main').find('a')['href']
-        soup = bs(requests.get(link).text, 'lxml')
-        audio_link = soup.find('audio').find('a')['href']
-        title = soup.find('h1').text.strip()
-        if audio_link == self.last_audio_in_db_link:
-            self.break_flag = True
-            return "break"
-        else:
-            self.create_audio(audio_link, title)
-
-    def parse_page(self, articles_page):
-        soup = bs(articles_page.text, 'lxml')
-        article_blocks = soup.find_all('article')
-        for block in article_blocks:
-            if self.parse_article(block) == "break":
-                break
+    def parse_one_page(self):
+        self.get_articles_page()
+        for article_link in self.get_articles_links_from_page():
+            self.get_article_info(article_link)
+            self.download_and_send_audio_file()
+            self.create_podcast()
 
     def __call__(self):
         logger.info("Start parsing podcasts...")
-        pag_pages = ['https://umma.ru/audlo/shamil-alyautdinov/']
-        counter = 1
+        self.page_num = 1
         self.sub = self.get_subscriber_for_first_sending()
-        self.last_audio_in_db_link = self.get_last_parsed_podcast_link()
-        self.break_flag = False
-        logger.debug(f"{self.last_audio_in_db_link=}")
-        iterator = Iterator()
 
         while True:
-            articles_page = requests.get(pag_pages[-1])
-            if articles_page.status_code == 404:
-                logger.info(f"Last page stop parsing.")
-                return
-            logger.info(f"Parse {pag_pages[-1]}")
-
-            self.is_first_article = counter == 1
-
-            self.parse_page(articles_page)
-            if self.break_flag:
-                logger.info(f"{self.break_flag=} stop parsing.")
+            try:
+                self.parse_one_page()
+                self.page_num += 1
+            except AchievedLastPageException:
                 break
-
-            # Генерируем ссылки для следующей итерации while
-            counter += 1
-            pag_pages.append(f'https://umma.ru/audlo/shamil-alyautdinov/page/{counter}')
-
-
-class Iterator:
-    n = 1
-
-    def __iter__(self):
-        self.n += 1
