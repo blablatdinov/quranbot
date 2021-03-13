@@ -185,6 +185,7 @@ def upload_database_dump():
     os.system(command)
     command = f"pg_dump -U qbot qbot_db -h localhost --exclude-table='bot_init_message,bot_init_callbackdata' > {settings.BASE_DIR}/dumps/dev_dump.sql && gzip {settings.BASE_DIR}/dumps/dev_dump.sql -f"
     os.system(command)
+    command = f"rm {settings.BASE_DIR}/qbot_db.sql.gz"
 
     name = "qbot_db.sql.gz"
     file_path = settings.BASE_DIR + "/deploy/qbot_db.sql.gz"
