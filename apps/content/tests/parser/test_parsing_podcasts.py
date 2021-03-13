@@ -1,4 +1,5 @@
 # TODO добавить тестов, чтоб не спарсить лишнего
+import json
 import re
 import pytest
 import requests_mock
@@ -39,43 +40,15 @@ def get_audio():
 
 
 def tg_audio_answer():
-    data = {
-        "ok": True,
-        "result": {
-            'message_id': 11397, 
-            'from': {
-                'id': 452230948, 
-                'is_bot': True, 
-                'first_name': 'WokeUpSmiled', 
-                'username': 'WokeUpSmiled_bot'
-            }, 
-            'chat': {
-                'id': 358610865, 
-                'first_name': 'Алмаз', 
-                'last_name': 'Илалетдинов', 
-                'username': 'ilaletdinov', 
-                'type': 'private'
-            }, 
-            'date': 1615218082, 
-            'audio': {
-                'duration': 0, 
-                'file_name': 'audio', 
-                'mime_type': 'audio/mpeg', 
-                'performer': 'Шамиль Аляутдинов', 
-                'file_id': 'CQACAgIAAxkDAAIshWBGRaJwdieNTKufqZc4m9XAw12jAAIXCwACIyQ4SqTy0Yzg179WHgQ', 
-                'file_unique_id': 'AgADFwsAAiMkOEo', 
-                'file_size': 417
-            }
-        }
-    }
+    with open(f"{settings.BASE_DIR}/apps/content/tests/fixtures/tg_answer.json", "r") as f:
+        data = json.load(f)
     return data
 
 
 def test_parse_podasts(subscriber):
     with requests_mock.Mocker() as m:
         m.get("https://umma.ru/audlo/shamil-alyautdinov/page/1", text=get_html("podcasts_page.html"))
-        m.get("https://umma.ru/audlo/shamil-alyautdinov/page/2", text=get_html("podcasts_page.html"))
-        m.get("https://umma.ru/audlo/shamil-alyautdinov/page/3", status_code=404)
+        m.get("https://umma.ru/audlo/shamil-alyautdinov/page/2", status_code=404)
 
         m.get("https://umma.ru/kak-terpet/", text=get_podcast())
         m.get("https://umma.ru/dela-i-molitva-hadis/", text=get_podcast())
@@ -93,7 +66,7 @@ def test_parse_podasts(subscriber):
         
         PodcastParser()()
 
-    assert Podcast.objects.count() == 20
+    assert Podcast.objects.count() == 10
     assert Podcast.objects.first().audio.tg_file_id == "CQACAgIAAxkDAAIshWBGRaJwdieNTKufqZc4m9XAw12jAAIXCwACIyQ4SqTy0Yzg179WHgQ"
     assert Podcast.objects.first().audio.audio_link == "https://umma.ru/uploads/audio/t2b2gsqq5b.mp3"
     assert Podcast.objects.first().title == "Как терпеть?"
@@ -127,6 +100,17 @@ def test_parse_new_podcasts(subscriber):
         m.get("https://umma.ru/audlo/shamil-alyautdinov/page/3", status_code=404)
         m.get("https://umma.ru/uploads/audio/t2b2gsqq5b.mp3", content=get_audio())
 
+        m.get("https://umma.ru/nevezhestvo-muzika-tavassul/", text=get_podcast("nevezhestvo-muzika-tavassul"))
+        m.get("https://umma.ru/prosit-u-sheiha-ili-net/", text=get_podcast("prosit-u-sheiha-ili-net"))
+        m.get("https://umma.ru/zastupnichestvo-kak-eto/", text=get_podcast("zastupnichestvo-kak-eto"))
+        m.get("https://umma.ru/zhizn-prekrasna/", text=get_podcast("zhizn-prekrasna"))
+        m.get("https://umma.ru/suicid-predotvrati/", text=get_podcast("suicid-predotvrati"))
+        m.get("https://umma.ru/vozmozhnosti-mozga/", text=get_podcast("vozmozhnosti-mozga"))
+        m.get("https://umma.ru/o-hristianstve/", text=get_podcast("o-hristianstve"))
+        m.get("https://umma.ru/itog/", text=get_podcast("itog"))
+        m.get("https://umma.ru/o-boge/", text=get_podcast("o-boge"))
+        m.get("https://umma.ru/vse-vo-blago/", text=get_podcast("vse-vo-blago"))
+
         m.get("https://umma.ru/kak-terpet/", text=get_podcast("kak-terpet"))
         m.get("https://umma.ru/dela-i-molitva-hadis/", text=get_podcast("dela-i-molitva-hadis"))
         m.get("https://umma.ru/tavassul-salyafiti/", text=get_podcast("tavassul-salyafiti"))
@@ -141,5 +125,8 @@ def test_parse_new_podcasts(subscriber):
         
         PodcastParser()()
         print(2)
+
+    for p in Podcast.objects.all():
+        print(p.article_link)
 
     assert Podcast.objects.count() == 20

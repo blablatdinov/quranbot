@@ -69,6 +69,8 @@ except ValueError as e:
 except AttributeError as e:
     logger.error("Пожалуйста проверьте переменную ADMINS в файле .env")
     raise e
+TG_BOT.name = os.getenv("BOT_NAME", "Quran_365_bot")
+TG_BOT.id = os.getenv("BOT_ID", "705810219")
 
 CELERY_BROKER_URL = os.getenv("REDIS_CONNECTION")
 
