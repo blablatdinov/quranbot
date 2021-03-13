@@ -1,1 +1,1 @@
-ALLOWED_HOSTS = ['quranbot.blablatdinov.ru']
+ALLOWED_HOSTS = ['quranbot.blablatdinov.ru', "localhost"]
