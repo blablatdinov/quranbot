@@ -29,7 +29,7 @@ def test_controller(client, podcast):
 def test_randomize_in_controller(client, podcast):
     prev_result = None
     flag = False
-    for _ in range(5):
+    for _ in range(50):
         gotted = client.get("/api/v1/getPodcast/?order=random").json().get("results")
         flag = prev_result != gotted[0]
         prev_result = gotted[0]
@@ -45,7 +45,7 @@ def test_get_random_podcast(podcast):
     """
     prev_result = None
     flag = False
-    for _ in range(5):
+    for _ in range(15):
         gotted_podcast = get_random_podcast()
         flag = prev_result != gotted_podcast
         prev_result = gotted_podcast

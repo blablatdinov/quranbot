@@ -62,10 +62,6 @@ USE_TZ = True
 TG_BOT = namedtuple("Bot", ["token", "webhook_host", "name", "id", "admins"])
 TG_BOT.token = os.getenv("BOT_TOKEN")
 TG_BOT.webhook_host = os.getenv("HOST")
-r = requests.get(f"https://api.telegram.org/bot{TG_BOT.token}/getMe").json()
-if not r.get("ok"):
-    logger.info(r)
-    exit(1)
 try:
     if os.getenv("ADMINS") == "":
         TG_BOT.admins = []
@@ -77,8 +73,8 @@ except ValueError as e:
 except AttributeError as e:
     logger.error("Пожалуйста проверьте переменную ADMINS в файле .env")
     raise e
-TG_BOT.name = r["result"]["username"]
-TG_BOT.id = r["result"]["id"]
+TG_BOT.name = os.getenv("BOT_NAME", "Quran_365_bot")
+TG_BOT.id = os.getenv("BOT_ID", "705810219")
 
 CELERY_BROKER_URL = os.getenv("REDIS_CONNECTION")
 
