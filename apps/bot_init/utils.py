@@ -28,7 +28,7 @@ def save_message(msg):
 
 def get_tbot_instance() -> TeleBot:
     """Получаем экземпляр класса TeleBot для удобной работы с API."""
-    return TeleBot(settings.TG_BOT.token)
+    return TeleBot(settings.TG_BOT.token, threaded=False)
 
 
 def save_callback_data(call) -> CallbackData:
