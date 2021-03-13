@@ -1,7 +1,6 @@
 import sys
 
 import requests
-from bs4 import BeautifulSoup as bs
 from loguru import logger
 
 from apps.bot_init.models import Subscriber
