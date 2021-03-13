@@ -6,5 +6,5 @@ ENV POSTGRES_DB="qbot_db"
 
 ADD "https://www.random.org/cgi-bin/randbyte?nbytes=10&format=h" skipcache
 RUN wget https://quranbot.blablatdinov.ru/dumps/dev_dump.sql.gz
-RUN gunzip db_dump_dev.sql.gz
-RUN mv db_dump_dev.sql /docker-entrypoint-initdb.d
+RUN gunzip dev_dump.sql.gz
+RUN mv dev_dump.sql /docker-entrypoint-initdb.d
