@@ -69,17 +69,17 @@ class PodcastParser:
         if file_size < 50 * 1024 * 1024:
             self.sending_audio_message_instance = self.send_audio_to_telegram(r.content, self.title)
             save_message(self.sending_audio_message_instance)
-        else:
-            AudioFile.objects.create(title=self.title, audio_link=self.audio_link)
+
+        self.audio_file = AudioFile.objects.create(
+            audio_link=self.audio_link,
+            tg_file_id=self.sending_audio_message_instance.audio.file_id if hasattr(self, "sending_audio_message_instance") else None,
+        )
 
     def create_podcast(self):
         Podcast.objects.create(
             title=self.title, 
             article_link = self.article_link,
-            audio=AudioFile.objects.create(
-                audio_link=self.audio_link,
-                tg_file_id=self.sending_audio_message_instance.audio.file_id,
-            ),
+            audio=self.audio_file,
         )
 
     def check_article_link_already_parsed(self, article_link):
