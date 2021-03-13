@@ -85,6 +85,7 @@ class Podcast(models.Model):  # TODO adds field with description and other
 
     title = models.CharField(max_length=128, verbose_name="Название")
     audio = models.OneToOneField(AudioFile, on_delete=models.PROTECT, verbose_name="Аудио файл")
+    article_link = models.CharField(max_length=512, verbose_name="Ссылка на статью", blank=True, null=True)
 
     class Meta:
         verbose_name = "Аудио подкаст"
