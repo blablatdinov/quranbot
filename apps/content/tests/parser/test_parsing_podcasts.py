@@ -13,11 +13,6 @@ from apps.content.models import Podcast
 pytestmark = [pytest.mark.django_db]
 
 
-@pytest.fixture
-def subscriber():
-    return mixer.blend("bot_init.Subscriber", tg_chat_id=358610865)
-
-
 def get_html(file_name):
     with open(f"{settings.BASE_DIR}/apps/content/tests/fixtures/{file_name}", "r") as f:
         return f.read()

@@ -48,6 +48,7 @@ class PodcastParser:
         self.article_page_soup = get_soup(response.text)
 
     def send_audio_to_telegram(self, content, title):
+        logger.info("Sending...")
         msg = tbot.send_audio(
             self.sub.tg_chat_id, 
             content, 
@@ -70,10 +71,13 @@ class PodcastParser:
             self.sending_audio_message_instance = self.send_audio_to_telegram(r.content, self.title)
             save_message(self.sending_audio_message_instance)
 
+        is_sended = hasattr(self, "sending_audio_message_instance")
+
         self.audio_file = AudioFile.objects.create(
             audio_link=self.audio_link,
-            tg_file_id=self.sending_audio_message_instance.audio.file_id if hasattr(self, "sending_audio_message_instance") else None,
+            tg_file_id=self.sending_audio_message_instance.audio.file_id if is_sended else None,
         )
+        delattr(self, "sending_audio_message_instance") if is_sended else None # Чтобы на следующей итерации если файл большой, то не присваивать AudioFile tg_file_id
 
     def create_podcast(self):
         Podcast.objects.create(
