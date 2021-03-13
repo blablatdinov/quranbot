@@ -1,1 +1,1 @@
-ALLOWED_HOSTS = env('ALLOWED_HOSTS')
+ALLOWED_HOSTS = ['quranbot.blablatdinov.ru', "localhost"]

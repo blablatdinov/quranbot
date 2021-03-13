@@ -2,6 +2,7 @@
 import datetime
 import os
 from time import sleep
+from typing import List
 
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
@@ -29,7 +30,7 @@ def delete_message_in_tg(chat_id: int, message_id: int) -> None:
     tbot.delete_message(chat_id, message_id)
 
 
-def get_admins_list():
+def get_admins_list() -> List[int]:
     """Функция возвращает список администраторов."""
     return settings.TG_BOT.admins + [admin.subscriber.tg_chat_id for admin in Admin.objects.all()]
 
@@ -182,8 +183,9 @@ def upload_database_dump():
 
     command = f"pg_dump -U qbot qbot_db -h localhost | gzip -c --best > {settings.BASE_DIR}/deploy/qbot_db.sql.gz"
     os.system(command)
-    command = f"pg_dump -U qbot qbot_db -h localhost --exclude-table='bot_init_message,bot_init_callbackdata' > {settings.BASE_DIR}/dumps/dump.sql && tar -cvzf {settings.BASE_DIR}/dumps/db_dump_dev.sql.tar.gz {settings.BASE_DIR}/dumps/dump.sql"
+    command = f"pg_dump -U qbot qbot_db -h localhost --exclude-table='bot_init_message,bot_init_callbackdata' > {settings.BASE_DIR}/dumps/dev_dump.sql && gzip {settings.BASE_DIR}/dumps/dev_dump.sql -f"
     os.system(command)
+    command = f"rm {settings.BASE_DIR}/qbot_db.sql.gz"
 
     name = "qbot_db.sql.gz"
     file_path = settings.BASE_DIR + "/deploy/qbot_db.sql.gz"
