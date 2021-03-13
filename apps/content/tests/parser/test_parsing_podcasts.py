@@ -62,7 +62,7 @@ def test_parse_podasts(subscriber):
         m.get("https://umma.ru/tavassul-chto-mozhno/", text=get_podcast())
 
         m.get("https://umma.ru/uploads/audio/t2b2gsqq5b.mp3", content=get_audio())
-        m.post("https://api.telegram.org/bot452230948:AAF4k2UPJ9yiG_E8Nhx3ovWyVQVy4F4J6SM/sendAudio?chat_id=358610865&performer=%D0%A8%D0%B0%D0%BC%D0%B8%D0%BB%D1%8C+%D0%90%D0%BB%D1%8F%D1%83%D1%82%D0%B4%D0%B8%D0%BD%D0%BE%D0%B2", json=tg_audio_answer())
+        m.register_uri("POST", re.compile(r"https://api.telegram.org/bot.+/sendAudio\?"), json=tg_audio_answer())
         
         PodcastParser()()
 
@@ -89,10 +89,9 @@ def test_parse_new_podcasts(subscriber):
         m.get("https://umma.ru/vse-vo-blago/", text=get_podcast("vse-vo-blago"))
 
         m.get("https://umma.ru/uploads/audio/t2b2gsqq5b.mp3", content=get_audio())
-        m.post("https://api.telegram.org/bot452230948:AAF4k2UPJ9yiG_E8Nhx3ovWyVQVy4F4J6SM/sendAudio?chat_id=358610865&performer=%D0%A8%D0%B0%D0%BC%D0%B8%D0%BB%D1%8C+%D0%90%D0%BB%D1%8F%D1%83%D1%82%D0%B4%D0%B8%D0%BD%D0%BE%D0%B2", json=tg_audio_answer())
+        m.register_uri("POST", re.compile(r"https://api.telegram.org/bot.+/sendAudio\?"), json=tg_audio_answer())
         
         PodcastParser()()
-        print(1)
 
     with requests_mock.Mocker() as m:
         m.get("https://umma.ru/audlo/shamil-alyautdinov/page/1", text=get_html("podcasts_page.html"))
@@ -121,12 +120,8 @@ def test_parse_new_podcasts(subscriber):
         m.get("https://umma.ru/muzika--eto-haram/", text=get_podcast("muzika--eto-haram"))
         m.get("https://umma.ru/tavassul-chto-nelzya/", text=get_podcast("tavassul-chto-nelzya"))
         m.get("https://umma.ru/tavassul-chto-mozhno/", text=get_podcast("tavassul-chto-mozhno"))
-        m.post("https://api.telegram.org/bot452230948:AAF4k2UPJ9yiG_E8Nhx3ovWyVQVy4F4J6SM/sendAudio?chat_id=358610865&performer=%D0%A8%D0%B0%D0%BC%D0%B8%D0%BB%D1%8C+%D0%90%D0%BB%D1%8F%D1%83%D1%82%D0%B4%D0%B8%D0%BD%D0%BE%D0%B2", json=tg_audio_answer())
+        m.register_uri("POST", re.compile(r"https://api.telegram.org/bot.+/sendAudio\?"), json=tg_audio_answer())
         
         PodcastParser()()
-        print(2)
-
-    for p in Podcast.objects.all():
-        print(p.article_link)
 
     assert Podcast.objects.count() == 20
