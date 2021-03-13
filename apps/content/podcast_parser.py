@@ -66,15 +66,22 @@ class PodcastParser:
     def create_podcast(self):
         Podcast.objects.create(
             title=self.title, 
+            article_link = self.article_link,
             audio=AudioFile.objects.create(
                 audio_link=self.audio_link,
                 tg_file_id=self.sending_audio_message_instance.audio.file_id,
             ),
         )
 
+    def check_article_link_already_parsed(self, article_link):
+        return Podcast.objects.filter(article_link=article_link).exists()
+
     def parse_one_page(self):
         self.get_articles_page()
         for article_link in self.get_articles_links_from_page():
+            self.article_link = article_link
+            if self.check_article_link_already_parsed(article_link):
+                continue
             self.get_article_info(article_link)
             self.download_and_send_audio_file()
             self.create_podcast()
