@@ -58,9 +58,15 @@ class PodcastParser:
         return msg
 
     def download_and_send_audio_file(self):
-        logger.info(f"Download and send {self.audio_link}")
+        logger.info(
+            f"Download and send {self.title},\n"
+            f"{self.audio_link=},\n"
+            f"{self.article_link=},"
+        )
         r = requests.get(self.audio_link)
-        if sys.getsizeof(r.content) < 50 * 1024 * 1024:
+        file_size = sys.getsizeof(r.content)
+        logger.info(f"file size={file_size / 1024 / 1024} MB")
+        if file_size < 50 * 1024 * 1024:
             self.sending_audio_message_instance = self.send_audio_to_telegram(r.content, self.title)
             save_message(self.sending_audio_message_instance)
         else:
