@@ -27,6 +27,7 @@ from apps.prayer.services.prayer_time_for_user import PrayerAtUserGenerator
 
 
 class AyatAPIView(ListAPIView):
+    """Вьюха для Аятов"""
     serializer_class = AyatSerializer
 
     def get_queryset(self):
