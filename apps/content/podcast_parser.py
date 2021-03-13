@@ -85,7 +85,7 @@ class PodcastParser:
             self.article_link = article_link
             if self.check_article_link_already_parsed(article_link):
                 logger.info(f"Find exist podcast {article_link}")
-                raise PodcastAlreadyExistException
+                raise PodcastAlreadyExistException  # TODO протестировать этот момент
             self.get_article_info(article_link)
             self.download_and_send_audio_file()
             self.create_podcast()
@@ -98,10 +98,13 @@ class PodcastParser:
         while True:
             try:
                 self.parse_one_page()
-                self.page_num += 1
             except AchievedLastPageException:
                 break
             except PodcastAlreadyExistException:
                 break
+            except Exception as e:
+                logger.error(str(e))
+
+            self.page_num += 1
 
         logger.info("Parsing end")
