@@ -60,10 +60,11 @@ class AyatParser:
             if (
                     "***" in paragraph.text or
                     paragraph.text == "Ссылки на богословские первоисточники и комментарий:" or
-                    "Подробнее см." in paragraph.text):
+                    "Подробнее см." in paragraph.text
+            ):
                 return text
             text += re.sub(r"\[\d+\]", "", paragraph.text)  # TODO вынести в очищение контента
-        return text  # TODO откуда берутся скобки
+        return text
 
     def parse_content_from_db(self):
         for ayat in pbar(Ayat.objects.all()):
@@ -107,6 +108,7 @@ class AyatParser:
         for sura in Sura.objects.all():
             page = self.get_page(sura.number, sura.child_elements_count)
             if hashlib.sha256(str(page).encode()).hexdigest() == sura.pars_hash:
+                logger.info(f"Sura #{sura.number} not changed")
                 continue
             sura.pars_hash = hashlib.sha256(str(page).encode()).hexdigest()
             sura.save(update_fields=["pars_hash"])
@@ -118,15 +120,15 @@ class AyatParser:
                     sura=sura,
                     ayat=self.get_ayat(block),
                 )
-                if not created:
-                    ayat.trans = self.get_transcription(block),
-                    ayat.content = "".join([x for x in self.get_content(block)]).replace(
-                        # FIXME починить очистку текста
-                        "Ссылки на богословские первоисточники и комментарий:",
-                        ""
-                    ),
-                    ayat.html = str(block)
-                    ayat.save()
+                # if not created:
+                ayat.trans = self.get_transcription(block),
+                ayat.content = "".join([x for x in self.get_content(block)]).replace(
+                    # FIXME починить очистку текста
+                    "Ссылки на богословские первоисточники и комментарий:",
+                    ""
+                )
+                ayat.html = str(block)
+                ayat.save()
 
             logger.info(f"Sura {sura.number} was parsed")
 
