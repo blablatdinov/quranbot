@@ -72,6 +72,7 @@ class PodcastParser:
             save_message(self.sending_audio_message_instance)
 
         is_sended = hasattr(self, "sending_audio_message_instance")
+        del r
 
         self.audio_file = AudioFile.objects.create(
             audio_link=self.audio_link,
