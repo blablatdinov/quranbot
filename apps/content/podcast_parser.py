@@ -15,6 +15,10 @@ class AchievedLastPageException(Exception):
     pass
 
 
+class PodcastAlreadyExistException(Exception):
+    pass
+
+
 class PodcastParser:
 
     def __init__(self):
@@ -80,7 +84,8 @@ class PodcastParser:
         for article_link in self.get_articles_links_from_page():
             self.article_link = article_link
             if self.check_article_link_already_parsed(article_link):
-                continue
+                logger.info(f"Find exist podcast {article_link}")
+                raise PodcastAlreadyExistException
             self.get_article_info(article_link)
             self.download_and_send_audio_file()
             self.create_podcast()
@@ -96,3 +101,7 @@ class PodcastParser:
                 self.page_num += 1
             except AchievedLastPageException:
                 break
+            except PodcastAlreadyExistException:
+                break
+
+        logger.info("Parsing end")
