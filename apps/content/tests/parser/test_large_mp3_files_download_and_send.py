@@ -7,11 +7,6 @@ from apps.content.models import Podcast, AudioFile
 pytestmark = [pytest.mark.django_db]
 
 
-@pytest.fixture
-def large_content():
-    return b"Saubuligiz!" * 5300000
-
-
 def test_download_and_send_large_files(large_content):
     with requests_mock.Mocker() as m:
 
