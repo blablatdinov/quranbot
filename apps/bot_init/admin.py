@@ -3,6 +3,7 @@ import json
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
+from django.conf import settings
 from apps.bot_init.models import AdminMessage, CallbackData, Mailing, Message, Subscriber, SubscriberAction, Admin
 
 
@@ -110,5 +111,6 @@ admin.site.register(AdminMessage)
 admin.site.register(CallbackData)
 admin.site.register(Admin)
 
-admin.site.site_title = "Административная панель Quran_365_bot v2.3.2"
-admin.site.site_header = "Административная панель Quran_365_bot v2.3.2"
+staging_level = 'dev' if settings.DEBUG else 'prod'
+admin.site.site_title = f"Quran_365_bot v2.3.2 {staging_level}"
+admin.site.site_header = f"Quran_365_bot v2.3.2 {staging_level}"
