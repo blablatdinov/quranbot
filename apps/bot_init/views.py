@@ -3,6 +3,7 @@ from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import telebot
+from loguru import logger
 
 from apps.bot_init.service import registration_subscriber, send_answer
 from apps.bot_init.services.inline_search_service import inline_query_service
@@ -12,13 +13,13 @@ from apps.bot_init.schemas import Answer
 from apps.bot_init.utils import save_callback_data, save_message, stop_retry, get_tbot_instance
 from apps.prayer.service import set_city_to_subscriber_by_location
 
-
 tbot = get_tbot_instance()
 
 
 @csrf_exempt
 def bot(request):
     """Обработчик пакетов от телеграмма."""
+    logger.info("Webhook from telegram controller")
     if request.content_type == "application/json":
         json_data = request.body.decode("utf-8")
         update = telebot.types.Update.de_json(json_data)
