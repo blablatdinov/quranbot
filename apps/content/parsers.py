@@ -68,11 +68,14 @@ class AyatParser:
 
     def parse_content_from_db(self):
         for ayat in pbar(Ayat.objects.all()):
-            ayat.content = "".join([x for x in self.get_content(get_soup(ayat.html))]).replace(
+            soup = get_soup(ayat.html)
+            ayat.content = "".join([x for x in self.get_content(soup)]).replace(
                 # FIXME починить очистку текста
                 "Ссылки на богословские первоисточники и комментарий:",
                 ""
             )
+            ayat.arab_text = self.get_arab_text(soup)
+            logger.debug(f"{ayat.arab_text=}")
             ayat.save()
 
     @staticmethod
