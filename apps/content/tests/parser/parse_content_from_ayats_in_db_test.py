@@ -24,7 +24,8 @@ def generate_ayat(file_name):
 ])
 @pytest.mark.django_db
 def test_parse_content_from_db(file_name, content):
-    ayat = generate_ayat(file_name)
+    generate_ayat(file_name)
     parser = AyatParser()
     parser.parse_content_from_db()
     assert content == Ayat.objects.first().content
+    assert "(" not in Ayat.objects.first().arab_text and ",)" not in Ayat.objects.first().arab_text
