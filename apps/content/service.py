@@ -30,7 +30,7 @@ def get_morning_content(day_num: int) -> str:
         logger.warning(text)
 
 
-def get_subscribers_with_content():
+def get_subscribers_with_content():  # FIXME тесты
     """Получаем данные для утренней рассылки одним запросом."""
     with connection.cursor() as cursor:
         cursor.execute("""
@@ -46,14 +46,19 @@ def get_subscribers_with_content():
             left join content_morningcontent as mc on s.day=mc.day
             left join content_ayat as a on a.one_day_content_id=mc.id
             left join content_sura as sura on a.sura_id=sura.id
-            where s.tg_chat_id=358610865 or s.tg_chat_id=224890356 and s.day >= 1 and s.is_active='t'
+            where s.is_active = 'true'
             group by s.tg_chat_id
         """)
         res = cursor.fetchall()
-    data = [
-            {elem[0]: elem[1] + f"\nСсылка на источник: <a href='https://umma.ru{elem[2].split('|')[0]}'>источник</a>"}
-            for elem in res
-    ]
+    data = []
+    for elem in res:
+        try:
+            logger.info(f"{elem=}")
+            data.append({
+                elem[0]: elem[1] + f"\nСсылка на источник: <a href='https://umma.ru{elem[2].split('|')[0]}'>источник</a>"
+            })
+        except Exception as e:
+            logger.error(str(e))
     return data
 
 
