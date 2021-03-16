@@ -1,3 +1,4 @@
+from config.splitted_settings.allowed_hosts import ALLOWED_HOSTS
 import os
 from collections import namedtuple
 
