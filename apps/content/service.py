@@ -90,6 +90,18 @@ def search_ayat(text: str) -> Answer:
     return queryset
 
 
+def format_count_to_text(number):
+    div = number % 10
+    if number == 11:
+        return "аятов"
+    elif div == 1:
+        return "аят"
+    elif 1 < div < 5:
+        return "аята"
+    elif 4 < number:
+        return "аятов"
+
+
 def find_ayat_by_text(query_text: str, offset: int = None):
     """Найти аят по тексту.
 
@@ -104,7 +116,7 @@ def find_ayat_by_text(query_text: str, offset: int = None):
         return Answer("Аятов не найдено")
     if offset is None:
         offset = 1
-        text = f"По вашему запросу найдено {ayats_count} аятов:"
+        text = f"По вашему запросу найдено {ayats_count} {format_count_to_text((ayats_count))}:"
         result.append(Answer(text))
     buttons = [
         (
