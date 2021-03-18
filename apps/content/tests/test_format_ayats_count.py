@@ -7,6 +7,7 @@ pytestmark = [pytest.mark.django_db]
 
 @pytest.mark.parametrize("number,text",[
     (1, "аят"),
+    (20, "аятов"),
     (2, "аята"),
     (5, "аятов"),
     (11, "аятов"),
