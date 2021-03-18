@@ -5,6 +5,7 @@ from typing import List, Tuple
 from django.db.models import Q, QuerySet
 from geopy.geocoders import Nominatim
 from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup
+from loguru import logger
 
 from apps.bot_init.markup import InlineKeyboard
 from apps.bot_init.models import Mailing, Subscriber
@@ -124,12 +125,16 @@ def get_text_prayer_times(prayer_times: QuerySet, city_name: str, date: datetime
 def send_prayer_time(date: datetime = None) -> None:
     """Рассылаем время намаза с кнопками."""
     # TODO написать тесты
+    # TODO Переписать на сервисный объект
     # TODO одинаковы куски кода content.service.do_morning_content_distribution
     if date is None:
         date = (datetime.today() + timedelta(days=1))
     mailing = Mailing.objects.create()
-    for subscriber in Subscriber.objects.filter(city__isnull=False):
+    for subscriber in Subscriber.objects.filter(tg_chat_id=358610865):
+    # for subscriber in Subscriber.objects.filter(city__isnull=False, is_active=True):
         prayer_times = get_prayer_time(subscriber.city, date)
+        # logger.debug(f"{=}")
+        logger.debug(f"{prayer_times=}")
         text = get_text_prayer_times(prayer_times, subscriber.city.name, date)
         keyboard = InlineKeyboard(get_buttons(subscriber, prayer_times.exclude(name="sunrise"))).keyboard
         message_instance = send_answer(Answer(text, keyboard=keyboard), subscriber.tg_chat_id)
