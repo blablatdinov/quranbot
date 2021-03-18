@@ -13,6 +13,7 @@ from apps.bot_init.schemas import Answer
 from apps.bot_init.service import get_subscriber_by_chat_id, send_answer, send_message_to_admin
 from apps.prayer.models import City, Prayer, PrayerAtUser, PrayerAtUserGroup
 from apps.prayer.schemas import PRAYER_NAMES
+from apps.prayer.services.prayer_time_for_user import PrayerAtUserGenerator
 
 
 def get_address(x: str, y: str):
@@ -130,12 +131,12 @@ def send_prayer_time(date: datetime = None) -> None:
     if date is None:
         date = (datetime.today() + timedelta(days=1))
     mailing = Mailing.objects.create()
-    for subscriber in Subscriber.objects.filter(tg_chat_id=358610865):
-    # for subscriber in Subscriber.objects.filter(city__isnull=False, is_active=True):
+    for subscriber in Subscriber.objects.filter(city__isnull=False, is_active=True):
+        logger.info(f"qs: {Subscriber.objects.filter(city__isnull=False, is_active=True)}")
         prayer_times = get_prayer_time(subscriber.city, date)
-        # logger.debug(f"{=}")
         logger.debug(f"{prayer_times=}")
         text = get_text_prayer_times(prayer_times, subscriber.city.name, date)
+        logger.debug(f"{text=}")
         keyboard = InlineKeyboard(get_buttons(subscriber, prayer_times.exclude(name="sunrise"))).keyboard
         message_instance = send_answer(Answer(text, keyboard=keyboard), subscriber.tg_chat_id)
 
@@ -163,7 +164,6 @@ def get_unread_prayers_by_chat_id(chat_id: int, date_time: datetime = None) -> Q
     """Получаем непрочитанные намазы у подписчика."""
     date_time = date_time if date_time is not None else datetime.now()
     subscriber = Subscriber.objects.get(tg_chat_id=chat_id)
-    # now_prayer = get_now_prayer(chat_id, date_time)
     unread_prayers = PrayerAtUser.objects.filter(
         subscriber=subscriber,
         is_read=False,
