@@ -1,7 +1,10 @@
+import json
 from datetime import datetime
 
 import pytest
 from mixer.backend.django import mixer
+from django.conf import settings
+import requests_mock
 
 
 @pytest.fixture()
@@ -22,3 +25,15 @@ def prayers(city):
         name=(name for name in ("Иртәнге", "Восход", "Өйлә", "Икенде", "Ахшам", "Ястү",)),
         city=city
     )
+
+
+@pytest.fixture
+def message_answer():
+    with open(f"{settings.BASE_DIR}/apps/bot_init/tests/fixture/sended_after_message.json") as f:
+        return json.load(f)
+
+
+@pytest.fixture
+def mocker():  # TODO написать общий мокер и прокинуть его в тесты
+    mocker = requests_mock.Mocker()
+    mocker.adapter_uri()
