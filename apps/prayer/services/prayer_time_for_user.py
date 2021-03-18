@@ -13,14 +13,19 @@ SUNRISE_INDEX = 1
 
 class PrayerAtUserGenerator:
 
-    def __init__(self, chat_id: int) -> None:
+    def __init__(
+        self, 
+        chat_id: int,
+        day: str = "today",
+    ) -> None:
         self.chat_id = int(chat_id)
         self._subscriber = get_subscriber_by_chat_id(self.chat_id)
+        self.day = day
 
     def get_prayer_time(
             self,
             city: City, 
-            date: datetime = datetime.today() + timedelta(days=1)
+            date: datetime,
         ) -> QuerySet:  # TODO а если нужно получать время намаза для определенного дня в API
         """Возвращает время намазов для следующего дня."""
         logger.debug(f"Getting prayers for {city.name}, date: {date}")
@@ -43,14 +48,22 @@ class PrayerAtUserGenerator:
             if prayer_time_at_user.prayer.name != "sunrise"
         ]
 
+    @staticmethod
+    def get_date_by_day(day: str):
+        date = {
+            "today": datetime.now(),
+            "tomorrow": datetime.now() + timedelta(days=1),
+        }.get(day)
+        return date
+
     def __call__(self):
         logger.debug(f"Subscriber {self._subscriber} try get prayer_time. Subscriber city: {self._subscriber.city}")
 
         if self._subscriber.city is None:
             return self._get_city_not_found_answer()
 
-        today = datetime.now()
-        self.get_prayer_time(self._subscriber.city, today)
+        date = self.get_date_by_day(self.day)
+        self.get_prayer_time(self._subscriber.city, date)
         self.set_attrs()
         logger.debug(f"PrayerAtUserGenerator return {self.prayers}")
         return self
