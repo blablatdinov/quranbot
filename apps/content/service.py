@@ -9,8 +9,6 @@ from apps.bot_init.schemas import Answer
 from apps.bot_init.service import send_answer, send_message_to_admin
 from apps.content.models import Ayat, MorningContent, Podcast
 
-logger.add("logs/app.log")
-
 
 def get_random_podcast() -> Podcast:
     """Возвращает рандомный подкаст"""

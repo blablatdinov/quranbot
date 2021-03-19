@@ -7,7 +7,7 @@ env = environ.Env(
     ALLOWED_HOSTS=(list, [])
 )
 
-environ.Env.read_env('./.env')                  # reading .env file
+environ.Env.read_env('./.env')  # reading .env file
 
 __all__ = [
     env,
