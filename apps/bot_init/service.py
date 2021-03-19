@@ -19,7 +19,6 @@ from apps.bot_init.schemas import Answer, SUBSCRIBER_ACTIONS
 from apps.content.models import MorningContent
 
 
-logger.add("logs/app.log")
 SCOPES = ["https://www.googleapis.com/auth/drive"]
 SERVICE_ACCOUNT_FILE = settings.BASE_DIR + "/deploy/quranbot-keys.json"
 tbot = get_tbot_instance()

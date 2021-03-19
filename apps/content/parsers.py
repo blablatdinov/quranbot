@@ -10,7 +10,6 @@ from progressbar import progressbar as pbar
 
 from apps.content.models import Ayat, Sura
 
-logger.add("logs/app.log")
 base_url = "https://umma.ru"
 
 
