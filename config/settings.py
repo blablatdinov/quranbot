@@ -29,6 +29,7 @@ include(
     "splitted_settings/templates.py",
     "splitted_settings/rest_framework.py",
     "splitted_settings/allowed_hosts.py",
+    "splitted_settings/logger.py",
 )
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -77,3 +78,4 @@ CELERY_BROKER_URL = os.getenv("REDIS_CONNECTION")
 
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASKS_SERIALIZER = "json"
+
