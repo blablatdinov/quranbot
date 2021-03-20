@@ -45,7 +45,7 @@ def test_get_random_podcast(podcast):
     """
     prev_result = None
     flag = False
-    for _ in range(15):
+    for _ in range(50):
         gotted_podcast = get_random_podcast()
         flag = prev_result != gotted_podcast
         prev_result = gotted_podcast
