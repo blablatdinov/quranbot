@@ -19,7 +19,6 @@ tbot = get_tbot_instance()
 @csrf_exempt
 def bot(request):
     """Обработчик пакетов от телеграмма."""
-    logger.info("Webhook from telegram controller")
     if request.content_type == "application/json":
         json_data = request.body.decode("utf-8")
         update = telebot.types.Update.de_json(json_data)
@@ -33,22 +32,17 @@ def bot(request):
 @stop_retry
 def start_handler(message):
     """Обработчик команды /start."""
+    logger.info(f"Start message handler. Subscriber={message.chat.id}")
     save_message(message)
     answer = registration_subscriber(chat_id=message.chat.id)
     send_answer(answer, message.chat.id)
-
-
-@tbot.message_handler(commands=["ayrat", "marat"])
-@stop_retry
-def fun_handler(message):
-    save_message(message)
-    send_answer(Answer(text="Бросай Навального и женись"), message.chat.id)
 
 
 @tbot.message_handler(content_types=["text"])
 @stop_retry
 def text_handler(message):
     """Обработчик тестовых сообщений в т. ч. некоторых комманд."""
+    logger.info(f"Text message handler. Subscriber={message.chat.id}, text={message.text}")
     save_message(message)
     answer = text_message_service(message.chat.id, message.text, message.message_id)
     send_answer(answer, message.chat.id)
@@ -57,6 +51,7 @@ def text_handler(message):
 @tbot.callback_query_handler(func=lambda call: True)
 def handle_query(call):
     """Обравботка нажатий на инлайн кнопку."""
+    logger.info(f"Inline button handler. Subscriber={call.from_user.id}, call_data={call.data}, message_id={call.message.message_id}, message_text={call.message.text}, call_id={call.id}")
     save_callback_data(call)
     answer = handle_query_service(
         chat_id=call.from_user.id,
@@ -72,6 +67,7 @@ def handle_query(call):
 @tbot.message_handler(content_types=["location"])
 def handle_location(message):
     """Обравботка геолокации."""
+    logger.info(f"Geo location handler.")
     save_message(message)
     answer = set_city_to_subscriber_by_location(
         (message.location.latitude, message.location.longitude),
@@ -83,4 +79,5 @@ def handle_location(message):
 @tbot.inline_handler(func=lambda query: len(query.query) > 0)
 def inline_query(query):
     """Поиск по названию города."""
+    logger.info(f"City search handler. query={query.query}, query_id={query.id}")
     inline_query_service(query.query, query.id)

@@ -115,31 +115,39 @@ def get_favourite_ayats(chat_id: int):
 def text_message_service(chat_id: int, message_text: str, message_id: int = None) -> Answer:
     """Функция обрабатывает все текстовые сообщения"""
     if 'Подкасты' in message_text:
+        logger.info(f"Subscriber={chat_id} getting random podcast")
         answer = get_podcast_in_answer_type()
     elif 'Избранное' in message_text:
+        logger.info(f"Subscriber={chat_id} getting favourite ayats")
         answer = get_favourite_ayats(chat_id)
     elif ':' in message_text:
+        logger.info(f"Subscriber={chat_id} search ayat query='{message_text}'")
         try:
             ayat = get_ayat_by_sura_ayat(message_text)
             answer = translate_ayat_into_answer(ayat)
         except AyatDoesNotExists:
             answer = Answer('Аят не найден')
     elif (regexp_result := re.search(r'/del\d+', message_text)) and chat_id in get_admins_list():
+        logger.warning(f"Subscriber={chat_id} try delete mailing ayat query='{message_text}'")
         mailing_pk = re.search(r'\d+', regexp_result.group(0)).group(0)
         delete_messages_in_mailing(mailing_pk)
         answer = Answer('Рассылка удалена')
     elif '/prayer' in message_text:
         return get_unread_prayers(chat_id)
     elif city := City.objects.filter(name=message_text).first():
+        logger.warning(f"Subscriber={chat_id} set city")
         answer = set_city_to_subscriber(city, chat_id)
     elif 'Время намаза' in message_text:
+        logger.warning(f"Subscriber={chat_id} try get prayer times")
         answer = get_prayer_time_or_no(chat_id)
     elif 'Найти аят' in message_text:
+        logger.warning(f"Subscriber={chat_id} set search ayat step")
         sub = Subscriber.objects.get(tg_chat_id=chat_id)
         sub.step = 'search_ayat'
         sub.save()
         return Answer("Введите слово для поиска")
     elif (sub := Subscriber.objects.get(tg_chat_id=chat_id)).step == 'search_ayat':
+        logger.warning(f"Subscriber={chat_id} search ayat query='{message_text}'")
         answer = find_ayat_by_text(message_text)
         sub.step = ''
         sub.save()
