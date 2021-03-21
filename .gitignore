@@ -1,17 +1,31 @@
+# redactors
 .idea/
+.vscode
+
+# system files
+.DS_Store
+
+# cache files
 *__pycache__/
-static/
-venv/
+celerybeat*
+
+# pytest and coverage
+.coverage
+.pytest_cache
 htmlcov/
-logs/
-htmlcov/
+
+# database and dumps
+*.sql*
 *.json
 db.sqlite3
-*.sql*
-celerybeat*
-.env
-.coverage
-.DS_Store
 dumps/
-.vscode
-.pytest_cache
+
+# environment
+venv/
+.env
+
+# static 
+static/
+
+# logs
+logs/
