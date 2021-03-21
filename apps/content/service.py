@@ -75,7 +75,7 @@ def do_morning_content_distribution():
 
     Subscriber.objects.filter(is_active=True).update(day=F("day") + 1)
 
-    text = f"Рассылка завершена, отправьте /del{mailing.pk} для ее удаления"
+    text = f"Рассылка #{mailing.pk} завершена."
     msg = send_message_to_admin(text)
     msg.mailing = mailing
     msg.save(update_fields=["mailing"])
