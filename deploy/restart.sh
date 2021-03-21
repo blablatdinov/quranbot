@@ -12,9 +12,15 @@ export DJANGO_SETTINGS_MODULE=config.settings
 /home/www/code/quranbot/venv/bin/python /home/www/code/quranbot/manage.py migrate
 # /home/www/code/quranbot/venv/bin/pytest
 
+<<<<<<< HEAD
 # update admin_frontend
 
 cd admin_frontend
+=======
+# update admin_fronted
+
+cd admin_fronted
+>>>>>>> f5a72ec (init vue admin)
 npm install
 npm run build
 
