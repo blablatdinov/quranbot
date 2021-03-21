@@ -15,6 +15,7 @@ export DJANGO_SETTINGS_MODULE=config.settings
 # update admin_frontend
 
 cd admin_frontend
+
 npm install
 npm run build
 
