@@ -12,5 +12,11 @@ export DJANGO_SETTINGS_MODULE=config.settings
 /home/www/code/quranbot/venv/bin/python /home/www/code/quranbot/manage.py migrate
 # /home/www/code/quranbot/venv/bin/pytest
 
+# update admin_fronted
+
+cd admin_fronted
+npm install
+npm run build
+
 supervisorctl restart qbot
 supervisorctl restart qbot_worker
