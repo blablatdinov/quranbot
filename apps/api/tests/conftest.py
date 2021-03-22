@@ -21,7 +21,7 @@ def chat_id():
 
 @pytest.fixture()
 def city():
-    return mixer.blend("prayer.City", name="Мухосранск")
+    return mixer.blend("prayer.City", name="Казань")
 
 
 @pytest.fixture()

@@ -9,7 +9,7 @@ import requests_mock
 
 @pytest.fixture()
 def city():
-    return mixer.blend("prayer.City")
+    return mixer.blend("prayer.City", name="Казань")
 
 
 @pytest.fixture()
