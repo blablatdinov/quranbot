@@ -1,4 +1,6 @@
 """Вьюхи контента."""
+import ast
+
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
@@ -42,7 +44,7 @@ def get_ayats(request):
 @csrf_exempt
 def send_ayats(request):
     """Записать выбранный контент в БД."""
-    data = eval(request.body)
+    data = ast.literal_eval(request.body)
     morning_content, _ = MorningContent.objects.get_or_create(day=data.get("day"))
     ayats = [Ayat.objects.get(pk=x) for x in data.get("ayats")]
     for ayat in ayats:
