@@ -13,6 +13,6 @@ def mailing():
     do_morning_content_distribution()
 
 
-@periodic_task(run_every=(crontab(day_of_week=1)), name="parse new podcasts (Monday)")
+@periodic_task(run_every=(crontab(day_of_week=1, hour=5)), name="parse new podcasts (Monday)")
 def parse_new_podcasts():
     PodcastParser()()
