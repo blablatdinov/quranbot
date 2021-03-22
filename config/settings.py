@@ -9,6 +9,8 @@ from split_settings.tools import include
 
 from config.splitted_settings.environ import env
 
+import ddtrace
+
 DEBUG = env("DEBUG")
 
 MIDDLEWARE = [
@@ -79,3 +81,6 @@ CELERY_BROKER_URL = os.getenv("REDIS_CONNECTION")
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASKS_SERIALIZER = "json"
 
+if DEBUG:
+    ddtrace.tracer.enabled = not DEBUG
+    ddtrace.patch_all()

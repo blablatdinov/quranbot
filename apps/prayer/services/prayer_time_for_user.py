@@ -1,8 +1,10 @@
 # FIXME maybe rename module
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, tzinfo
 
 from django.db.models import QuerySet
+from django.utils import timezone
 from loguru import logger
+import pytz
 
 from apps.bot_init.service import get_subscriber_by_chat_id
 from apps.prayer.models import Prayer, City, PrayerAtUser, PrayerAtUserGroup
@@ -21,6 +23,11 @@ class PrayerAtUserGenerator:
         self.chat_id = int(chat_id)
         self._subscriber = get_subscriber_by_chat_id(self.chat_id)
         self.day = day
+
+    def localize_datetime(self, date_time):
+        localized_time = date_time.astimezone(pytz.timezone("Europe/Moscow"))
+        logger.debug(f"Localized datetime: {localized_time}")
+        return datetime(localized_time.year, localized_time.month, localized_time.day)
 
     def get_prayer_time(
             self,
@@ -48,22 +55,25 @@ class PrayerAtUserGenerator:
             if prayer_time_at_user.prayer.name != "sunrise"
         ]
 
-    @staticmethod
-    def get_date_by_day(day: str):
+    def get_date_by_day(self, day: str):
         date = {
-            "today": datetime.now(),
-            "tomorrow": datetime.now() + timedelta(days=1),
+            "today": self.time_zone.localize(datetime.now()),
+            "tomorrow": self.time_zone.localize(datetime.now()) + timedelta(days=1),
         }.get(day)
         return date
 
     def __call__(self):
+        from apps.prayer.service import get_city_timezone
         logger.debug(f"Subscriber {self._subscriber} try get prayer_time. Subscriber city: {self._subscriber.city}")
 
         if self._subscriber.city is None:
             return self._get_city_not_found_answer()
 
+        self.time_zone = get_city_timezone(self._subscriber.city.name)
         date = self.get_date_by_day(self.day)
-        self.get_prayer_time(self._subscriber.city, date)
+        logger.debug(f"datetime: {date}")
+        localized_date = self.localize_datetime(date)
+        self.get_prayer_time(self._subscriber.city, localized_date)
         self.set_attrs()
         logger.debug(f"PrayerAtUserGenerator return {self.prayers}")
         return self
