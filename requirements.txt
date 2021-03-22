@@ -34,7 +34,7 @@ flake8-isort==4.0.0
 flake8-print==4.0.0
 freezegun==1.1.0
 geographiclib==1.50
-geopy==2.0.0
+geopy==2.1.0
 google-api-core==1.24.1
 google-api-python-client==1.12.8
 google-auth==1.24.0
