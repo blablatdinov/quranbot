@@ -17,11 +17,7 @@ export DJANGO_SETTINGS_MODULE=config.settings
 cd /home/www/code/quranbot/admin_frontend
 
 npm install
-<<<<<<< HEAD
 npm run generate
-=======
-npm run build
->>>>>>> create_vue_admin
 
 supervisorctl restart qbot
 supervisorctl restart qbot_worker
