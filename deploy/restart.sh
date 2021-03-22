@@ -17,7 +17,7 @@ export DJANGO_SETTINGS_MODULE=config.settings
 cd /home/www/code/quranbot/admin_frontend
 
 npm install
-nuxt build --spa
+npm run build
 
 supervisorctl restart qbot
 supervisorctl restart qbot_worker
