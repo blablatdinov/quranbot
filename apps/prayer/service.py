@@ -3,9 +3,10 @@ from datetime import datetime, time, timedelta
 from typing import List, Tuple
 
 from django.db.models import Q, QuerySet
-from geopy.geocoders import Nominatim
+from geopy.geocoders import Nominatim, GoogleV3, GeoNames
 from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup
 from loguru import logger
+import pytz
 
 from apps.bot_init.markup import InlineKeyboard
 from apps.bot_init.models import Mailing, Subscriber
@@ -14,6 +15,7 @@ from apps.bot_init.service import get_subscriber_by_chat_id, send_answer, send_m
 from apps.prayer.models import City, Prayer, PrayerAtUser, PrayerAtUserGroup
 from apps.prayer.schemas import PRAYER_NAMES
 from apps.prayer.services.prayer_time_for_user import PrayerAtUserGenerator
+from apps.prayer.exceptions.city_non_exist import CityNonExist
 
 
 def get_address(x: str, y: str):
@@ -21,6 +23,17 @@ def get_address(x: str, y: str):
     geolocator = Nominatim(user_agent="qbot")
     location = geolocator.reverse(f"{x}, {y}")
     return location.address
+
+
+def get_city_timezone(city_name: str):
+    geolocator = Nominatim(user_agent="qbot")
+    if location := geolocator.geocode(city_name):
+        _, (lat, lng) = location
+    else:
+        raise CityNonExist
+    timezone = GeoNames(username="blablatdinov").reverse_timezone(query=(lat, lng,))
+    logger.debug(f"Timezone for {city_name}={timezone}")
+    return pytz.timezone(str(timezone.pytz_timezone))
 
 
 def set_city_to_subscriber(city: City, chat_id: int) -> Answer:
@@ -88,15 +101,12 @@ def get_emoji_for_button(prayer: PrayerAtUser) -> str:
     return "❌" if not prayer.is_read else "✅"
 
 
-def get_buttons(  # FIXME если пользователь запрашивает время намаза два раза, ему каздый раз генерируется PrayerAtUser
+def get_buttons(
         subscriber: Subscriber = None,
         prayer_times: QuerySet = None,
         prayer_at_user_pk: int = None) -> List[List[Tuple[str, str]]]:
     """Возвращает кнопки со статусом намазов."""
     # TODO если пользователь получил 2 времени намаза в разных городах в один день, вероятно будет ошибка
-
-    # TODO добавить сортировку
-
     text_for_read_prayer = "set_prayer_status_to_unread({})"
     text_for_unread_prayer = "set_prayer_status_to_read({})"
     if prayer_at_user_pk:
