@@ -21,7 +21,7 @@ class PrayerTimeParser():
 
     def _set_prayers_to_city(self, row):
         day, _ = Day.objects.get_or_create(date=get_time_by_str(row[0]))
-        s = [1, 3, 4, 6, 7, 8]
+        s = [1, 2, 3, 4, 5, 6]
         prayers = []
         for x in range(len(s)):
             prayer_time = time_.strptime(row[s[x]], "%H:%M")
@@ -42,15 +42,19 @@ class PrayerTimeParser():
     def _get_row(self, soup):
         result = []
         table = soup.find("table", {"class":"namaz_time"})
+        now = datetime.now()  # FIXME может привести к багам из-за часовых поясов
         for row in table.find_all("tr", class_="")[1:]:
-            times = row.find_all("td")[1:]
-            result.append([x.text for x in times])
+            date_and_times = [x.text for x in row.find_all("td")]
+            date_and_times[0] = date_and_times[0].split(" ")[0] + f".{now.month}.{now.year}"
+            result.append(date_and_times)
         return result
 
     def _get_page(self):
         url = "https://www.time-namaz.ru/85_ufa_vremy_namaza.html#month_time_namaz"
-        soup = BeautifulSoup(requests.get(url).text)
-        return self._get_row(soup)
+        soup = BeautifulSoup(requests.get(url).text, "lxml")
+        self.city = City.objects.get(name="Ufa")
+        date_and_times = self._get_row(soup)
+        [self._set_prayers_to_city(x) for x in date_and_times]
 
     def __call__(self):
         return self._get_page()
