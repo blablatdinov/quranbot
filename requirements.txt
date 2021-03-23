@@ -6,7 +6,7 @@ attrs==20.3.0
 backcall==0.2.0
 beautifulsoup4==4.9.3
 billiard==3.6.3.0
-cachetools==4.2.0
+cachetools==4.2.1
 celery==4.4.7
 certifi==2020.12.5
 cffi==1.14.4
@@ -78,7 +78,7 @@ pycodestyle==2.6.0
 pycparser==2.20
 pydocstyle==5.1.1
 pyflakes==2.2.0
-Pygments==2.7.3
+Pygments==2.8.1
 pyparsing==2.4.7
 pyTelegramBotAPI==3.7.4
 pytest==6.2.2
