@@ -6,8 +6,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 
-    "ddtrace.contrib.django",
-
     "apps.bot_init",
     "apps.content",
     "apps.prayer"
