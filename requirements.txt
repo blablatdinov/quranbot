@@ -1,4 +1,4 @@
-amqp==2.6.1
+amqp==5.0.5
 appnope==0.1.2
 APScheduler==3.6.3
 asgiref==3.3.1
