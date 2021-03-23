@@ -1,5 +1,6 @@
 # FIXME тесты на получение для разных городов и пользователей
 import re
+import json
 
 import pytest
 
@@ -25,7 +26,7 @@ def test_chat_id(client, subscriber, prayer_at_subscriber):
 
 
 def test_city(client, city, prayers):
-    got = client.get("/api/v1/getPrayerTime?city=Мухосранск")
+    got = client.get(f"/api/v1/getPrayerTime?city={city.name}")
     gotted_data = got.json()
 
     assert list(gotted_data.keys()) == ["city", "sunrise_time", "prayers"]
