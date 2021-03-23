@@ -101,15 +101,12 @@ def get_emoji_for_button(prayer: PrayerAtUser) -> str:
     return "❌" if not prayer.is_read else "✅"
 
 
-def get_buttons(  # FIXME если пользователь запрашивает время намаза два раза, ему каздый раз генерируется PrayerAtUser
+def get_buttons(
         subscriber: Subscriber = None,
         prayer_times: QuerySet = None,
         prayer_at_user_pk: int = None) -> List[List[Tuple[str, str]]]:
     """Возвращает кнопки со статусом намазов."""
     # TODO если пользователь получил 2 времени намаза в разных городах в один день, вероятно будет ошибка
-
-    # TODO добавить сортировку
-
     text_for_read_prayer = "set_prayer_status_to_unread({})"
     text_for_unread_prayer = "set_prayer_status_to_read({})"
     if prayer_at_user_pk:
