@@ -11,8 +11,6 @@ from config.splitted_settings.environ import env
 
 import ddtrace
 
-DEBUG = env("DEBUG")
-
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
