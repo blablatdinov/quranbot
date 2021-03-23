@@ -2,7 +2,6 @@ from datetime import datetime, time
 import csv
 import time as time_
 
-
 from loguru import logger
 from progressbar import progressbar as pbar
 import requests
@@ -26,6 +25,8 @@ class PrayerTimeParser():
         for x in range(len(s)):
             prayer_time = time_.strptime(row[s[x]], "%H:%M")
             prayer_time = time(hour=prayer_time.tm_hour, minute=prayer_time.tm_min)
+            if Prayer.objects.filter(day=day, time=prayer_time):
+                return
             prayers.append(Prayer(city=self.city, day=day, name=PRAYER_NAMES[x][0], time=prayer_time))
         Prayer.objects.bulk_create(prayers)
 
@@ -42,19 +43,40 @@ class PrayerTimeParser():
     def _get_row(self, soup):
         result = []
         table = soup.find("table", {"class":"namaz_time"})
-        now = datetime.now()  # FIXME может привести к багам из-за часовых поясов
+        logger.debug(str(soup.find("div", class_="julian_date j_h").text))
+        day, month_russian, year = soup.find("div", class_="julian_date j_h").text.split()
+        logger.debug(month_russian)
         for row in table.find_all("tr", class_="")[1:]:
             date_and_times = [x.text for x in row.find_all("td")]
-            date_and_times[0] = date_and_times[0].split(" ")[0] + f".{now.month}.{now.year}"
+            date_and_times[0] = date_and_times[0].split(" ")[0] + f".{self.get_month_number(month_russian)}.{year}"
+            # logger.debug(str(date_and_times))
             result.append(date_and_times)
         return result
 
-    def _get_page(self):
-        url = "https://www.time-namaz.ru/85_ufa_vremy_namaza.html#month_time_namaz"
+    @staticmethod
+    def get_month_number(month_name):
+        return {
+            "Января": 1,
+            "Февраля": 2,
+            "Марта": 3, 
+            "Апреля": 4,
+            "Мая": 5,
+            "Июня": 6,
+            "Июля": 7,
+            "Августа": 8,
+            "Сентября": 9,
+            "Октября": 10,
+            "Ноября": 11,
+            "Декабря": 12,
+        }.get(month_name)
+
+
+    def _get_page(self, url):
         soup = BeautifulSoup(requests.get(url).text, "lxml")
         self.city = City.objects.get(name="Ufa")
         date_and_times = self._get_row(soup)
         [self._set_prayers_to_city(x) for x in date_and_times]
 
     def __call__(self):
-        return self._get_page()
+        urls = ["https://www.time-namaz.ru/85_ufa_vremy_namaza.html#month_time_namaz", "https://www.time-namaz.ru/85_ufa_vremy_namaza-next.html#month_time_namaz"]
+        return [self._get_page(url) for url in urls]

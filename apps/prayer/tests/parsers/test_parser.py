@@ -11,10 +11,8 @@ from apps.prayer.models import Prayer
 pytestmark = [pytest.mark.django_db]
 
 
-@pytest.fixture()
-def page():
-    with open(f"{settings.BASE_DIR}/apps/prayer/tests/fixtures/ufa_prayer_time_page.html") as f:
-#/Users/almazilaletdinoots/quranbot/apps/prayer/tests/fixtures/ufa_prayer_time_page.html
+def page(filename):
+    with open(f"{settings.BASE_DIR}/apps/prayer/tests/fixtures/{filename}") as f:
         return f.read()
 
 
@@ -23,10 +21,11 @@ def city():
     return mixer.blend("prayer.City", name="Ufa")
 
 
-def test_parser(page, city):
+def test_parser(city):
     with requests_mock.Mocker() as m:
-        m.get("https://www.time-namaz.ru/85_ufa_vremy_namaza.html#month_time_namaz", text=page)
+        m.get("https://www.time-namaz.ru/85_ufa_vremy_namaza.html#month_time_namaz", text=page("ufa_prayer_time_page.html"))
+        m.get("https://www.time-namaz.ru/85_ufa_vremy_namaza-next.html#month_time_namaz", text=page("ufa_prayer_time_next_page.html"))
         PrayerTimeParser()()
-
-    assert Prayer.objects.count() == 156
+        
+    assert Prayer.objects.count() == 306
     assert [str(x[0]) for x in Prayer.objects.filter(day__date=datetime(2021, 3, 1)).values_list("time")] == ['06:20:00', '08:02:00', '13:30:00', '17:12:00', '18:55:00', '20:26:00']
