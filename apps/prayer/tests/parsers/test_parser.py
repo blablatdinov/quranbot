@@ -18,7 +18,7 @@ def page(filename):
 
 @pytest.fixture()
 def city():
-    return mixer.blend("prayer.City", name="Ufa")
+    return mixer.blend("prayer.City", name="Уфа")
 
 
 def test_parser(city):
