@@ -7,7 +7,7 @@ backcall==0.2.0
 beautifulsoup4==4.9.3
 billiard==3.6.3.0
 cachetools==4.2.1
-celery==4.4.7
+celery==5.0.5
 certifi==2020.12.5
 cffi==1.14.4
 chardet==4.0.0
