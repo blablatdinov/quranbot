@@ -1,0 +1,1165 @@
+html, #map {
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+body{
+  font-family:"Arial",Helvetica,sans-serif;
+  font-size: 1em;
+  color:#222;
+  margin: 0 auto;
+  padding:0;
+  width:100%;
+  height:100%;
+  background-color: #fff;
+  max-width: 1400px;
+}
+a{
+  text-decoration:none;
+  color: #222;
+}
+p{
+    margin: 15px;
+    line-height: 23px;
+}
+h1{
+  font-size:2em;
+  line-height: 35px;
+}
+h2{
+  font-size:1.3em;
+  line-height: 28px;
+  text-align:center;
+}
+h3{
+  font-size:1em;
+  line-height: 25px;
+  text-align:center;
+}
+table{
+  text-align:center;
+  width:100%;
+  border-collapse: collapse;
+}
+table, th, td {
+   border: 1px solid #000;
+   text-align:center;
+}
+.icon-arrow {
+    background-image: url(//www.time-namaz.ru/img/sprite_n_v2.png);
+    background-position: 0 -87px;
+    width: 8px;
+    height: 14px;
+}
+.header{
+  padding-top:60px;
+  text-align: center;
+  border-bottom:1px solid #e2e2e2;
+}
+.header ul{
+	margin-top: 20px;
+}
+.logo{
+  font-family: 'Spectral SC', serif;
+  font-size: 3.4em;
+}
+.logo_arabic{
+  font-size:0.7em;
+}
+nav a{
+  display:flex;
+  padding: 5px 20px;
+}
+nav ul li{
+  display:inline-block;
+  line-height:35px;
+  background-color: #e4e4e4;
+  margin-bottom: 5px;
+}
+nav ul li:hover{
+  cursor:pointer;
+  border-bottom:2px solid #000;
+  margin-bottom:3px;
+}
+.search_city_input{
+  display:none;
+}
+.daily_info{
+  text-align:center;
+}
+.ayat_hadis {
+    width: 45%;
+    display:inline-block;
+    vertical-align: top;
+    text-align: center;
+    margin:20px 10px;
+}
+
+.time_namaz_today{
+  margin:20px;
+}
+.city_widget{
+  font-size:2.2em;
+  margin-bottom: 10px;
+}
+.date_widget{
+  margin-bottom: 10px;
+}
+.table_namaz_widget{
+  text-align:center;
+  border-radius:50px;
+  border: 2px solid #000;
+  width:100%;
+  display:table;
+}
+.table_namaz_widget .td{
+  padding:30px 5px;
+  border-left: 1px solid #000;
+  display:table-cell;
+  position:relative;
+}
+.first_td{
+  padding:30px 5px;
+  display:table-cell;
+  border:0 !important;
+}
+.before_active_namaz {
+    font-size: 0.5em;
+    position: absolute;
+    width: 95%;
+    margin-top: 5px;
+}
+.active_namaz {
+    background-color: #eadeca;
+    font-size: 1.2em;
+}
+.active_namaz_left{
+    background-color: #eadeca;
+    border-radius: 50px 0px 0px 50px;
+	font-size:1.2em;
+}
+.active_namaz_right{
+    background-color: #eadeca;
+    border-radius: 0px 50px 50px 0px;
+	font-size:1.2em;
+}
+
+.link_to_widget{
+  padding:25px;
+}
+.main_content{
+  width:100%;
+}
+.content{
+  vertical-align:top;
+  width:69%;
+  display:inline-block;
+}
+.content_box{
+  margin: 20px;
+  display:block;
+  line-height: 23px;
+}
+.content_box h2, .content_box h3{
+  text-align:left;
+  line-height: 28px;
+}
+.right_sidebar{
+  vertical-align:top;
+  width:29%;
+  display:inline-block;
+}
+.right_box{
+  background-color:#eadeca;
+  padding: 20px;
+  margin:20px;
+  display:block;
+}
+.right_box p{
+  margin:20px 5px;
+  line-height:25px;
+}
+.right_box a{
+  text-decoration: underline;
+}
+.month_view{
+  width:100%;
+  text-align:center;
+  font-size:2em;
+  padding-top: 25px;
+}
+.month_change{
+    margin-top:-30px;
+    float:right;
+    background: #000;
+    width: 36px;
+    height: 36px;
+    display: inline-block;
+    border-radius: 50%;
+}
+.bg_grey{
+    background: #b5b5b5;
+}
+.icon_month_change{
+  background-image: url(//www.time-namaz.ru/img/sprite_n_v2.png);
+    background-position: 0 -87px;
+    width: 8px;
+    height: 14px;
+    margin:11px 15px;
+}
+.icon_month_change_back{
+	background-image: url(//www.time-namaz.ru/img/sprite_n_v2.png);
+    background-position: 0px -101px;
+    width: 8px;
+    height: 13px;
+    margin: 11px 13px;
+}
+.view_date_today{
+  font-weidth:700;
+  font-size:1.2em;
+  display:block;
+  width:100%;
+}
+.j_h{
+  display:inline-block;
+  width:49%
+}
+.hijra_date{
+  text-align:right;
+}
+
+.for-mobile-view{
+  padding:20px 0px;
+}
+.namaz_time td{
+  //padding:3px 3px;
+}
+.active_day {
+    background-color: #ff9f9f;
+}
+.friday {
+    background-color: #eadeca;
+}
+.footer{
+  padding:30px 0px 50px 0px;
+  color:#777;
+  width:100%;
+  text-align:center;
+  background: linear-gradient(#00000000, #eadeca);
+}
+.icon_scroll_to_top{
+  
+    cursor:pointer;
+    height: 20px;
+    width: 34px;
+    display: inline-block;
+    background: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGlkPSJ1cC5zdmciIHdpZHRoPSIzMCIgaGVpZ2h0PSIyMCIgdmlld0JveD0iMCAwIDMwIDIwIj4KICA8ZGVmcyBpZD0iZGVmcy0yIj4KICAgIDxzdHlsZSBpZD0ic3R5bGUtMyI+CgkuY2xzLTEgeyBmaWxsLXJ1bGU6IGV2ZW5vZGQ7IH0KPC9zdHlsZT4KICA8L2RlZnM+CiAgPHBhdGggaWQ9IkZpZ3VyYV8xX2tvcGl5YSIgZGF0YS1uYW1lPSJGaWd1cmEgMSBrb3BpeWEiIGNsYXNzPSJjbHMtMSIgZD0iTTMxNSwxNDcuMDI0TDMwMCwxMzJsLTE1LDE1LjAyNEwyODkuOSwxNTIsMzAwLDE0MS44ODQsMzEwLjEsMTUyWiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTI4NSAtMTMyKSIgZmlsbC1vcGFjaXR5PSIxIiB0eXBlPSJzb2xpZENvbG9yIiBmaWxsPSIjMzMzMzMzIj48L3BhdGg+Cjwvc3ZnPg==) left 50% top 50% / contain no-repeat;
+
+}
+label.btn {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 10px;
+    background: #fff;
+    height: 17px;
+    border-radius: 0 0 5px 5px;
+    border: 1px #d4ac64 solid;
+    border-top: 0;
+    padding: 8px 5px;
+    line-height: 20px;
+    font-size: 14px;
+    text-align: center;
+    -webkit-font-smoothing: antialiased;
+    cursor: pointer;
+    transition: all 400ms cubic-bezier(0.17,0.04,0.03,0.94);
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12);
+  
+}
+.message {
+    color: #fff;
+    font-weight: 300;
+    position: relative;
+    padding: 3em 2em;
+    margin: 0 auto;
+    max-width: 980px;
+}
+.open:checked ~ label.btn {
+    top: 0px;
+    border-radius: 0;
+    border: 0;
+    height: 15px;
+    width: 15px;
+    z-index: 200;
+}
+.open:checked ~ .top-panel {
+    top: 0;
+}
+.top-panel {
+    text-align: left;
+    z-index: 200;
+    background: #333;
+    position: absolute;
+    top: -1250px;
+    left: 0;
+    width: 100%;
+    padding: 0;
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12);
+    transition: top 400ms cubic-bezier(0.17,0.04,0.03,0.94);
+}
+.top-panel p {
+  margin: 10px 0px;
+}
+
+input.native-type-text {
+    margin: 0;
+    border-radius: 30px;
+    width: 80%;
+    border: 1px solid #777;
+    padding: 10px 20px 9px;
+}
+
+.divclass table, .divclass th, .divclass tr, .divclass td{
+	border: 0px solid #000;
+}
+.content_box input[type="text"], .content_box input[type="submit"], textarea {
+    margin-bottom: 17px;
+	font-size: 1em;
+    width: 100%;
+    height: 50px;
+    border: 1px solid #e3e3e3;
+    border-radius: 25px;
+    -webkit-appearance: none;
+    line-height: 1em;
+    -moz-appearance: none;
+    text-indent: 20px;
+    text-overflow: '';
+    -ms-appearance: none;
+    appearance: none!important;
+
+}
+
+.article_box{
+  text-align:center;
+  margin:40px 10px 20px 10px;
+}
+.article_box img{
+  width: 100%;
+  height:auto;
+}
+.article_box .title{
+  margin:20px;
+  font-weight:700;
+  font-size:1.2em;
+}
+.article_box .preview{
+  line-height:25px;
+}
+.article_box .more{
+  color:#666;
+  padding:20px;
+  font-weight:700;
+  font-size:0.9em;
+  border-bottom:1px solid #888;
+}
+.icon_load_button{
+	background-image: url(//www.time-namaz.ru/img/sprite_n_v2.png);
+    background-position: 0px -881px;
+    width: 212px;
+    height: 81px;
+	line-height: 74px;
+    font-size: 1.5em;
+    display: inline-block;
+    vertical-align: top;
+    margin: 15px;
+}
+
+.rating .stars{
+	position:relative;
+	display:block;
+	float:left;
+	height:20px;
+	width:105px;
+	background-image:url(//www.time-namaz.ru/img/stars.png);
+	background-position:0 0;
+	background-repeat:repeat-x;
+	margin-right:5px;
+}
+.rating .stars .on{
+	height:20px;
+	background-image:url(//www.time-namaz.ru/img/stars.png);
+	background-position:0 -20px;
+}
+.rating .stars .live{
+	position:absolute;
+	top:0;
+	left:0;
+	opacity:0;
+}
+.rating .stars .live span{
+	display:block;
+	float:left;
+	cursor:pointer;
+	width:21px;
+	height:20px;
+	background-image:url(//www.time-namaz.ru/img/stars.png);
+	background-repeat:no-repeat;
+	background-position:0 -20px;
+}
+.rating .stars .live span:hover~span{
+	background-position:0 0;
+}
+.rating .stars .live:hover{
+	opacity:1;
+}
+.label{
+	height:25px;
+	display:block;
+	position:relative;
+	margin:15px;
+	font-size:17px;
+}
+input[type="radio"]+span{
+	position:absolute;
+	left:0;
+	top:0;
+	width:100%;
+	height:100%;
+	cursor:pointer;
+}
+.mosque{
+	background:url(//www.time-namaz.ru/img/25x50-mosque.png) no-repeat;
+}
+.room{
+	background:url(//www.time-namaz.ru/img/25x50-room.png) no-repeat;
+}
+.food{
+	background:url(//www.time-namaz.ru/img/25x50-food.png) no-repeat;
+}
+.shop{
+	background:url(//www.time-namaz.ru/img/25x50-shop.png) no-repeat;
+}
+.icons{
+	padding-top:10px;
+	padding-bottom:10px;
+	text-align:left;
+}
+.text_in_span{
+	position:absolute;
+	left:30px;
+	top:0;
+	cursor:pointer;
+}
+input[type="radio"]:checked+span{
+	background-position:0 -25px;
+}
+.azan_close{
+	background-image: url(//www.time-namaz.ru/img/sprite_n_v2.png);
+	background-position: 0px -371px;
+    width: 28px;
+    height: 28px;
+    margin: -25px 0px 0px -25px;
+    cursor: pointer;
+    position: absolute;
+    //z-index: 30;
+}
+.azan_open{
+	
+	background-image: url(//www.time-namaz.ru/img/sprite_n_v2.png);
+    background-position: 0px -399px;
+    width: 23px;
+    height: 28px;
+    margin: -130px 0px 0px -60px;
+    cursor: pointer;
+    position: absolute;
+    //z-index: 30;
+}
+.azan{
+	position:fixed;
+	//z-index:20;
+	bottom:0;
+	left:60px;
+	transform:translate(-50%,-50%);
+}
+.pulse,.bloc,.phone{
+	position:absolute;
+	width:70px;
+	height:70px;
+	color:#fff;
+	text-align:center;
+	border-radius:50%;
+}.bloc{
+	cursor:pointer;
+	//z-index:1;
+	overflow:hidden;
+}
+.pulse{
+	background:#d4ac64;
+	cursor:pointer;
+	position:relative;
+	transition:.5s;
+}
+.phone{
+	font-size:12px;
+	top:24px;
+}
+.text-azan{
+	position:absolute;
+	opacity:0;
+	text-transform:uppercase;
+	font-weight:700;
+	top:24px;
+	font-size:12px;
+	transform:scaleX(-1);
+	transition:.5s ease-in-out;
+}
+.phone p{
+	transition:.5s ease-in-out;
+}
+.pulse i{
+	transition:.5s ease-in-out;
+	transform:scale(0);
+}
+.pulse .text-azan{
+	transform:scaleX(1);
+	transition:.5s ease-in-out;
+	opacity:1;
+}
+.pulse::before,.pulse::after{
+	content:'';
+	position:absolute;
+	//border:1px solid #29AEE3;
+	border:1px solid #d4ac64;
+	left:-20px;
+	right:-20px;
+	top:-20px;
+	bottom:-20px;
+	border-radius:50%;
+	animation:pulse 1.8s linear infinite;
+	opacity:0;
+}
+.pulse:hover::after{
+	animation-delay:.5s;
+}
+@keyframes phone{0%,100%{transform:rotate(-20deg)}50%{transform:rotate(21deg)}}
+@keyframes pulse{0%{transform:scale(0.5);opacity:0}50%{opacity:1}100%{transform:scale(1.2);opacity:0}}
+
+.jzdbox1 {
+	text-align:center;
+  min-width:321;
+  max-width:340px; 
+ // background:#332f2e; 
+  border-radius:5px; 
+  overflow:hidden; 
+  display:inline-block; 
+  margin-bottom:30px; 
+  box-shadow:0 0 10px #201d1c; 
+  vertical-align:top;
+  margin-left: 1%;
+  margin-right: 2%;
+}
+
+.jzdcal {
+  padding:0 10px 10px 10px; 
+  box-sizing:border-box!important; 
+  background:#f7f0e4; 
+  background: -webkit-linear-gradient(#f7f0e4, #decfb6)!important; 
+  background: -o-linear-gradient(#f7f0e4, #decfb6)!important; 
+  background: -moz-linear-gradient(#f7f0e4, #decfb6)!important; 
+  background: linear-gradient(#f7f0e4, #decfb6)!important;
+}
+
+.jzdcalt {
+  font:16px 'Arial'; 
+  font-weight:700; 
+  color:#333; 
+  display:block; 
+  margin:18px 0 0 0; 
+  text-transform:uppercase; 
+  text-align:center; 
+  letter-spacing:1px;
+  line-height: 18px;
+}
+
+.jzdcal span {
+  font:11px 'Arial'; 
+  font-weight:400; 
+  color:#333; 
+  text-align:center; 
+  width:45px; 
+  height:45px; 
+  display:inline-block; 
+  float:left; 
+  overflow:hidden; 
+  line-height:43px;
+}
+
+.jzdcal .jzdb:before {
+  opacity:0.3; 
+  content:'o';
+}
+
+.hidjra_date{
+	color:#333;
+	display:inline-block;
+	font-weight:600;
+}
+
+.circle {
+  border:1px solid #000; 
+  box-sizing:border-box!important; 
+  border-radius:210px!important;
+}
+
+.holiday {
+  
+  background: #d4b799;
+}
+
+span[data-title]:hover:after, 
+div[data-title]:hover:after {
+  font:11px 'Arial'; 
+  font-weight:400; 
+  content:attr(data-title); 
+  position:absolute; 
+  margin:47px -86px 100px; 
+  background:#282423; 
+  border:1px solid #f7f3eb; 
+  color:#f7f3eb; 
+  padding:5px; 
+  //z-index:9999; 
+  min-width:130px; 
+  max-width:130px;
+}
+
+/* Индикатор загрузки, который показывается до загрузки карты */
+.loader {
+  position: absolute;
+  cursor:pointer;
+  left: 0;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  color: #000000;
+  transition: opacity .7s ease;
+  opacity: 0;
+  background-color: rgba(0,0,0,.55);
+}
+ 
+.loader:after,
+.loader:before {
+  box-sizing: border-box;
+}
+ 
+.loader.is-active {
+  z-index: 15;
+  top: 0;
+  opacity: 1;
+}
+ 
+.loader-default:after {
+  position: absolute;
+  top: calc(50% - 24px);
+  left: calc(50% - 24px);
+  width: 48px;
+  height: 48px;
+  content: '';
+  animation: rotation 1s linear infinite;
+  border: solid 8px #ffffff;
+  border-left-color: transparent;
+  border-radius: 50%;
+}
+ 
+@keyframes rotation {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(359deg);
+  }
+}
+ 
+@keyframes blink {
+  from {
+    opacity: .5;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.service-buttons {
+	display:none;
+	position: absolute;
+	left: 15%;
+	text-align: left;
+}
+.service-buttons a {
+	background-color:#fff;
+	display:inline-block;
+    font-size: 0.9em;
+    padding: 10px 20px;
+    margin-right: 10px;
+    border: 1px solid rgba(158,162,173,.15);
+    border-radius: 5px;
+}
+.widget_time_namaz{
+	display:none;
+}
+.widget_time_namaz td{
+	 border: 0px;
+     border-bottom: 1px solid #000;
+	 text-align:left;
+}
+.slider{
+	padding-left:10px;
+	padding-right:10px;
+}
+.slider_img{
+	max-width: 29%;
+	display: inline-block;
+	vertical-align: middle;
+}
+.slider_desc{
+	max-width: 69%;
+	display: inline-block;
+	vertical-align: middle;
+}
+.slider_desc_more{
+	border-bottom: 0px !important;
+}
+.slider_desc_preview{
+	max-height: 100px;
+	overflow: hidden;
+}
+
+.a_qibla{position:fixed;bottom:0;transform:translate(-50%,-50%);right:-4px;}
+	  .p_qibla{position:absolute;color:#fff;text-align:center;border-radius:50%;background:#d4ac64;cursor:pointer;position:relative;transition:.5s;width:40px; height: 40px;}
+	  .t_qibla{transform:scaleX(1);transition:.5s ease-in-out;opacity:1; top: 4px !important; left:4px;}
+	  .b_qibla{background-color: rgba(0,0,0,.55); display:none; z-index:100;position:fixed;top:0;left:0;width: 100%;height: 100%; overflow: auto;}
+	  .p_qibla::before,.p_qibla::after{
+			content:'';
+			position:absolute;
+			border:1px solid #d4ac64;
+			left:-20px;
+			right:-20px;
+			top:-20px;
+			bottom:-20px;
+			border-radius:50%;
+			animation:pulse 1.8s linear infinite;
+			opacity:0;
+		}
+.p_qibla:hover::after{
+	animation-delay:.5s;
+}
+.i_qibla {
+ transition: .5s ease-in-out;
+}
+.i_qibla {
+ animation: phone 3s ease-in-out infinite;
+}
+@keyframes i_qibla{0%,100%{transform:rotate(-20deg)}50%{transform:rotate(21deg)}}
+@keyframes p_qibla{0%{transform:scale(0.5);opacity:0}50%{opacity:1}100%{transform:scale(1.2);opacity:0}}
+
+.modal_view{
+    width: 80%;
+    background-color: #fff;
+    min-height: 60%;
+    text-align: center;
+    margin: 5% auto;
+}
+.modal_view_close{
+	 width: 100%;
+	 text-align: right;
+}
+.close_icon{
+	background-image: url(//www.time-namaz.ru/img/sprite_n_v2.png);
+    background-position: 0px -371px;
+    width: 28px;
+    height: 28px;
+	display: inline-block;
+    cursor: pointer;
+}
+.compas_view{
+	margin: auto;
+	padding:1em;
+  width:250px;
+  height:250px;
+  position:relative;
+}
+.d1 {
+width: 250px; 
+height: 250px;
+background: #F3F3F3;
+border-radius: 50%;
+border: 1px solid #333;
+box-shadow:0 0 10px rgba(0,0,0,0.8);
+
+}
+.d2 {
+  margin:14px;
+width: 220px; 
+height: 220px;
+background: #F3F3F3;
+border-radius: 50%;
+border: 1px solid #333;
+  overflow:hidden;
+  position:relative;
+}
+.d3 {
+ margin-top:20px;
+  margin-left:20px;
+width: 250px; 
+height: 250px;
+background: #fff;
+border-radius: 50%;
+}
+.d20-0 {
+  width:30px;
+text-align:center;
+ 
+}
+.d20 {
+background: #000;
+height: 8px; 
+width: 2px;
+  display:inline-block;
+
+}
+
+.scale{
+  position:absolute;
+  top:-96px;
+  left:-6px;
+  width:100%;
+  height:100%;
+  
+}
+i{
+  position:absolute;
+  top:47%;
+  left:47%;
+  height:210px;
+  width:30px;
+  text-align:center;
+}
+.deg_45{
+  transform: rotate(45deg);
+}
+.deg_90{
+  transform: rotate(90deg);
+}
+.deg_135{
+  transform: rotate(135deg);
+}
+.deg_180{
+  transform: rotate(180deg);
+}
+.deg_225{
+  transform: rotate(225deg);
+}
+.deg_270{
+  transform: rotate(270deg);
+}
+.deg_315{
+  transform: rotate(315deg);
+}
+.center_lines{
+  position: absolute;
+    top: 47%;
+    left: 47%;
+    height: 210px;
+    width: 30px;
+    text-align: center;
+}
+.d21 {
+  margin-top:55px;
+  background: #000;
+  height: 100px; 
+  width: 2px;
+  position:absolute;
+  display:inline-block;
+  left:13px;
+}
+.d22 {
+  margin-top:65px;
+  background: #000;
+  height: 80px; 
+  width: 1px;
+  position:absolute;
+  display:inline-block;
+  left:13px;
+}
+.north{
+  color:red;
+  margin-top:-20px;
+  margin-left:-4px;
+}
+.east{
+  margin-top:-16px;
+  margin-left:0px;
+  transform: rotate(270deg);
+}
+.west{
+  margin-top:106px;
+  margin-left:0px;
+  transform: rotate(270deg);
+  
+}
+.south{
+  margin-top:106px;
+  margin-left:-3px;
+  
+}
+.qibla_arrow{
+    width: 30px;
+    height: 269px;
+  top:-30px;
+  position:absolute;
+}
+
+.qibla_icon{
+  content:"";
+  background-image: url(//www.time-namaz.ru/img/sprite_n_v2.png);
+    background-position: 0px -303px;
+    width: 28px;
+    height: 26px;
+    display: inline-block;
+  
+}
+.arrow_icon{
+margin-bottom: 20px; 
+width: 0; 
+height: 0;
+border: 6px solid transparent;
+border-bottom: 70px solid #CF0306;
+position: relative; 
+top: 28px;
+left: 9px; 
+}
+.arrow_icon:after {
+content: "";
+width: 0; 
+height: 0;
+position: absolute; 
+left: -6px; 
+top: 70px;
+border: 6px solid transparent;
+border-top: 70px solid #3667A1;
+}
+.dot_icon {
+width: 7px; 
+height: 7px;
+background: #999;
+border-radius: 50%;
+border: 1px solid #333;
+box-shadow:0 0 10px rgba(0,0,0,0.8);
+position: relative; 
+top:4px;
+  left:10px;
+}
+
+.compas_desc{
+	margin:10px;
+	display:inline-block;
+	
+}
+
+
+.mobile_show{ display:none;}
+.mobile_hide{ display:block;}
+
+
+
+
+
+
+
+
+@media screen and (max-width: 900px){
+  .mobile{
+      width: 100%;
+      margin-left:0;
+      margin-right:0;
+      padding-left:0;
+      padding-right:0;
+  }
+  .header{
+    padding-top:100px;
+    border:0;
+  }
+  .header ul {
+    margin-top: 0px;
+  }
+  .logo{
+    font-size: 2em;
+  }
+  .logo_arabic{
+  font-size:0.7em;
+}
+  
+  nav{
+    position:fixed;
+    top:0;
+    background-color: #111;
+    width:100%;
+    min-height:50px;
+    text-align:left;
+	z-index:50;
+  }
+  nav a{
+	  border-bottom: 1px solid #c0c0c0;
+  }
+  nav ul li{
+	background-color: #fff;
+  }
+  .icone_menu{
+    display:inline-block;
+    width:15%;
+  }
+ .icon_mobile_menu{
+   background-image: url(//www.time-namaz.ru/img/sprite_n_v2.png);
+    background-position: 0px -116px;
+    width: 25px;
+    height: 18px;
+    margin:15px;
+    cursor: pointer;
+  }
+ .mobile_menu{
+    position:fixed;
+    top:0;
+    left:0;
+    bottom:0;
+    margin:0;
+    padding:20px;
+    width: 200px;
+    z-index:100;
+    background-color:#fff;
+    overflow:auto;
+    display:none;
+}
+ .icon_mobile_menu_c{
+    display:none;
+    position:fixed;
+    top:0;
+    left:240px;
+   background-image: url(//www.time-namaz.ru/img/sprite_n_v2.png);
+    background-position: 0px -263px;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    z-index:100;
+  }
+  
+  .back_shadow{
+    display:none;
+    z-index:50;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(4px);
+  }
+  .search_city_top{
+    vertical-align:top;
+    display:inline-block;
+    pointer-events: auto;
+    width: 80%;
+    text-align: center;
+    font-size: 16px;
+}
+  .search_city_input{
+	font-size: 0.9em;
+    display:block;
+    border-radius: 30px;
+    width: 80%;
+    border: 1px solid #777;
+    margin:6px;
+    padding: 11px 20px 11px;
+}
+  
+  
+  .active_namaz_left{
+		border-radius: 50px 50px 0px 0px;
+	}
+	
+	.active_namaz_right{
+		border-radius: 0px 0px 50px 50px;
+	}
+  
+  
+  .table_namaz_widget{
+    display:block;
+    text-align: left;
+  }
+  .table_namaz_widget .td{
+    display:block;
+    font-size:1.5em;
+    padding-left: 30px;
+    border-left:0;
+    border-top:1px solid #000;
+  }
+  .table_namaz_widget .first_td{
+    display:block;
+    font-size:1.5em;
+    padding-left: 30px;
+    border:0;
+  }
+  
+  .namaz_time{
+    font-size:0.9em;
+  }
+  label.btn {
+    top: 50px;
+}
+  
+  
+.mobile_show{ display:block;}
+.mobile_hide{ display:none;}
+  
+  
+  
+}
+
+
+
+
+@media screen and (max-width: 600px){
+.slider_img{
+	max-width: 100%;
+	display: block;
+}
+.slider_desc{
+	max-width: 100%;
+	display: block;
+	vertical-align: middle;
+}
+.slider_desc_more{
+	 border-bottom: 1px solid #888 !important;
+}
+
+}
+
+
+@media screen and (max-width: 500px){
+  .namaz_time{
+    font-size:0.7em;
+  }
+}
+@media screen and (max-width: 420px){
+  body{
+    font-size:0.9em;
+  }
+  .namaz_time {
+    line-height: 17px;
+}
+}
+@media screen and (max-width: 350px){
+  body{
+    font-size:0.7em;
+  }
+}
