@@ -77,7 +77,7 @@ pyasn1-modules==0.2.8
 pycodestyle==2.6.0
 pycparser==2.20
 pydocstyle==5.1.1
-pyflakes==2.2.0
+pyflakes==2.3.1
 Pygments==2.8.1
 pyparsing==2.4.7
 pyTelegramBotAPI==3.7.4
