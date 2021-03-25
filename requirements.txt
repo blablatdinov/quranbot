@@ -35,7 +35,7 @@ flake8-print==4.0.0
 freezegun==1.1.0
 geographiclib==1.50
 geopy==2.1.0
-google-api-core==1.26.1
+google-api-core==1.26.2
 google-api-python-client==1.12.8
 google-auth==1.24.0
 google-auth-httplib2==0.0.4
@@ -46,7 +46,7 @@ idna==2.10
 inflection==0.5.1
 iniconfig==1.1.1
 intervaltree==3.1.0
-ipython==7.19.0
+ipython==7.21.0
 ipython-genutils==0.2.0
 isort==5.7.0
 itypes==1.2.0
