@@ -46,7 +46,7 @@ idna==2.10
 inflection==0.5.1
 iniconfig==1.1.1
 intervaltree==3.1.0
-ipython==7.19.0
+ipython==7.21.0
 ipython-genutils==0.2.0
 isort==5.7.0
 itypes==1.2.0
