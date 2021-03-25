@@ -50,7 +50,7 @@ ipython==7.19.0
 ipython-genutils==0.2.0
 isort==5.7.0
 itypes==1.2.0
-jedi==0.17.2
+jedi==0.18.0
 Jinja2==2.11.3
 kombu==4.6.11
 loguru==0.5.3
@@ -70,7 +70,7 @@ progressbar2==3.53.1
 prompt-toolkit==3.0.8
 protobuf==3.15.6
 psycopg2-binary==2.8.6
-ptyprocess==0.6.0
+ptyprocess==0.7.0
 py==1.10.0
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
@@ -96,7 +96,7 @@ requests-mock==1.8.0
 rsa==4.6
 ruamel.yaml==0.16.12
 six==1.15.0
-snowballstemmer==2.0.0
+snowballstemmer==2.1.0
 sortedcontainers==2.3.0
 soupsieve==2.1
 sqlparse==0.4.1
