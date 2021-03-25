@@ -96,7 +96,7 @@ requests-mock==1.8.0
 rsa==4.6
 ruamel.yaml==0.16.12
 six==1.15.0
-snowballstemmer==2.0.0
+snowballstemmer==2.1.0
 sortedcontainers==2.3.0
 soupsieve==2.1
 sqlparse==0.4.1
