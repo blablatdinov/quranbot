@@ -48,6 +48,7 @@ class Subscriber(models.Model):
     city = models.ForeignKey(
         "prayer.City", verbose_name="Город для рассылки намазов", on_delete=models.PROTECT, blank=True, null=True
     )
+    referer = models.ForeignKey("self", on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Реферер подписчика")
 
     class Meta:
         verbose_name = "Подписчик"
