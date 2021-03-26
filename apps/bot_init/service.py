@@ -2,7 +2,7 @@
 import datetime
 import os
 from time import sleep
-from typing import List
+from typing import List, Tuple
 
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
@@ -122,9 +122,48 @@ def _created_subscriber_service(subscriber: Subscriber) -> Answer:
     return answers
 
 
-def registration_subscriber(chat_id: int) -> Answer:
+def get_referal_link(chat_id: int) -> Answer:
+    subscriber = get_subscriber_by_chat_id(chat_id)
+    return Answer(text=f"https://t.me/{settings.TG_BOT.name}?start={subscriber.pk}")
+
+
+def send_message_to_referer(referer: Subscriber):
+    logger.debug(f"Send message to referal {referer.tg_chat_id=}")
+    message = Answer(text="По вашей реферальной ссылке произошла регистрация")
+    message = send_answer(message, referer.tg_chat_id)
+    # save_message(message)
+
+
+def get_referer(referal_id: int) -> Subscriber:
+    logger.debug(f"Getting referal {referal_id=}")
+    try:
+        return Subscriber.objects.get(pk=referal_id)
+    except Subscriber.DoesNotExist as e:
+        logger.error(f"Referer with id {referal_id} does not exists")
+
+
+def get_or_create_subscriber(chat_id: int, referer_subscriber_id: int = None) -> Tuple[Subscriber, bool]:
+    if (subscriber_query_set := Subscriber.objects.filter(tg_chat_id=chat_id)).exists():
+        logger.debug(f"This chat id was registered")
+        subscriber = subscriber_query_set.first()
+        created = False
+    else:
+        referer = None
+        if referer_subscriber_id:
+            referer = get_referer(referer_subscriber_id)
+            send_message_to_referer(referer)
+        subscriber = Subscriber.objects.create(
+            tg_chat_id=chat_id,
+            referer=referer,
+        )
+        created = True
+    return subscriber, created
+
+
+def registration_subscriber(chat_id: int, referer_subscriber_id: int = None) -> Answer:
     """Логика сохранения подписчика."""
-    subscriber, created = Subscriber.objects.get_or_create(tg_chat_id=chat_id)
+    logger.debug(f"Registration subscriber with {chat_id=} {referer_subscriber_id=}")
+    subscriber, created = get_or_create_subscriber(chat_id, referer_subscriber_id=referer_subscriber_id)
     if not created:
         answer = _not_created_subscriber_service(subscriber)
     else:
