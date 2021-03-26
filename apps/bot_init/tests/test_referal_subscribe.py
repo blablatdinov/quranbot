@@ -1,8 +1,6 @@
 import re
-import json
 
 import pytest
-from mixer.backend.django import mixer
 import requests_mock
 from django.conf import settings
 
@@ -28,6 +26,7 @@ def test_referer(subscriber, referer_message_answer, message_answer):
     with requests_mock.Mocker() as m:
         m.register_uri("POST", re.compile(r"https://api.telegram.org.+chat_id=892342789"), text=message_answer)
         m.register_uri("POST", re.compile(r"https://api.telegram.org.+chat_id=" + str(subscriber.tg_chat_id)), text=referer_message_answer)
+        m.register_uri("POST", re.compile(r"https://api.telegram.org.+chat_id=358610865"), text=referer_message_answer)
 
         registration_subscriber(892342789, subscriber.pk)
 
