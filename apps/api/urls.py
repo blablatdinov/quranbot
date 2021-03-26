@@ -2,7 +2,7 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
 from apps.api.api_docs import api_docs_urls
-from apps.api.views import AyatAPIView, PodcastViewSet, PrayerTimeView
+from apps.api.views import AyatAPIView, PodcastViewSet, PrayerTimeView, ContentView, get_ayats_by_sura_num
 
 router = DefaultRouter()
 # router.register(r"getAyat", AyatViewSet)
@@ -13,4 +13,6 @@ urlpatterns = [
     path("v1/getPrayerTime", PrayerTimeView.as_view()),
     path("v1/getAyat", AyatAPIView.as_view()),
     path("v1/setPrayerStatus", PrayerTimeView.as_view()),
+    path("v1/getDailyContent", ContentView.as_view()),
+    path("v1/getAyatsBySuraNum", get_ayats_by_sura_num),
 ] + api_docs_urls

@@ -4,6 +4,7 @@ from rest_framework import viewsets
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.decorators import api_view
 
 from apps.api.exceptions.chat_id_or_city_not_gived import (
     ChatIdOrCityNotGived, SubscriberNotDefinedCityAPIException)
@@ -20,6 +21,7 @@ from apps.prayer.exceptions.subscriber_not_set_city import SubscriberNotSetCity
 from apps.prayer.models import PrayerAtUser
 from apps.prayer.services.get_prayer_times_for_city import PrayerTimeGetter
 from apps.prayer.services.prayer_time_for_user import PrayerAtUserGenerator
+from apps.api.services.content.content_service import get_ayats_by_sura_number
 
 
 class AyatAPIView(ListAPIView):
@@ -81,3 +83,12 @@ class PrayerTimeView(APIView):  # FIXME слишком толстые метод
             return Response(serialized_data, status=201)
         else:
             logger.debug(f"{serialized_data.errors=}")
+
+
+
+@api_view()
+def get_ayats_by_sura_num(request):
+    """Получить аяты по номеру суры."""
+    sura_num = request.GET.get("sura_num")
+    ayats = get_ayats_by_sura_number(sura_num)
+    return Response(ayats)

@@ -16,13 +16,13 @@ def client():
     return APIClient()
 
 
-def test_get_sura(client):
-    response = client.get('/api/v1/getAyat')
-
-    assert response.status_code == 200
-
-
-def test_get_random_podcast(client, podcast):
-    response = client.get('/api/v1/getPodcast/')
+@pytest.mark.parametrize("url", [
+    "/api/v1/getAyat",
+    "/api/v1/getPodcast/",
+    "/api/v1/getDailyContent",
+    "/api/v1/getAyatsBySuraNum",
+])
+def test_endpoint(client, url):
+    response = client.get(url)
 
     assert response.status_code == 200
