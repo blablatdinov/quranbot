@@ -82,3 +82,7 @@ CELERY_TASKS_SERIALIZER = "json"
 if DEBUG:
     ddtrace.tracer.enabled = not DEBUG
     ddtrace.patch_all()
+
+TEMPLATE_LOADERS = (
+    'django.template.loaders.eggs.Loader',
+)

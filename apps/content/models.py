@@ -61,7 +61,7 @@ class Ayat(models.Model):
     arab_text = models.TextField(verbose_name="Арабский текст", blank=True)
     trans = models.TextField(verbose_name="Транслитерация", blank=True)
     sura = models.ForeignKey(Sura, on_delete=models.CASCADE, verbose_name="Номер суры")
-    ayat = models.CharField(max_length=16, verbose_name="Номер аята", blank=True, null=True)
+    ayat = models.CharField(max_length=16, verbose_name="Номер аята")
     html = models.TextField(verbose_name="Спарсенный HTML текст")
     audio = models.OneToOneField(AudioFile, on_delete=models.PROTECT, verbose_name="Аудио файл", blank=True, null=True)
     one_day_content = models.ForeignKey(
