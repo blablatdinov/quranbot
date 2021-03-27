@@ -23,7 +23,8 @@ class StartCommandService:
         if self.additional_info:
             self.referer = self.get_referer(self.additional_info)
             logger.debug(f"Referal of new subscriber={self.additional_info}")
-        self.registration_subscriber()
+        answer = self.registration_subscriber()
+        return answer
 
     def get_referer(self, referal_id):
         try:
@@ -72,15 +73,18 @@ class CommandService:
         self.additional_info = self.get_additional_info()
 
     def get_additional_info(self):
-        if (info := len(self.message_text.split())) > 1:
-            info = info[1]
-        logger.info(f"Command additional info={info}")
-        return info
+        splitted_string = self.message_text.split() 
+        if len(splitted_string) > 1:
+            logger.debug(f"{splitted_string=}")
+            info = splitted_string[1]
+            logger.info(f"Command additional info={info}")
+            return info
 
     def __call__(self) -> Answer:
         if "start" in self.message_text:
-            StartCommandService(chat_id=self.chat_id, message_text=self.message_text, additional_info=self.additional_info)
+            answer = StartCommandService(chat_id=self.chat_id, message_text=self.message_text, additional_info=self.additional_info)()
         elif "referal" in self.message_text:
             answer = get_referal_answer(chat_id=self.chat_id)
+
         return answer
 

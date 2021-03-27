@@ -40,15 +40,8 @@ def start_handler(message):
     """Обработчик команды /start."""
     logger.info(f"Command handler. Subscriber={message.chat.id} text={message.text}")
     save_message(message)
-    answer = CommandService(message.chat.id, message.text)
+    answer = CommandService(message.chat.id, message.text)()
     send_answer(answer, message.chat.id)
-
-
-@tbot.message_handler(commands=["referal"])
-@stop_retry
-def start_handler(message):
-    """Обработчик команды /referal."""
-    answer = get_referal_answer(chat_id=message.chat.id)
 
 
 @tbot.message_handler(content_types=["text"])
