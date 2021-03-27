@@ -122,9 +122,20 @@ def _created_subscriber_service(subscriber: Subscriber) -> Answer:
     return answers
 
 
-def get_referal_link(chat_id: int) -> Answer:
+def get_referal_link(subscriber: Subscriber) -> str:
+    return f"https://t.me/{settings.TG_BOT.name}?start={subscriber.pk}"
+
+
+def get_referals_scount(subscriber: Subscriber) -> int:
+    return Subscriber.objects.filter(referer=subscriber).count()
+
+
+def get_referal_answer(chat_id: int) -> Answer:
     subscriber = get_subscriber_by_chat_id(chat_id)
-    return Answer(text=f"https://t.me/{settings.TG_BOT.name}?start={subscriber.pk}")
+    referal_link = get_referal_link(subscriber)
+    referals_count = get_referals_scount(subscriber)
+    text = f"Кол-во пользователей зарегистрировавшихся по вашей ссылке: {referals_count}\n\n{referal_link}"
+    return Answer(text=text)
 
 
 def send_message_to_referer(referer: Subscriber):
