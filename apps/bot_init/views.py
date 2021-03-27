@@ -7,6 +7,7 @@ from loguru import logger
 
 from apps.bot_init.service import registration_subscriber, send_answer, get_referal_answer
 from apps.bot_init.services.inline_search_service import inline_query_service
+from apps.bot_init.services.commands_service import CommandService
 from apps.bot_init.services.text_message_service import text_message_service
 from apps.bot_init.services.handle_service import handle_query_service
 from apps.bot_init.schemas import Answer
@@ -33,25 +34,13 @@ def get_additional_info(text: str) -> str:
         return text[7:]
 
 
-@tbot.message_handler(commands=["start"])
+@tbot.message_handler(commands=["start", "referal"])
 @stop_retry
 def start_handler(message):
     """Обработчик команды /start."""
-    logger.info(f"Start message handler. Subscriber={message.chat.id}")
+    logger.info(f"Command handler. Subscriber={message.chat.id} text={message.text}")
     save_message(message)
-    additional = get_additional_info(message.text)
-    referer = int(additional) if additional else None
-    answer = registration_subscriber(chat_id=message.chat.id, referer_subscriber_id=referer)
-    send_answer(answer, message.chat.id)
-
-
-@tbot.message_handler(commands=["referal"])
-@stop_retry
-def start_handler(message):
-    """Обработчик команды /referal."""
-    logger.info(f"Referal message handler. Subscriber={message.chat.id}")
-    save_message(message)
-    answer = get_referal_answer(chat_id=message.chat.id)
+    answer = CommandService(message.chat.id, message.text)()
     send_answer(answer, message.chat.id)
 
 
