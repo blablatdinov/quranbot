@@ -16,7 +16,17 @@ def message_answer():
         return f.read()
 
 
-def test_command_service_without_additional_info():
+def test_command_service_without_additional_info(morning_content, message_answer):
     with requests_mock.Mocker() as m:
-        m.register_uri("POST", re.compile(r"https://api.telegram.org.+chat_id=892342789"), text=message_answer)
-        CommandService(83924, "/start")
+        m.register_uri("POST", re.compile(r"https://api.telegram.org.+chat_id="), text=message_answer)
+        service = CommandService(83924, "/start")
+        answer = service()
+
+    assert service.additional_info is None
+
+
+def test_getting_additional_info():
+    service = CommandService(83924, "/start 1")
+    service.get_additional_info()
+
+    assert service.additional_info == "1"
