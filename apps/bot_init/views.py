@@ -5,7 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 import telebot
 from loguru import logger
 
-from apps.bot_init.service import registration_subscriber, send_answer, get_referal_link
+from apps.bot_init.service import registration_subscriber, send_answer, get_referal_answer
 from apps.bot_init.services.inline_search_service import inline_query_service
 from apps.bot_init.services.text_message_service import text_message_service
 from apps.bot_init.services.handle_service import handle_query_service
@@ -51,7 +51,7 @@ def start_handler(message):
     """Обработчик команды /referal."""
     logger.info(f"Referal message handler. Subscriber={message.chat.id}")
     save_message(message)
-    answer = get_referal_link(chat_id=message.chat.id)
+    answer = get_referal_answer(chat_id=message.chat.id)
     send_answer(answer, message.chat.id)
 
 
