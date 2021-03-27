@@ -126,23 +126,16 @@ def get_referal_link(subscriber: Subscriber) -> str:
     return f"https://t.me/{settings.TG_BOT.name}?start={subscriber.pk}"
 
 
-def get_referals_scount(subscriber: Subscriber) -> int:
+def get_referals_count(subscriber: Subscriber) -> int:
     return Subscriber.objects.filter(referer=subscriber).count()
 
 
 def get_referal_answer(chat_id: int) -> Answer:
     subscriber = get_subscriber_by_chat_id(chat_id)
     referal_link = get_referal_link(subscriber)
-    referals_count = get_referals_scount(subscriber)
+    referals_count = get_referals_count(subscriber)
     text = f"Кол-во пользователей зарегистрировавшихся по вашей ссылке: {referals_count}\n\n{referal_link}"
     return Answer(text=text)
-
-
-def send_message_to_referer(referer: Subscriber):
-    logger.debug(f"Send message to referal {referer.tg_chat_id=}")
-    message = Answer(text="По вашей реферальной ссылке произошла регистрация")
-    message = send_answer(message, referer.tg_chat_id)
-    # save_message(message)
 
 
 def get_referer(referal_id: int) -> Subscriber:
