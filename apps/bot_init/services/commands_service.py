@@ -3,8 +3,10 @@ from apps.bot_init.models import Subscriber
 from loguru import logger
 
 from apps.bot_init.service import (
-    registration_subscriber, send_answer, send_message_to_admin,
-    _not_created_subscriber_service, _created_subscriber_service
+    send_answer,
+    _not_created_subscriber_service, 
+    _created_subscriber_service, 
+    get_referal_answer,
 )
 from apps.bot_init.schemas import Answer
 
@@ -78,3 +80,7 @@ class CommandService:
     def __call__(self) -> Answer:
         if "start" in self.message_text:
             StartCommandService(chat_id=self.chat_id, message_text=self.message_text, additional_info=self.additional_info)
+        elif "referal" in self.message_text:
+            answer = get_referal_answer(chat_id=self.chat_id)
+        return answer
+
