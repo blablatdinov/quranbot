@@ -19,9 +19,10 @@ def referer_message_answer():
         return f.read()
 
 
-def test_start_message_without_referal_service(morning_content):
+def test_start_message_without_referal_service(morning_content, referer_message_answer):
     with requests_mock.Mocker() as m:
         m.register_uri("POST", re.compile(r"https://api.telegram.org.+chat_id=32984"), text=referer_message_answer)
+        m.register_uri("POST", re.compile(r"https://api.telegram.org.+chat_id=358610865"), text=referer_message_answer)
         StartCommandService(32984, "/start")()
 
     assert Subscriber.objects.last().tg_chat_id == 32984
