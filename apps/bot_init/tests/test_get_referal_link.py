@@ -9,6 +9,6 @@ pytestmark = [pytest.mark.django_db]
 
 
 def test_get_referal_link(subscriber):
-    answer = get_referal_link(subscriber.tg_chat_id)
+    got = get_referal_link(subscriber)
 
-    assert answer.text == f"https://t.me/{settings.TG_BOT.name}?start={subscriber.pk}"
+    assert got == f"https://t.me/{settings.TG_BOT.name}?start={subscriber.pk}"
