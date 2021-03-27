@@ -44,6 +44,13 @@ def start_handler(message):
     send_answer(answer, message.chat.id)
 
 
+@tbot.message_handler(commands=["referal"])
+@stop_retry
+def start_handler(message):
+    """Обработчик команды /referal."""
+    answer = get_referal_answer(chat_id=message.chat.id)
+
+
 @tbot.message_handler(content_types=["text"])
 @stop_retry
 def text_handler(message):
