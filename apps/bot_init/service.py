@@ -7,6 +7,7 @@ from typing import List, Tuple
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
+import boto3
 from loguru import logger
 from progressbar import progressbar as pbar
 from telebot import TeleBot
@@ -218,23 +219,20 @@ def count_active_users():
 def upload_database_dump():
     """Функция снимает дамп базы данных и загружет его на облако."""
     logger.info("dump start")
-    credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
-    service = build("drive", "v3", credentials=credentials)
-    folder_id = "1G_NYTKUHkQixdElU1hOCg4PR2c66zJPB"
+    session = boto3.session.Session()
+    s3 = session.client(
+        service_name='s3',
+        endpoint_url='https://storage.yandexcloud.net'
+    )
     start_time = datetime.datetime.now()
 
-    command = f"pg_dump -U qbot qbot_db -h localhost | gzip -c --best > {settings.BASE_DIR}/deploy/qbot_db.sql.gz"
+    name = f"qbot_db_{datetime.datetime.now().strftime('%Y_%m_%d')}.sql.gz"
+    command = f"pg_dump -U qbot qbot_db -h localhost | gzip -c --best > {settings.BASE_DIR}/{name}"
     os.system(command)
     command = f"pg_dump -U qbot qbot_db -h localhost --exclude-table-data='bot_init_callbackdata' --exclude-table-data='bot_init_message'> {settings.BASE_DIR}/dumps/dev_dump.sql && gzip {settings.BASE_DIR}/dumps/dev_dump.sql -f"
     os.system(command)
-    command = f"rm {settings.BASE_DIR}/qbot_db.sql.gz"
+    s3.upload_file(f"{settings.BASE_DIR}/{name}", 'blablatdinov', f'quranbot_dumps/{name}')
+    command = f"rm {settings.BASE_DIR}/{name}"
+    os.system(command)
 
-    name = "qbot_db.sql.gz"
-    file_path = settings.BASE_DIR + "/deploy/qbot_db.sql.gz"
-    file_metadata = {
-        "name": name,
-        "parents": [folder_id]
-    }
-    media = MediaFileUpload(file_path, resumable=True)
-    service.files().create(body=file_metadata, media_body=media, fields="id").execute()
     logger.info(f"Dump uploaded successful {datetime.datetime.now() - start_time}")
