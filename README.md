@@ -10,7 +10,7 @@
 
 Ссылка на бота: [Quran_365_bot](https://t.me/Quran_365_bot?start=github)
 
-Если хотитите поучаствовать в разработке пишите - [telegram](https://t.me/ilaletdinov)
+Если хотитите поучаствовать в разработке пишите - [telegram](https://t.me/ilaletdinov), [email](mailto:a.ilaletdinov@yandex.ru?subject=[GitHub]%20Quranbot) 
 
 [Документация](docs/dev.md) для разработчиков.
 
