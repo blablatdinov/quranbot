@@ -61,7 +61,13 @@ def _change_prayer_status(chat_id: int, text: str, to: bool) -> InlineKeyboardMa
     return keyboard
 
 
-def handle_query_service(text: str, chat_id: int = None, call_id: int = None, message_id: int = None, message_text: str = None):
+def handle_query_service(
+        text: str, 
+        chat_id: int = None,
+        call_id: int = None,
+        message_id: int = None,
+        message_text: str = None,
+    ):
     """Функция для обработки всех нажатий на инлайн кнопки"""
     if 'get_ayat' in text:
         answer = _get_ayat(text)

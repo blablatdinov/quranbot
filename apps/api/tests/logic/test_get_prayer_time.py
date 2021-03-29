@@ -1,6 +1,7 @@
 # FIXME тесты на получение для разных городов и пользователей
 import re
 import json
+import requests_mock
 
 import pytest
 
@@ -14,8 +15,23 @@ def test_without_params(client):
     assert gotted_data.get("detail") == "Передайте chat_id или город."
 
 
-def test_chat_id(client, subscriber, prayer_at_subscriber):
-    got = client.get(f"/api/v1/getPrayerTime?chat_id={subscriber.tg_chat_id}")
+@pytest.fixture
+def nominatium_response():
+    with open("apps/prayer/tests/fixtures/nominatium_kazan_search_response.json", "r") as f:
+        return f.read()
+
+
+@pytest.fixture
+def geonames_response():
+    with open("apps/prayer/tests/fixtures/geonames_timezone_response.json", "r") as f:
+        return f.read()
+
+
+def test_chat_id(client, subscriber, prayer_at_subscriber, nominatium_response, geonames_response):
+    with requests_mock.Mocker() as m:
+        m.get("https://nominatim.openstreetmap.org/search?q=%D0%9A%D0%B0%D0%B7%D0%B0%D0%BD%D1%8C&format=json&limit=1", text=nominatium_response)
+        m.get("http://api.geonames.org/timezoneJSON?lat=55.7823547&lng=49.1242266&username=blablatdinov", text=geonames_response)
+        got = client.get(f"/api/v1/getPrayerTime?chat_id={subscriber.tg_chat_id}")
     gotted_data = got.json()
 
     assert list(gotted_data.keys()) == ["city", "subscriber_chat_id", "sunrise_time", "prayers"]
