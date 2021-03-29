@@ -4,7 +4,7 @@ from typing import List
 from telebot.types import InlineKeyboardMarkup
 
 from apps.bot_init.markup import InlineKeyboard
-from apps.bot_init.schemas import Answer
+from apps.bot_init.services.answer_service import Answer
 from apps.bot_init.services.text_message_service import translate_ayat_into_answer
 from apps.bot_init.models import Subscriber
 from apps.bot_init.service import get_subscriber_by_chat_id
