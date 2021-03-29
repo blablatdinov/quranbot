@@ -50,7 +50,7 @@ iniconfig==1.1.1
 intervaltree==3.1.0
 ipython==7.21.0
 ipython-genutils==0.2.0
-isort==5.7.0
+isort==5.8.0
 itypes==1.2.0
 jedi==0.17.2
 Jinja2==2.11.3
