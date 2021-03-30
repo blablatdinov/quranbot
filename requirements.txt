@@ -55,7 +55,7 @@ itypes==1.2.0
 jedi==0.17.2
 Jinja2==2.11.3
 jmespath==0.10.0
-kombu==4.6.11
+kombu==5.0.2
 loguru==0.5.3
 lxml==4.6.3
 Mako==1.1.4
