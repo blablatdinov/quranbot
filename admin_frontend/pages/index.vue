@@ -1,7 +1,6 @@
 <template>
   <div class="container">
     <h1>Сайт <a href="https://t.me/Quran_365_bot/"> Quranbot</a></h1>
-    <p>Разработчик <a href="https://t.me/ilaletdinov/"></a></p>
   </div>
 </template>
 
