@@ -9,7 +9,8 @@ from telebot.apihelper import ApiException
 from django.conf import settings
 from apps.bot_init.models import Subscriber, SubscriberAction, Message, AdminMessage, Admin
 from apps.bot_init.utils import save_message, get_tbot_instance
-from apps.bot_init.schemas import Answer, SUBSCRIBER_ACTIONS
+from apps.bot_init.schemas import SUBSCRIBER_ACTIONS
+from apps.bot_init.services.answer_service import Answer, AnswersList
 from apps.content.models import MorningContent
 
 
@@ -90,30 +91,29 @@ def send_message_to_admin(message_text: str) -> Message:
     return message_instance
 
 
-def _not_created_subscriber_service(subscriber: Subscriber):
+def _not_created_subscriber_service(subscriber: Subscriber) -> Answer:
     """Фунция вызывается если пользователь, который уже существует в базе был корректно обработан."""
     if subscriber.is_active:
-        return Answer("Вы уже зарегистрированы")
+        return Answer("Вы уже зарегистрированы", chat_id=subscriber.tg_chat_id)
     _create_action(subscriber, SUBSCRIBER_ACTIONS[2][0])
     subscriber.is_active = True
     subscriber.save(update_fields=["is_active"])
-    return Answer(f"Рады видеть вас снова, вы продолжите с дня {subscriber.day}")
+    return Answer(f"Рады видеть вас снова, вы продолжите с дня {subscriber.day}", chat_id=subscriber.tg_chat_id)
 
 
-def _created_subscriber_service(subscriber: Subscriber) -> Answer:
+def _created_subscriber_service(subscriber: Subscriber) -> List[Answer]:
     """Функция обрабатывает и генерирует ответ для нового подписчика."""
     start_message_text = AdminMessage.objects.get(key="start").text
     day_content = MorningContent.objects.get(day=1).content_for_day()
     _create_action(subscriber, SUBSCRIBER_ACTIONS[0][0])
-    send_message_to_admin(
-        "Зарегестрировался новый пользователь.\n\n"
-        # TODO можно добавить комманду для статистики
-    )
     answers = [
-        Answer(start_message_text),
-        Answer(day_content)
+        Answer(start_message_text, chat_id=subscriber.tg_chat_id),
+        Answer(day_content, chat_id=subscriber.tg_chat_id)
+    ] + [
+        Answer("Зарегестрировался новый пользователь.", chat_id=admin) for admin in get_admins_list()
     ]
-    return answers
+
+    return AnswersList(*answers)
 
 
 def get_referal_link(subscriber: Subscriber) -> str:
