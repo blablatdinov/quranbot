@@ -117,7 +117,7 @@ def _created_subscriber_service(subscriber: Subscriber) -> List[Answer]:
 
 
 def get_referal_link(subscriber: Subscriber) -> str:
-    return f"https://t.me/{settings.TG_BOT.name}?start={subscriber.pk}"
+    return f"Ваша реферальная ссылка: https://t.me/{settings.TG_BOT.name}?start={subscriber.pk}"
 
 
 def get_referals_count(subscriber: Subscriber) -> int:
