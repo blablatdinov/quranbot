@@ -10,7 +10,7 @@ from apps.bot_init.exceptions import SuraDoesNotExists, UnknownMessage
 from apps.bot_init.markup import InlineKeyboard
 from apps.bot_init.models import AdminMessage, Mailing, Subscriber
 from apps.bot_init.schemas import Answer
-from apps.bot_init.service import get_admins_list, get_referal_link, get_subscriber_by_chat_id
+from apps.bot_init.service import get_admins_list, get_referal_link, get_subscriber_by_chat_id, get_referals_scount
 from apps.bot_init.utils import get_tbot_instance
 from apps.bot_init.exceptions import AyatDoesNotExists
 from apps.content.models import Podcast, Ayat, AudioFile
@@ -114,7 +114,9 @@ def get_favourite_ayats(chat_id: int):
 
 def get_concourse_info(chat_id: int) -> Answer:
     text = AdminMessage.objects.get(key="concourse").text
-    text += f"\n\n{get_referal_link(get_subscriber_by_chat_id(chat_id))}"
+    subscriber = get_subscriber_by_chat_id(chat_id)
+    text += f"\n\nКол-во пользователей зарегистрировавшихся по вашей ссылке: {get_referals_scount(subscriber)}"
+    text += f"\n\n{get_referal_link(subscriber)}"
     return Answer(text=text)
 
 
