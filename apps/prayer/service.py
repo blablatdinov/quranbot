@@ -10,7 +10,7 @@ import pytz
 
 from apps.bot_init.markup import InlineKeyboard
 from apps.bot_init.models import Mailing, Subscriber
-from apps.bot_init.schemas import Answer
+from apps.bot_init.services.answer_service import Answer
 from apps.bot_init.service import get_subscriber_by_chat_id, send_answer, send_message_to_admin
 from apps.prayer.models import City, Prayer, PrayerAtUser, PrayerAtUserGroup
 from apps.prayer.schemas import PRAYER_NAMES
