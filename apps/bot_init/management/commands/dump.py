@@ -1,10 +1,10 @@
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 
-from apps.bot_init.service import upload_database_dump
+from apps.bot_init.services.db_dump_logs_uploader import DumpUploader
 
 
 class Command(BaseCommand):
     help = ''
 
-    def handle(self, *args, **kwargs):
-        upload_database_dump()
+    def handle(self):
+        DumpUploader()()
