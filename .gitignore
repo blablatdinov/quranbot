@@ -16,7 +16,6 @@ htmlcov/
 
 # database and dumps
 *.sql*
-*.json
 db.sqlite3
 dumps/
 

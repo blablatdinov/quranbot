@@ -10,7 +10,7 @@ from apps.bot_init.services.inline_search_service import inline_query_service
 from apps.bot_init.services.commands_service import CommandService
 from apps.bot_init.services.text_message_service import text_message_service
 from apps.bot_init.services.handle_service import handle_query_service
-from apps.bot_init.schemas import Answer
+from apps.bot_init.services.answer_service import Answer
 from apps.bot_init.utils import save_callback_data, save_message, stop_retry, get_tbot_instance
 from apps.prayer.service import set_city_to_subscriber_by_location
 
@@ -29,19 +29,14 @@ def bot(request):
         raise PermissionDenied
 
 
-def get_additional_info(text: str) -> str:
-    if len(text) > 7:
-        return text[7:]
-
-
 @tbot.message_handler(commands=["start", "referal"])
 @stop_retry
 def start_handler(message):
     """Обработчик команды /start."""
     logger.info(f"Command handler. Subscriber={message.chat.id} text={message.text}")
     save_message(message)
-    answer = CommandService(message.chat.id, message.text)()
-    send_answer(answer, message.chat.id)
+    answers = CommandService(message.chat.id, message.text)()
+    answers.send()
 
 
 @tbot.message_handler(content_types=["text"])
