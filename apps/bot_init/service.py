@@ -1,21 +1,16 @@
 """Бизнес логика для взаимодействия с телеграмм."""
-import datetime
-import os
 from time import sleep
 from typing import List, Tuple
 
-from google.oauth2 import service_account
-from googleapiclient.discovery import build
-from googleapiclient.http import MediaFileUpload
 from loguru import logger
 from progressbar import progressbar as pbar
-from telebot import TeleBot
 from telebot.apihelper import ApiException
 
 from django.conf import settings
 from apps.bot_init.models import Subscriber, SubscriberAction, Message, AdminMessage, Admin
 from apps.bot_init.utils import save_message, get_tbot_instance
-from apps.bot_init.schemas import Answer, SUBSCRIBER_ACTIONS
+from apps.bot_init.schemas import SUBSCRIBER_ACTIONS
+from apps.bot_init.services.answer_service import Answer, AnswersList
 from apps.content.models import MorningContent
 
 
@@ -96,53 +91,45 @@ def send_message_to_admin(message_text: str) -> Message:
     return message_instance
 
 
-def _not_created_subscriber_service(subscriber: Subscriber):
+def _not_created_subscriber_service(subscriber: Subscriber) -> Answer:
     """Фунция вызывается если пользователь, который уже существует в базе был корректно обработан."""
     if subscriber.is_active:
-        return Answer("Вы уже зарегистрированы")
+        return Answer("Вы уже зарегистрированы", chat_id=subscriber.tg_chat_id)
     _create_action(subscriber, SUBSCRIBER_ACTIONS[2][0])
     subscriber.is_active = True
     subscriber.save(update_fields=["is_active"])
-    return Answer(f"Рады видеть вас снова, вы продолжите с дня {subscriber.day}")
+    return Answer(f"Рады видеть вас снова, вы продолжите с дня {subscriber.day}", chat_id=subscriber.tg_chat_id)
 
 
-def _created_subscriber_service(subscriber: Subscriber) -> Answer:
+def _created_subscriber_service(subscriber: Subscriber) -> List[Answer]:
     """Функция обрабатывает и генерирует ответ для нового подписчика."""
     start_message_text = AdminMessage.objects.get(key="start").text
     day_content = MorningContent.objects.get(day=1).content_for_day()
     _create_action(subscriber, SUBSCRIBER_ACTIONS[0][0])
-    send_message_to_admin(
-        "Зарегестрировался новый пользователь.\n\n"
-        # TODO можно добавить комманду для статистики
-    )
     answers = [
-        Answer(start_message_text),
-        Answer(day_content)
+        Answer(start_message_text, chat_id=subscriber.tg_chat_id),
+        Answer(day_content, chat_id=subscriber.tg_chat_id)
+    ] + [
+        Answer("Зарегестрировался новый пользователь.", chat_id=admin) for admin in get_admins_list()
     ]
-    return answers
+
+    return AnswersList(*answers)
 
 
 def get_referal_link(subscriber: Subscriber) -> str:
     return f"https://t.me/{settings.TG_BOT.name}?start={subscriber.pk}"
 
 
-def get_referals_scount(subscriber: Subscriber) -> int:
+def get_referals_count(subscriber: Subscriber) -> int:
     return Subscriber.objects.filter(referer=subscriber).count()
 
 
 def get_referal_answer(chat_id: int) -> Answer:
     subscriber = get_subscriber_by_chat_id(chat_id)
     referal_link = get_referal_link(subscriber)
-    referals_count = get_referals_scount(subscriber)
-    text = f"По вашей ссылке зарегистрировалось {referals_count} пользователей\n\n{referal_link}"
+    referals_count = get_referals_count(subscriber)
+    text = f"Кол-во пользователей зарегистрировавшихся по вашей ссылке: {referals_count}\n\n{referal_link}"
     return Answer(text=text)
-
-
-def send_message_to_referer(referer: Subscriber):
-    logger.debug(f"Send message to referal {referer.tg_chat_id=}")
-    message = Answer(text="По вашей реферальной ссылке произошла регистрация")
-    message = send_answer(message, referer.tg_chat_id)
-    # save_message(message)
 
 
 def get_referer(referal_id: int) -> Subscriber:
@@ -220,28 +207,3 @@ def count_active_users():
         if check_user_status_by_typing(sub.tg_chat_id):
             count += 1
     return count
-
-
-def upload_database_dump():
-    """Функция снимает дамп базы данных и загружет его на облако."""
-    logger.info("dump start")
-    credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
-    service = build("drive", "v3", credentials=credentials)
-    folder_id = "1G_NYTKUHkQixdElU1hOCg4PR2c66zJPB"
-    start_time = datetime.datetime.now()
-
-    command = f"pg_dump -U qbot qbot_db -h localhost | gzip -c --best > {settings.BASE_DIR}/deploy/qbot_db.sql.gz"
-    os.system(command)
-    command = f"pg_dump -U qbot qbot_db -h localhost --exclude-table-data='bot_init_callbackdata' --exclude-table-data='bot_init_message'> {settings.BASE_DIR}/dumps/dev_dump.sql && gzip {settings.BASE_DIR}/dumps/dev_dump.sql -f"
-    os.system(command)
-    command = f"rm {settings.BASE_DIR}/qbot_db.sql.gz"
-
-    name = "qbot_db.sql.gz"
-    file_path = settings.BASE_DIR + "/deploy/qbot_db.sql.gz"
-    file_metadata = {
-        "name": name,
-        "parents": [folder_id]
-    }
-    media = MediaFileUpload(file_path, resumable=True)
-    service.files().create(body=file_metadata, media_body=media, fields="id").execute()
-    logger.info(f"Dump uploaded successful {datetime.datetime.now() - start_time}")

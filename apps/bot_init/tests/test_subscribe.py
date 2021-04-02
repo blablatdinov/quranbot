@@ -15,7 +15,7 @@ def message_answer():
         return f.read()
 
 
-def test_registration(subscriber, message_answer):
+def test_registration(message_answer, morning_content):
     with requests_mock.Mocker() as m:
         m.register_uri("POST", re.compile(r"api.telegram.org"), text=message_answer)
         registration_subscriber(923842934)
