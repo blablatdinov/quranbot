@@ -6,6 +6,8 @@ attrs==20.3.0
 backcall==0.2.0
 beautifulsoup4==4.9.3
 billiard==3.6.3.0
+boto3==1.17.39
+botocore==1.20.39
 cachetools==4.2.1
 celery==4.4.7
 certifi==2020.12.5
@@ -40,7 +42,7 @@ google-api-python-client==1.12.8
 google-auth==1.24.0
 google-auth-httplib2==0.0.4
 googleapis-common-protos==1.53.0
-gunicorn==20.0.4
+gunicorn==20.1.0
 httplib2==0.19.0
 idna==2.10
 inflection==0.5.1
@@ -48,10 +50,11 @@ iniconfig==1.1.1
 intervaltree==3.1.0
 ipython==7.21.0
 ipython-genutils==0.2.0
-isort==5.7.0
+isort==5.8.0
 itypes==1.2.0
 jedi==0.17.2
 Jinja2==2.11.3
+jmespath==0.10.0
 kombu==4.6.11
 loguru==0.5.3
 lxml==4.6.3
@@ -89,12 +92,13 @@ python-dateutil==2.8.1
 python-dotenv==0.15.0
 python-telegram-bot==13.2
 python-utils==2.4.0
-pytz==2020.4
+pytz==2021.1
 redis==3.5.3
 requests==2.25.1
 requests-mock==1.8.0
 rsa==4.6
-ruamel.yaml==0.16.12
+ruamel.yaml==0.17.0
+s3transfer==0.3.6
 six==1.15.0
 snowballstemmer==2.1.0
 sortedcontainers==2.3.0
@@ -108,6 +112,6 @@ tornado==6.1
 traitlets==5.0.5
 tzlocal==2.1
 uritemplate==3.0.1
-urllib3>=1.26.4
+urllib3==1.26.4
 vine==1.3.0
 wcwidth==0.2.5

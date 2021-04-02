@@ -1,6 +1,5 @@
 # TODO Здесь много логики, относящейся к контенту
 import re
-from random import choice
 from typing import List
 
 from django.conf import settings
@@ -9,8 +8,10 @@ from loguru import logger
 from apps.bot_init.exceptions import SuraDoesNotExists, UnknownMessage
 from apps.bot_init.markup import InlineKeyboard
 from apps.bot_init.models import AdminMessage, Mailing, Subscriber
-from apps.bot_init.schemas import Answer
-from apps.bot_init.service import get_admins_list, get_referal_link, get_subscriber_by_chat_id, get_referals_scount
+from apps.bot_init.service import get_admins_list, get_referal_link, get_subscriber_by_chat_id, get_referals_count
+from apps.bot_init.models import Mailing, Subscriber
+from apps.bot_init.services.answer_service import Answer
+from apps.bot_init.service import get_admins_list
 from apps.bot_init.utils import get_tbot_instance
 from apps.bot_init.exceptions import AyatDoesNotExists
 from apps.content.models import Podcast, Ayat, AudioFile
@@ -115,7 +116,7 @@ def get_favourite_ayats(chat_id: int):
 def get_concourse_info(chat_id: int) -> Answer:
     text = AdminMessage.objects.get(key="concourse").text
     subscriber = get_subscriber_by_chat_id(chat_id)
-    text += f"\n\nКол-во пользователей зарегистрировавшихся по вашей ссылке: {get_referals_scount(subscriber)}"
+    text += f"\n\nКол-во пользователей зарегистрировавшихся по вашей ссылке: {get_referals_count(subscriber)}"
     text += f"\n\n{get_referal_link(subscriber)}"
     return Answer(text=text)
 
