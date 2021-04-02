@@ -12,7 +12,8 @@ class DumpUploader:
 
     def __init__(self) -> None:
         session = boto3.session.Session()
-        self.formatted_date = datetime.datetime.now().strftime('%Y_%m_%d')
+        self.formatted_date = datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
+        print(self.formatted_date)
         self.bucket_name = "blablatdinov"
         self.s3_client = session.client(
             service_name='s3',
