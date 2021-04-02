@@ -1,5 +1,7 @@
+import re
 import datetime
 import os
+from typing import List
 
 from loguru import logger
 from django.conf import settings
@@ -41,12 +43,26 @@ class DumpUploader:
         self.upload_to_storage(name)
         self.remove_file(name)
 
+    def find_unused_logs(self) -> List[str]:
+        walker = os.walk(f"{settings.BASE_DIR}/logs")
+        files = next(walker)[2]
+        result = [
+            file for file in files
+            if re.search(r"app\..+log", file)
+        ]
+        return result
+
+    def remove_unused_logs(self):
+        for file in self.find_unused_logs():
+            self.remove_file(f"logs/{file}")
+
     def dump_logs(self):
         logs_archive_filename = f"logs_{self.formatted_date}.tar.gz"
         command = f"tar zcvf {logs_archive_filename} logs"
         os.system(command)
         self.upload_to_storage(logs_archive_filename)
         self.remove_file(logs_archive_filename)
+        self.remove_unused_logs()
 
     def __call__(self):
         """Функция снимает дамп базы данных и загружет его на облако."""
