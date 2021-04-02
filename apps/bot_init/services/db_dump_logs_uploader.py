@@ -31,7 +31,7 @@ class DumpUploader:
         os.system(command)
 
     def remove_file(self, relative_path: str):
-        path = os.join(settings.BASE_DIR, relative_path)
+        path = os.path.join(settings.BASE_DIR, relative_path)
         os.remove(path)
 
     def dump_database(self):
