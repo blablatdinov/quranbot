@@ -9,7 +9,8 @@ from loguru import logger
 from apps.bot_init.exceptions import SuraDoesNotExists, UnknownMessage
 from apps.bot_init.markup import InlineKeyboard
 from apps.bot_init.models import Mailing, Subscriber
-from apps.bot_init.schemas import Answer
+# from apps.bot_init.services.answer_service import Answer
+from apps.bot_init.services.answer_service import Answer
 from apps.bot_init.service import get_admins_list
 from apps.bot_init.utils import get_tbot_instance
 from apps.bot_init.exceptions import AyatDoesNotExists

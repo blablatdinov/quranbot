@@ -4,7 +4,7 @@ from typing import List
 from telebot.types import InlineKeyboardMarkup
 
 from apps.bot_init.markup import InlineKeyboard
-from apps.bot_init.schemas import Answer
+from apps.bot_init.services.answer_service import Answer
 from apps.bot_init.services.text_message_service import translate_ayat_into_answer
 from apps.bot_init.models import Subscriber
 from apps.bot_init.service import get_subscriber_by_chat_id
@@ -61,7 +61,13 @@ def _change_prayer_status(chat_id: int, text: str, to: bool) -> InlineKeyboardMa
     return keyboard
 
 
-def handle_query_service(text: str, chat_id: int = None, call_id: int = None, message_id: int = None, message_text: str = None):
+def handle_query_service(
+        text: str, 
+        chat_id: int = None,
+        call_id: int = None,
+        message_id: int = None,
+        message_text: str = None,
+    ):
     """Функция для обработки всех нажатий на инлайн кнопки"""
     if 'get_ayat' in text:
         answer = _get_ayat(text)
