@@ -1,6 +1,5 @@
 # TODO Здесь много логики, относящейся к контенту
 import re
-from random import choice
 from typing import List
 
 from django.conf import settings
@@ -8,8 +7,10 @@ from loguru import logger
 
 from apps.bot_init.exceptions import SuraDoesNotExists, UnknownMessage
 from apps.bot_init.markup import InlineKeyboard
+from apps.bot_init.models import AdminMessage, Mailing, Subscriber
+from apps.bot_init.service import get_admins_list, get_referal_link, get_subscriber_by_chat_id, get_referals_count
 from apps.bot_init.models import Mailing, Subscriber
-from apps.bot_init.schemas import Answer
+from apps.bot_init.services.answer_service import Answer
 from apps.bot_init.service import get_admins_list
 from apps.bot_init.utils import get_tbot_instance
 from apps.bot_init.exceptions import AyatDoesNotExists
@@ -112,6 +113,14 @@ def get_favourite_ayats(chat_id: int):
     return Answer('Вы еще не добавили аятов в "Избранное"')
 
 
+def get_concourse_info(chat_id: int) -> Answer:
+    text = AdminMessage.objects.get(key="concourse").text
+    subscriber = get_subscriber_by_chat_id(chat_id)
+    text += f"\n\nКол-во пользователей зарегистрировавшихся по вашей ссылке: {get_referals_count(subscriber)}"
+    text += f"\n\n{get_referal_link(subscriber)}"
+    return Answer(text=text)
+
+
 def text_message_service(chat_id: int, message_text: str, message_id: int = None) -> Answer:
     """Функция обрабатывает все текстовые сообщения"""
     if 'Подкасты' in message_text:
@@ -120,6 +129,9 @@ def text_message_service(chat_id: int, message_text: str, message_id: int = None
     elif 'Избранное' in message_text:
         logger.info(f"Subscriber={chat_id} getting favourite ayats")
         answer = get_favourite_ayats(chat_id)
+    elif 'Конкурс' in message_text:
+        logger.info(f"Subscriber={chat_id} getting ...")
+        answer = get_concourse_info(chat_id)
     elif ':' in message_text:
         logger.info(f"Subscriber={chat_id} search ayat query='{message_text}'")
         try:

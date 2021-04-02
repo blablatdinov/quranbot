@@ -5,7 +5,7 @@ from loguru import logger
 
 from apps.bot_init.models import Mailing, Subscriber
 from apps.bot_init.markup import get_default_keyboard, InlineKeyboard
-from apps.bot_init.schemas import Answer
+from apps.bot_init.services.answer_service import Answer
 from apps.bot_init.service import send_answer, send_message_to_admin
 from apps.content.models import Ayat, MorningContent, Podcast
 
