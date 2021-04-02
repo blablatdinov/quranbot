@@ -1,16 +1,9 @@
 """Бизнес логика для взаимодействия с телеграмм."""
-import datetime
-import os
 from time import sleep
 from typing import List, Tuple
 
-from google.oauth2 import service_account
-from googleapiclient.discovery import build
-from googleapiclient.http import MediaFileUpload
-import boto3
 from loguru import logger
 from progressbar import progressbar as pbar
-from telebot import TeleBot
 from telebot.apihelper import ApiException
 
 from django.conf import settings
@@ -214,30 +207,3 @@ def count_active_users():
         if check_user_status_by_typing(sub.tg_chat_id):
             count += 1
     return count
-
-
-def upload_database_dump():
-    """Функция снимает дамп базы данных и загружет его на облако."""
-    logger.info("dump start")
-    session = boto3.session.Session()
-    s3 = session.client(
-        service_name='s3',
-        endpoint_url='https://storage.yandexcloud.net'
-    )
-    start_time = datetime.datetime.now()
-    formatted_date = datetime.datetime.now().strftime('%Y_%m_%d')
-
-    name = f"qbot_db_{formatted_date}.sql.gz"
-    command = f"pg_dump -U qbot qbot_db -h localhost | gzip -c --best > {settings.BASE_DIR}/{name}"
-    os.system(command)
-    command = f"pg_dump -U qbot qbot_db -h localhost --exclude-table-data='bot_init_callbackdata' --exclude-table-data='bot_init_message'> {settings.BASE_DIR}/dumps/dev_dump.sql && gzip {settings.BASE_DIR}/dumps/dev_dump.sql -f"
-    os.system(command)
-    logs_filename = f"logs_{formatted_date}.tar.gz"
-    command = f"tar zcvf {logs_filename} logs"
-    os.system(command)
-    s3.upload_file(f"{settings.BASE_DIR}/{name}", 'blablatdinov', f'quranbot_dumps/{name}')
-    s3.upload_file(f"{settings.BASE_DIR}/{logs_filename}", 'blablatdinov', f'quranbot_dumps/{logs_filename}')
-    command = f"rm {settings.BASE_DIR}/{name} {settings.BASE_DIR}/{logs_filename}"
-    os.system(command)
-
-    logger.info(f"Dump uploaded successful {datetime.datetime.now() - start_time}")
