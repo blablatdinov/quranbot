@@ -12,8 +12,7 @@ from apps.bot_init.utils import get_tbot_instance
 from apps.content.models import Ayat
 from apps.content.service import find_ayat_by_text
 from apps.prayer.models import PrayerAtUser
-from apps.prayer.service import get_buttons, unread_prayer_type_minus_one, get_unread_prayers, get_prayer_time
-
+from apps.prayer.service import get_buttons, unread_prayer_type_minus_one, get_unread_prayers
 
 tbot = get_tbot_instance()
 
@@ -62,12 +61,11 @@ def _change_prayer_status(chat_id: int, text: str, to: bool) -> InlineKeyboardMa
 
 
 def handle_query_service(
-        text: str, 
+        text: str,
         chat_id: int = None,
         call_id: int = None,
         message_id: int = None,
-        message_text: str = None,
-    ):
+        message_text: str = None):
     """Функция для обработки всех нажатий на инлайн кнопки"""
     if 'get_ayat' in text:
         answer = _get_ayat(text)
@@ -81,7 +79,7 @@ def handle_query_service(
             text=message_text,
             chat_id=chat_id,
             message_id=message_id,
-            reply_markup=keyboard
+            reply_markup=keyboard,
         )
     elif 'set_prayer_status_to_unread' in text:
         keyboard = _change_prayer_status(chat_id, text, False)
@@ -89,7 +87,7 @@ def handle_query_service(
             text=message_text,
             chat_id=chat_id,
             message_id=message_id,
-            reply_markup=keyboard
+            reply_markup=keyboard,
         )
     elif 'unread_prayer_type_minus_one' in text:
         answer = _unread_prayer_type_minus_one(text)
@@ -97,7 +95,7 @@ def handle_query_service(
             text=answer.text,
             chat_id=chat_id,
             message_id=message_id,
-            reply_markup=answer.keyboard
+            reply_markup=answer.keyboard,
         )
     elif "change_query_ayat" in text:
         query_text, offset = eval(re.search(r'\(.+\)', text).group(0))
@@ -107,5 +105,5 @@ def handle_query_service(
             reply_markup=answer.keyboard,
             message_id=message_id,
             chat_id=chat_id,
-            parse_mode='HTML'
+            parse_mode='HTML',
         )

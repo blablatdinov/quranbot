@@ -15,12 +15,14 @@ class Answer:
         return f"{self.text[:30]} (chat_id={self.chat_id})"
 
     def __init__(
-        self, 
+        self,
         text: str = None,
-        keyboard: Keyboard or InlineKeyboard = get_default_keyboard(),
+        keyboard: Keyboard or InlineKeyboard = None,
         tg_audio_id: str = None,
         chat_id: int = None,
     ):
+        if keyboard is None:
+            keyboard = get_default_keyboard()
         self.text = text
         self.keyboard = keyboard
         self.tg_audio_id = tg_audio_id
@@ -61,6 +63,7 @@ class Answer:
         self.check_chat_id()
         message = self._send()
         return message
+
 
 class AnswersList(list):
 

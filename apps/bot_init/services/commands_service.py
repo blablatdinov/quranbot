@@ -2,18 +2,17 @@ from typing import List
 
 from loguru import logger
 
-from apps.bot_init.utils import save_message
 from apps.bot_init.models import Subscriber
 from apps.bot_init.service import (
-    _not_created_subscriber_service, 
-    _created_subscriber_service, 
+    _created_subscriber_service,
+    _not_created_subscriber_service,
     get_referal_answer,
 )
 from apps.bot_init.services.answer_service import Answer, AnswersList
 
 
 class StartCommandService:
-    
+
     def __init__(self, chat_id: int, message_text: str, additional_info: str = None):
         self.answers = AnswersList()
         self.chat_id = chat_id
@@ -43,7 +42,7 @@ class StartCommandService:
 
     def get_or_create_subscriber(self):
         if (subscriber_query_set := Subscriber.objects.filter(tg_chat_id=self.chat_id)).exists():
-            logger.debug(f"This chat id was registered")
+            logger.debug("This chat id was registered")
             subscriber = subscriber_query_set.first()
             created = False
         else:
@@ -75,7 +74,7 @@ class CommandService:
         self.additional_info = self.get_additional_info()
 
     def get_additional_info(self):
-        splitted_string = self.message_text.split() 
+        splitted_string = self.message_text.split()
         if len(splitted_string) > 1:
             logger.debug(f"{splitted_string=}")
             info = splitted_string[1]
@@ -89,4 +88,3 @@ class CommandService:
             answer = get_referal_answer(chat_id=self.chat_id)
 
         return answer
-

@@ -14,11 +14,10 @@ from apps.bot_init.services.answer_service import Answer
 from apps.bot_init.service import get_admins_list
 from apps.bot_init.utils import get_tbot_instance
 from apps.bot_init.exceptions import AyatDoesNotExists
-from apps.content.models import Podcast, Ayat, AudioFile
+from apps.content.models import Ayat, AudioFile
 from apps.content.service import find_ayat_by_text, get_random_podcast
 from apps.prayer.service import get_unread_prayers, set_city_to_subscriber, get_prayer_time_or_no
 from apps.prayer.models import City
-
 
 tbot = get_tbot_instance()
 
@@ -68,7 +67,7 @@ def get_keyboard_for_ayat(ayat: Ayat):
         next_ayat = Ayat.objects.get(pk=ayat.pk + 1)
         buttons = (
             (('Добавить в избранное', f'add_in_favourites({ayat.pk})'),),
-            ( (str(next_ayat), f'get_ayat({next_ayat.pk})'),),
+            ((str(next_ayat), f'get_ayat({next_ayat.pk})'),),
         )
         return InlineKeyboard(buttons).keyboard
     elif ayat == Ayat.objects.last():
@@ -84,8 +83,8 @@ def get_keyboard_for_ayat(ayat: Ayat):
         buttons = (
             (('Добавить в избранное', f'add_in_favourites({ayat.pk})'),),
             (
-                (str(prev_ayat), f'get_ayat({prev_ayat.pk})'), 
-                (str(next_ayat), f'get_ayat({next_ayat.pk})')
+                (str(prev_ayat), f'get_ayat({prev_ayat.pk})'),
+                (str(next_ayat), f'get_ayat({next_ayat.pk})'),
             ),
         )
         return InlineKeyboard(buttons).keyboard
