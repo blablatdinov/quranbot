@@ -121,7 +121,7 @@ def get_referal_link(subscriber: Subscriber) -> str:
 
 
 def get_referals_count(subscriber: Subscriber) -> int:
-    return Subscriber.objects.filter(referer=subscriber).count()
+    return Subscriber.objects.filter(referer=subscriber, is_active=True).count()
 
 
 def get_referal_answer(chat_id: int) -> Answer:
