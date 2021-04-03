@@ -10,8 +10,8 @@ def inline_query_service(city_name: str, query_id: int):
         telebot.types.InlineQueryResultArticle(
             id=street.name, title='Город', description=street.name,
             input_message_content=telebot.types.InputTextMessageContent(
-                message_text=street.name
-            )
+                message_text=street.name,
+            ),
         )
         for street in streets
     ]
