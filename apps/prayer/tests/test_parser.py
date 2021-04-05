@@ -28,7 +28,7 @@ def test_parser(city, csv):
         m.get('http://dumrt.ru/netcat_files/391/638/Zazhopinsk.csv', content=csv)
         PrayerTimeParser()()
 
-    assert Prayer.objects.count() == 2376
+    assert Prayer.objects.count() == 144
     # assert False, Prayer.objects.count()
 
 
