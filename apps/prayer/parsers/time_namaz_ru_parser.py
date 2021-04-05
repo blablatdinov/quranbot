@@ -18,6 +18,23 @@ def get_time_by_str(text: str) -> datetime:
 
 class PrayerTimeParser():
 
+    def __init__(self, city_name):
+        self.city_name = city_name
+        self.get_city_name_and_urls()
+
+    def get_city_name_and_urls(self):
+        self.city_name_in_db = {
+            "ufa": "Уфа",
+            "moscow": "Москва",
+        }.get(self.city_name)
+        self.links = ["https://www.time-namaz.ru/" + 
+            {
+                "ufa": "85_ufa",
+                "moscow": "9_moskva",
+            }.get(self.city_name) + "_vremy_namaza" + x
+            for x in [".html#month_time_namaz", "-next.html#month_time_namaz"]
+        ]
+
     def _set_prayers_to_city(self, row):
         day, _ = Day.objects.get_or_create(date=get_time_by_str(row[0]))
         s = [1, 2, 3, 4, 5, 6]
@@ -88,10 +105,10 @@ class PrayerTimeParser():
             }
         ).text
         soup = BeautifulSoup(response, "lxml")
-        self.city = City.objects.get(name="Уфа")
+        self.city = City.objects.get(name=self.city_name_in_db)
         date_and_times = self._get_row(soup)
         [self._set_prayers_to_city(x) for x in date_and_times]
 
     def __call__(self):
-        urls = ["https://www.time-namaz.ru/85_ufa_vremy_namaza.html#month_time_namaz", "https://www.time-namaz.ru/85_ufa_vremy_namaza-next.html#month_time_namaz"]
+        urls = self.links
         return [self._get_page(url) for url in urls]
