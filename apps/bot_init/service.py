@@ -1,6 +1,7 @@
 """Бизнес логика для взаимодействия с телеграмм."""
 from time import sleep
 from typing import List, Tuple
+from django.db.models.query import QuerySet
 
 from loguru import logger
 from progressbar import progressbar as pbar
@@ -207,3 +208,24 @@ def count_active_users():
         if check_user_status_by_typing(sub.tg_chat_id):
             count += 1
     return count
+
+
+def send_message_to_winners(subscribers_queryset: QuerySet):
+    text = AdminMessage.objects.get(key="concourse_winner_message").text
+    for s in subscribers_queryset:
+        Answer(text=text).send(s.tg_chat_id)
+
+
+def determine_winners():
+    referers_pk_list = list(set([
+        x[0] for x in 
+        Subscriber.objects.filter(is_active=True, referer__isnull=False).values_list("referer").exclude(tg_chat_id=224890356)
+    ]))
+    winners = Subscriber.objects.filter(pk__in=referers_pk_list).order_by("?")[:3]
+    logger.info(f"Winners list={winners}")
+    return winners
+
+
+def commit_concourse():
+    winners_quesryset = determine_winners
+    send_message_to_winners(winners_quesryset)
