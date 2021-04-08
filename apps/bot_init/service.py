@@ -1,4 +1,5 @@
 """Бизнес логика для взаимодействия с телеграмм."""
+from apps.bot_init.markup import InlineKeyboard
 from time import sleep
 from typing import List, Tuple
 from django.db.models.query import QuerySet
@@ -8,7 +9,7 @@ from progressbar import progressbar as pbar
 from telebot.apihelper import ApiException
 
 from django.conf import settings
-from apps.bot_init.models import Subscriber, SubscriberAction, Message, AdminMessage, Admin
+from apps.bot_init.models import Mailing, Subscriber, SubscriberAction, Message, AdminMessage, Admin
 from apps.bot_init.utils import save_message, get_tbot_instance
 from apps.bot_init.schemas import SUBSCRIBER_ACTIONS
 from apps.bot_init.services.answer_service import Answer, AnswersList
@@ -118,11 +119,11 @@ def _created_subscriber_service(subscriber: Subscriber) -> List[Answer]:
 
 
 def get_referal_link(subscriber: Subscriber) -> str:
-    return f"https://t.me/{settings.TG_BOT.name}?start={subscriber.pk}"
+    return f"Ваша реферальная ссылка: https://t.me/{settings.TG_BOT.name}?start={subscriber.pk}"
 
 
 def get_referals_count(subscriber: Subscriber) -> int:
-    return Subscriber.objects.filter(referer=subscriber).count()
+    return Subscriber.objects.filter(referer=subscriber, is_active=True).count()
 
 
 def get_referal_answer(chat_id: int) -> Answer:
@@ -229,7 +230,3 @@ def determine_winners():
 def commit_concourse():
     winners_quesryset = determine_winners
     send_message_to_winners(winners_quesryset)
-
-
-def send_conditions_for_getting_prise():
-    ...

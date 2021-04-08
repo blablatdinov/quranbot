@@ -45,3 +45,13 @@ def test_invalid_referal_link(referer_message_answer, message_answer, morning_co
 
     assert Subscriber.objects.count() == 1
     assert Subscriber.objects.first().referer is None
+
+
+def test_referal_subscribe_in_reactivation_case(subscriber, morning_content):
+    StartCommandService(892342789, f"/start")()
+    subscriber = Subscriber.objects.last()
+    subscriber.is_active = False
+    subscriber.save()
+    StartCommandService(892342789, f"/start", additional_info=str(subscriber.id))()
+
+    assert subscriber.referer is None
