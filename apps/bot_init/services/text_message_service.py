@@ -23,14 +23,15 @@ tbot = get_tbot_instance()
 
 
 def send_conditions_for_getting_prise(chat_id: int) -> Answer:
-    text = AdminMessage.objects.get(key="conditions")
-    keyboard = InlineKeyboard(
+    text = AdminMessage.objects.get(key="conditions").text
+    buttons = (
         (("Согласен", "accept_with_conditions"),),
     )
+    keyboard = InlineKeyboard(buttons)
     return Answer(
         text=text,
         chat_id=chat_id,
-        keyboard=keyboard
+        keyboard=keyboard.keyboard
     )
 
 
