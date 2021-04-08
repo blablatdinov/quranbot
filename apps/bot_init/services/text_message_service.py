@@ -22,6 +22,19 @@ from apps.prayer.models import City
 tbot = get_tbot_instance()
 
 
+def send_conditions_for_getting_prise(chat_id: int) -> Answer:
+    text = AdminMessage.objects.get(key="conditions").text
+    buttons = (
+        (("Согласен", "accept_with_conditions"),),
+    )
+    keyboard = InlineKeyboard(buttons)
+    return Answer(
+        text=text,
+        chat_id=chat_id,
+        keyboard=keyboard.keyboard
+    )
+
+
 def get_audio_answer(audio: AudioFile) -> Answer:
     if (file_id := audio.tg_file_id) and not settings.DEBUG:
         # Если включен режим отладки, и это не основной бот, file_id работать не будут
@@ -143,6 +156,8 @@ def text_message_service(chat_id: int, message_text: str, message_id: int = None
         mailing_pk = re.search(r'\d+', regexp_result.group(0)).group(0)
         delete_messages_in_mailing(mailing_pk)
         answer = Answer('Рассылка удалена')
+    elif 'Получить дневник' in message_text:
+        return send_conditions_for_getting_prise(chat_id)
     elif '/prayer' in message_text:
         return get_unread_prayers(chat_id)
     elif city := City.objects.filter(name=message_text).first():
