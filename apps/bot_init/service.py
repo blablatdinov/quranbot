@@ -1,4 +1,5 @@
 """Бизнес логика для взаимодействия с телеграмм."""
+from apps.bot_init.markup import InlineKeyboard
 from time import sleep
 from typing import List, Tuple
 from django.db.models.query import QuerySet
@@ -8,7 +9,7 @@ from progressbar import progressbar as pbar
 from telebot.apihelper import ApiException
 
 from django.conf import settings
-from apps.bot_init.models import Subscriber, SubscriberAction, Message, AdminMessage, Admin
+from apps.bot_init.models import Mailing, Subscriber, SubscriberAction, Message, AdminMessage, Admin
 from apps.bot_init.utils import save_message, get_tbot_instance
 from apps.bot_init.schemas import SUBSCRIBER_ACTIONS
 from apps.bot_init.services.answer_service import Answer, AnswersList
