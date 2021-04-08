@@ -229,3 +229,7 @@ def determine_winners():
 def commit_concourse():
     winners_quesryset = determine_winners
     send_message_to_winners(winners_quesryset)
+
+
+def send_conditions_for_getting_prise():
+    ...
