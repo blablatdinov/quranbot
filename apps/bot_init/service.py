@@ -219,13 +219,13 @@ def send_message_to_winners(subscribers_queryset: QuerySet):
 def determine_winners():
     referers_pk_list = list(set([
         x[0] for x in 
-        Subscriber.objects.filter(is_active=True, referer__isnull=False).values_list("referer").exclude(tg_chat_id=224890356)
+        Subscriber.objects.filter(is_active=True, referer__isnull=False).values_list("referer")
     ]))
-    winners = Subscriber.objects.filter(pk__in=referers_pk_list).order_by("?")[:3]
+    winners = Subscriber.objects.filter(pk__in=referers_pk_list).exclude(tg_chat_id=224890356).order_by("?")[:3]
     logger.info(f"Winners list={winners}")
     return winners
 
 
 def commit_concourse():
-    winners_quesryset = determine_winners
+    winners_quesryset = determine_winners()
     send_message_to_winners(winners_quesryset)
