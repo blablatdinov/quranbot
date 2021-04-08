@@ -3,12 +3,6 @@ services:
   qbot_db:
     build: db
     container_name: qbot_db
-    volumes:
-      - postgres_data:/var/lib/postgresql/data/
-    environment:
-      - POSTGRES_USER=qbot
-      - POSTGRES_PASSWORD=qbot
-      - POSTGRES_DB=qbot_db
     ports:
       - "5123:5432"
   qbot_redis:
