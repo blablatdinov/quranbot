@@ -16,15 +16,15 @@ class DumpUploader:
         self.bucket_name = "blablatdinov"
         self.s3_client = session.client(
             service_name='s3',
-            endpoint_url='https://storage.yandexcloud.net'
+            endpoint_url='https://storage.yandexcloud.net',
         )
 
     def upload_to_storage(self, relative_path: str, upload_to: str = None):
         if upload_to is None:
             upload_to = f"quranbot_dumps/{relative_path}"
         self.s3_client.upload_file(
-            f"{settings.BASE_DIR}/{relative_path}", 
-            self.bucket_name, 
+            f"{settings.BASE_DIR}/{relative_path}",
+            self.bucket_name,
             upload_to,
         )
 

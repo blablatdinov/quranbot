@@ -20,14 +20,20 @@ def referer_message_answer():
         return f.read()
 
 
-def test_start_message_with_referal_service(morning_content, subscriber, referer_message_answer):
-    with requests_mock.Mocker() as m:
-        m.register_uri("POST", re.compile(r"https://api.telegram.org.+chat_id=" + str(subscriber.tg_chat_id)), text=referer_message_answer)
-        m.register_uri("POST", re.compile(r"https://api.telegram.org.+chat_id=358610865"), text=referer_message_answer)
-        StartCommandService(32984, f"/start", additional_info=str(subscriber.id))()
-        StartCommandService(98348, f"/start", additional_info=str(subscriber.id))()
-        StartCommandService(93854, f"/start", additional_info=str(subscriber.id))()
+def test_start_message_with_referal_service(morning_content, subscriber):
+    StartCommandService(32984, f"/start", additional_info=str(subscriber.id))()
+    StartCommandService(98348, f"/start", additional_info=str(subscriber.id))()
+    StartCommandService(93854, f"/start", additional_info=str(subscriber.id))()
 
     got = get_referals_count(subscriber)
 
     assert got == 3
+
+
+def test_referers_count_after_deactivate_referer(morning_content, subscriber):
+    StartCommandService(32984, f"/start", additional_info=str(subscriber.id))()
+    Subscriber.objects.filter(tg_chat_id=32984).update(is_active=False)
+
+    got = get_referals_count(subscriber)
+
+    assert got == 0
