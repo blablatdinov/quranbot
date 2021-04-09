@@ -2,7 +2,7 @@ import pytest
 import requests_mock
 
 from apps.content.podcast_parser import PodcastParser
-from apps.content.models import Podcast, AudioFile
+from apps.content.models import Podcast, File
 
 pytestmark = [pytest.mark.django_db]
 
@@ -14,12 +14,12 @@ def test_download_and_send_large_files(large_content):
         
         parser = PodcastParser()
         parser.title = "Самый полезный подкаст"
-        parser.audio_link = "https://nifiga-sebe.mp3"
+        parser.link_to_file = "https://nifiga-sebe.mp3"
         parser.article_link = "https://nifiga-sebe.ru"
         parser.download_and_send_audio_file()
         parser.create_podcast()
 
     assert Podcast.objects.count() == 1
-    assert AudioFile.objects.count() == 1
+    assert File.objects.count() == 1
     assert Podcast.objects.first().audio.tg_file_id is None
-    assert Podcast.objects.first().audio.audio_link == "https://nifiga-sebe.mp3"
+    assert Podcast.objects.first().audio.link_to_file == "https://nifiga-sebe.mp3"
