@@ -11,15 +11,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RenameModel('AudioFile', 'File'),
-        migrations.RemoveField(
-            model_name='file',
-            name='audio_link',
-        ),
-        migrations.AddField(
-            model_name='file',
-            name='link_to_file',
-            field=models.CharField(blank=True, max_length=512, null=True, verbose_name='Ссылка на файл'),
-        ),
+        migrations.RenameField('File', 'audio_link', 'link_to_file'),
         migrations.AddField(
             model_name='file',
             name='name',
