@@ -28,12 +28,19 @@ class MorningContent(models.Model):
         return result
 
 
-class AudioFile(models.Model):
-    """Модель аудиофайла."""
+class File(models.Model):
+    """Модель файла."""
 
     # TODO добавить путь к файлу если есть, verbose_name
-    audio_link = models.CharField(max_length=512, verbose_name="Ссылка на аудио")
-    tg_file_id = models.CharField(max_length=512, verbose_name="Идентификатор файла в телеграмм", blank=True, null=True)
+    name = models.CharField(max_length=128)
+    link_to_file = models.CharField(max_length=512, verbose_name="Ссылка на файл", blank=True, null=True)
+    tg_file_id = models.CharField(
+        max_length=512, 
+        verbose_name="Идентификатор файла в телеграмм", 
+        blank=True, 
+        null=True, 
+        help_text="Может быть пустым, т. к. некоторые файлы слишком велики для отправки.",
+    )
 
     def __str__(self):
         return self.audio_link
