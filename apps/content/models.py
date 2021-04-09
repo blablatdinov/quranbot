@@ -43,7 +43,7 @@ class File(models.Model):
     )
 
     def __str__(self):
-        return self.link_to_file
+        return self.link_to_file or self.tg_file_id
 
 
 class Sura(models.Model):
