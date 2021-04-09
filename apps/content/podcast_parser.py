@@ -7,7 +7,7 @@ from apps.bot_init.models import Subscriber
 from apps.bot_init.service import get_admins_list
 from apps.bot_init.utils import save_message
 from apps.bot_init.views import tbot
-from apps.content.models import AudioFile, Podcast
+from apps.content.models import File, Podcast
 from apps.content.parsers import get_html, get_soup
 
 
@@ -39,7 +39,7 @@ class PodcastParser:
 
     def get_article_info(self, article_link):
         soup = get_soup(get_html(article_link))
-        self.audio_link = soup.find('audio').find('a')['href']
+        self.link_to_file = soup.find('audio').find('a')['href']
         self.title = soup.find('h1').text.strip()
 
     def get_articles_page(self):
@@ -61,10 +61,10 @@ class PodcastParser:
     def download_and_send_audio_file(self):
         logger.info(
             f"Download and send {self.title},\n"
-            f"{self.audio_link=},\n"
+            f"{self.link_to_file=},\n"
             f"{self.article_link=},"
         )
-        r = requests.get(self.audio_link)
+        r = requests.get(self.link_to_file)
         file_size = sys.getsizeof(r.content)
         logger.info(f"file size={file_size / 1024 / 1024} MB")
         if file_size < 50 * 1024 * 1024:
@@ -74,11 +74,11 @@ class PodcastParser:
         is_sended = hasattr(self, "sending_audio_message_instance")
         del r
 
-        self.audio_file = AudioFile.objects.create(
-            audio_link=self.audio_link,
+        self.audio_file = File.objects.create(
+            link_to_file=self.link_to_file,
             tg_file_id=self.sending_audio_message_instance.audio.file_id if is_sended else None,
         )
-        delattr(self, "sending_audio_message_instance") if is_sended else None # Чтобы на следующей итерации если файл большой, то не присваивать AudioFile tg_file_id
+        delattr(self, "sending_audio_message_instance") if is_sended else None # Чтобы на следующей итерации если файл большой, то не присваивать File tg_file_id
 
     def create_podcast(self):
         Podcast.objects.create(

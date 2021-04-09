@@ -4,7 +4,7 @@ import requests_mock
 import pytest
 
 from apps.content.podcast_parser import PodcastParser
-from apps.content.models import Podcast, AudioFile
+from apps.content.models import Podcast, File
 
 pytestmark = [pytest.mark.django_db]
 
@@ -20,19 +20,19 @@ def test_download_small_after_large(small_content, large_content, subscriber, tg
         parser.sub = subscriber
 
         parser.title = "Самый полезный подкаст"
-        parser.audio_link = "https://small.mp3"
+        parser.link_to_file = "https://small.mp3"
         parser.article_link = "https://nifiga-sebe.ru"
         parser.download_and_send_audio_file()
         parser.create_podcast()
 
         parser.title = "Нихера себе размерчик"
-        parser.audio_link = "https://nifiga-sebe.mp3"
+        parser.link_to_file = "https://nifiga-sebe.mp3"
         parser.article_link = "https://nifiga-sebe.ru"
         parser.download_and_send_audio_file()
         parser.create_podcast()
 
 
     assert Podcast.objects.count() == 2
-    assert AudioFile.objects.count() == 2
+    assert File.objects.count() == 2
     assert Podcast.objects.first().audio.tg_file_id == "CQACAgIAAxkDAAIshWBGRaJwdieNTKufqZc4m9XAw12jAAIXCwACIyQ4SqTy0Yzg179WHgQ"
     assert Podcast.objects.last().audio.tg_file_id is None
