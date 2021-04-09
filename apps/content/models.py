@@ -32,7 +32,7 @@ class File(models.Model):
     """Модель файла."""
 
     # TODO добавить путь к файлу если есть, verbose_name
-    name = models.CharField(max_length=128)
+    name = models.CharField(max_length=128, blank=True, null=True)
     link_to_file = models.CharField(max_length=512, verbose_name="Ссылка на файл", blank=True, null=True)
     tg_file_id = models.CharField(
         max_length=512, 
@@ -43,7 +43,7 @@ class File(models.Model):
     )
 
     def __str__(self):
-        return self.audio_link
+        return self.link_to_file
 
 
 class Sura(models.Model):
@@ -70,7 +70,7 @@ class Ayat(models.Model):
     sura = models.ForeignKey(Sura, on_delete=models.CASCADE, verbose_name="Номер суры")
     ayat = models.CharField(max_length=16, verbose_name="Номер аята", blank=True, null=True)
     html = models.TextField(verbose_name="Спарсенный HTML текст")
-    audio = models.OneToOneField(AudioFile, on_delete=models.PROTECT, verbose_name="Аудио файл", blank=True, null=True)
+    audio = models.OneToOneField(File, on_delete=models.PROTECT, verbose_name="Аудио файл", blank=True, null=True)
     one_day_content = models.ForeignKey(
         MorningContent, blank=True, null=True, on_delete=models.SET_NULL, verbose_name="Ежедневный контент"
     )
@@ -91,7 +91,7 @@ class Podcast(models.Model):  # TODO adds field with description and other
     """Модель для аудио подкаста."""
 
     title = models.CharField(max_length=128, verbose_name="Название")
-    audio = models.OneToOneField(AudioFile, on_delete=models.PROTECT, verbose_name="Аудио файл")
+    audio = models.OneToOneField(File, on_delete=models.PROTECT, verbose_name="Аудио файл")
     article_link = models.CharField(max_length=512, verbose_name="Ссылка на статью", blank=True, null=True)
 
     class Meta:
