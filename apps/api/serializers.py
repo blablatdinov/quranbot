@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from apps.content.models import AudioFile, Ayat, Podcast
+from apps.content.models import File, Ayat, Podcast
 from apps.prayer.models import Prayer, PrayerAtUser
 
 
@@ -22,18 +22,18 @@ class AyatSerializer(serializers.ModelSerializer):
         model = Ayat
 
 
-class AudioFileSerializer(serializers.ModelSerializer):
+class FileSerializer(serializers.ModelSerializer):
 
     class Meta:
         fields = (
-            "audio_link",
+            "link_to_file",
             "tg_file_id",
         )
-        model = AudioFile
+        model = File
 
 
 class PodcastSerializer(serializers.ModelSerializer):
-    audio = AudioFileSerializer()
+    audio = FileSerializer()
 
     class Meta:
         fields = (
