@@ -2,9 +2,11 @@ import json
 
 from django.contrib import admin
 from django.utils.safestring import mark_safe
+from loguru import logger
 
 from django.conf import settings
 from apps.bot_init.models import AdminMessage, CallbackData, Mailing, Message, Subscriber, SubscriberAction, Admin
+from apps.content.models import File
 
 
 class SubscriberActionInline(admin.StackedInline):
@@ -50,9 +52,12 @@ class MessageAdmin(admin.ModelAdmin):
             try:
                 if audio := json_.get("audio"):
                     return mark_safe("<b>Аудио</b> - " + audio["title"])
-                elif location := json_["location"]:
+                elif location := json_.get("location"):
                     return mark_safe(f"<b>Локация</b> - {location['latitude']}, {location['longitude']}")
-            except Exception:  # TODO конкретезировать ошибку
+                elif document := json_.get("document"):
+                    return mark_safe(f"<b>Документ</b> - {File.objects.get(tg_file_id=document.get('file_id')).name}")
+            except Exception as e:
+                logger.error(str(e))
                 return json_
         if isinstance(obj.text, str):
             return obj.text[:100] + ("..." if len(obj.text) >= 50 else "")
