@@ -14,7 +14,7 @@ from apps.bot_init.services.answer_service import Answer
 from apps.bot_init.service import get_admins_list
 from apps.bot_init.utils import get_tbot_instance
 from apps.bot_init.exceptions import AyatDoesNotExists
-from apps.content.models import Ayat, AudioFile
+from apps.content.models import Ayat, File
 from apps.content.service import find_ayat_by_text, get_random_podcast
 from apps.prayer.service import get_unread_prayers, set_city_to_subscriber, get_prayer_time_or_no
 from apps.prayer.models import City
@@ -35,11 +35,11 @@ def send_conditions_for_getting_prise(chat_id: int) -> Answer:
     )
 
 
-def get_audio_answer(audio: AudioFile) -> Answer:
+def get_audio_answer(audio: File) -> Answer:
     if (file_id := audio.tg_file_id) and not settings.DEBUG:
         # Если включен режим отладки, и это не основной бот, file_id работать не будут
         return Answer(tg_audio_id=file_id)
-    return Answer(audio.audio_link)
+    return Answer(audio.link_to_file)
 
 
 def get_podcast_in_answer_type() -> Answer:

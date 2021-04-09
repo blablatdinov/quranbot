@@ -23,7 +23,7 @@ def test_controller(client, podcast):
     data = gotted.json().get("results")[0]
 
     assert list(data.keys()) == ["title", "audio"]
-    assert list(data.get("audio").keys()) == ["audio_link", "tg_file_id"]
+    assert list(data.get("audio").keys()) == ["link_to_file", "tg_file_id"]
 
 
 def test_randomize_in_controller(client, podcast):
