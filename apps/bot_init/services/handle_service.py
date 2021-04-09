@@ -2,7 +2,6 @@ import re
 from typing import List
 
 from telebot.types import InlineKeyboardMarkup
-from django.conf import settings
 
 from apps.bot_init.markup import InlineKeyboard
 from apps.bot_init.services.answer_service import Answer
@@ -10,7 +9,7 @@ from apps.bot_init.services.text_message_service import translate_ayat_into_answ
 from apps.bot_init.models import Subscriber, AdminMessage
 from apps.bot_init.service import get_subscriber_by_chat_id
 from apps.bot_init.utils import get_tbot_instance, save_message
-from apps.content.models import Ayat
+from apps.content.models import Ayat, File
 from apps.content.service import find_ayat_by_text
 from apps.prayer.models import PrayerAtUser
 from apps.prayer.service import get_buttons, unread_prayer_type_minus_one, get_unread_prayers
@@ -111,5 +110,6 @@ def handle_query_service(
     elif "accept_with_conditions" in text:
         text = AdminMessage.objects.get(key="print_instructions").text
         Answer(text=text).send(chat_id)
-        message = tbot.send_document(chat_id, "BQACAgIAAxkDAAEBOktgb0-4obKhQY4G933tcwaaASE8XwAChQ0AAoXVeUs1xoB_m1sYbx4E")
+        document_file_id = File.objects.get(name="PDF_ramadan_dairy").tg_file_id
+        message = tbot.send_document(chat_id, document_file_id)
         save_message(message)
