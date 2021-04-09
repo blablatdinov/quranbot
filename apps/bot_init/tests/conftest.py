@@ -1,6 +1,8 @@
 import pytest
 from mixer.backend.django import mixer
 
+from django.conf import settings
+
 pytestmark = [pytest.mark.django_db]
 
 
@@ -14,3 +16,9 @@ def morning_content():
 @pytest.fixture()
 def subscriber():
     return mixer.blend("bot_init.Subscriber")
+
+
+@pytest.fixture
+def message_answer():
+    with open(f"{settings.BASE_DIR}/apps/bot_init/tests/fixture/referer_message.json") as f:
+        return f.read()
