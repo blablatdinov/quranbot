@@ -129,7 +129,16 @@ def get_text_prayer_times(prayer_times: QuerySet, city_name: str, date: datetime
     res = f"Время намаза для г. {city_name} ({date.strftime('%d.%m.%Y')}) \n\n"
     for i in range(6):
         prayer = prayer_times[i]
+<<<<<<< Updated upstream
         res += f"{prayer.get_name_display()}: {prayer.time.strftime('%H:%M')}\n"
+=======
+        if settings.RAMADAN_MODE and i == 0:
+            res += f"{prayer.get_name_display()}: {prayer.time.strftime('%H:%M')} <i> - Конец сухура</i>\n"
+        elif settings.RAMADAN_MODE and i == 4:
+            res += f"{prayer.get_name_display()}: {prayer.time.strftime('%H:%M')} <i> - Ифтар</i>\n"
+        else:
+            res += f"{prayer.get_name_display()}: {prayer.time.strftime('%H:%M')}\n"
+>>>>>>> Stashed changes
     return res
 
 
