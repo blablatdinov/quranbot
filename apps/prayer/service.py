@@ -130,9 +130,9 @@ def get_text_prayer_times(prayer_times: QuerySet, city_name: str, date: datetime
     for i in range(6):
         prayer = prayer_times[i]
         if settings.RAMADAN_MODE and i == 1:
-            res += f"{prayer.get_name_display()}: {prayer.time.strftime('%H:%M')} <i> <- Сухур</i>\n"
+            res += f"{prayer.get_name_display()}: {prayer.time.strftime('%H:%M')} <i> - Конец сухура</i>\n"
         elif settings.RAMADAN_MODE and i == 4:
-            res += f"{prayer.get_name_display()}: {prayer.time.strftime('%H:%M')} <i> <- Ифтар</i>\n"
+            res += f"{prayer.get_name_display()}: {prayer.time.strftime('%H:%M')} <i> - Ифтар</i>\n"
         else:
             res += f"{prayer.get_name_display()}: {prayer.time.strftime('%H:%M')}\n"
     return res
