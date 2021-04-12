@@ -82,3 +82,5 @@ CELERY_TASKS_SERIALIZER = "json"
 if DEBUG:
     ddtrace.tracer.enabled = not DEBUG
     ddtrace.patch_all()
+
+RAMADAN_MODE = env("RAMADAN_MODE", bool, default=False)
