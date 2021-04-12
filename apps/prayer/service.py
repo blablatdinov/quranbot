@@ -3,7 +3,8 @@ from datetime import datetime, time, timedelta
 from typing import List, Tuple
 
 from django.db.models import Q, QuerySet
-from geopy.geocoders import Nominatim, GoogleV3, GeoNames
+from django.conf import settings
+from geopy.geocoders import Nominatim, GeoNames
 from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup
 from loguru import logger
 import pytz
@@ -14,7 +15,6 @@ from apps.bot_init.services.answer_service import Answer
 from apps.bot_init.service import get_subscriber_by_chat_id, send_answer, send_message_to_admin
 from apps.prayer.models import City, Prayer, PrayerAtUser, PrayerAtUserGroup
 from apps.prayer.schemas import PRAYER_NAMES
-from apps.prayer.services.prayer_time_for_user import PrayerAtUserGenerator
 from apps.prayer.exceptions.city_non_exist import CityNonExist
 
 
@@ -129,7 +129,12 @@ def get_text_prayer_times(prayer_times: QuerySet, city_name: str, date: datetime
     res = f"Время намаза для г. {city_name} ({date.strftime('%d.%m.%Y')}) \n\n"
     for i in range(6):
         prayer = prayer_times[i]
-        res += f"{prayer.get_name_display()}: {prayer.time.strftime('%H:%M')}\n"
+        if settings.RAMADAN_MODE and i == 1:
+            res += f"{prayer.get_name_display()}: {prayer.time.strftime('%H:%M')} <i> - Конец сухура</i>\n"
+        elif settings.RAMADAN_MODE and i == 4:
+            res += f"{prayer.get_name_display()}: {prayer.time.strftime('%H:%M')} <i> - Ифтар</i>\n"
+        else:
+            res += f"{prayer.get_name_display()}: {prayer.time.strftime('%H:%M')}\n"
     return res
 
 
