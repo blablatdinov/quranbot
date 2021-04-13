@@ -16,4 +16,4 @@ def daily_prayer_time_sender():
 def parse_prayer_times():
     for city_name in ["moscow", "ufa"]:
         PrayerTimeParser(city_name=city_name)()
-    
+
