@@ -146,8 +146,8 @@ def send_prayer_time(date: datetime = None) -> None:
     if date is None:
         date = (datetime.today() + timedelta(days=1))
     mailing = Mailing.objects.create()
-    for subscriber in Subscriber.objects.filter(city__isnull=False, is_active=True):
-        try:
+    try:
+        for subscriber in Subscriber.objects.filter(city__isnull=False, is_active=True):
             prayer_times = get_prayer_time(subscriber.city, date)
             logger.debug(f"{prayer_times=}")
             text = get_text_prayer_times(prayer_times, subscriber.city.name, date)
@@ -157,12 +157,12 @@ def send_prayer_time(date: datetime = None) -> None:
 
             message_instance.mailing = mailing
             message_instance.save(update_fields=["mailing"])
-        except Exception as e:
-            logger.error(f"Subscriber: {subscriber}, city: {subscriber.city}, dont send prayer time. Error message: {str(e)}")
-    text = f"Рассылка #{mailing.pk} завершена"
-    msg = send_message_to_admin(text)
-    msg.mailing = mailing
-    msg.save(update_fields=["mailing"])
+        text = f"Рассылка #{mailing.pk} завершена"
+        msg = send_message_to_admin(text)
+        msg.mailing = mailing
+        msg.save(update_fields=["mailing"])
+    except Exception as e:
+        logger.error(f"Subscriber: {subscriber}, city: {subscriber.city}, dont send prayer time. Error message: {str(e)}")
 
 
 def get_now_prayer(chat_id: int, date_time=None) -> Prayer:
