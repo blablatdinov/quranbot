@@ -153,7 +153,7 @@ def send_prayer_time(date: datetime = None) -> None:
             text = get_text_prayer_times(prayer_times, subscriber.city.name, date)
             logger.debug(f"{text=}")
             keyboard = InlineKeyboard(get_buttons(subscriber, prayer_times.exclude(name="sunrise"))).keyboard
-            message_instance = send_answer(Answer(text, keyboard=keyboard), subscriber.tg_chat_id)
+            message_instance = Answer(text, keyboard=keyboard).send(subscriber.tg_chat_id)
 
             message_instance.mailing = mailing
             message_instance.save(update_fields=["mailing"])
