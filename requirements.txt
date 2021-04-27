@@ -21,7 +21,7 @@ coreapi==2.3.3
 coreschema==0.0.4
 coverage==5.5
 cryptography==3.4.7
-ddtrace==0.47.0
+ddtrace==0.48.1
 decorator==4.4.2
 Django==3.2
 django-environ==0.4.5
