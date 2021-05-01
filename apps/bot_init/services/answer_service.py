@@ -10,6 +10,7 @@ class Answer:
     keyboard: Keyboard or InlineKeyboard = get_default_keyboard()
     tg_audio_id: str = None
     chat_id: int = None
+    comment: str = None
 
     def __repr__(self):
         return f"{self.text[:30]} (chat_id={self.chat_id})"
@@ -20,6 +21,7 @@ class Answer:
         keyboard: Keyboard or InlineKeyboard = None,
         tg_audio_id: str = None,
         chat_id: int = None,
+        comment: str = None
     ):
         if keyboard is None:
             keyboard = get_default_keyboard()
@@ -27,6 +29,7 @@ class Answer:
         self.keyboard = keyboard
         self.tg_audio_id = tg_audio_id
         self.chat_id = chat_id
+        self.comment = comment
 
     def _send(self):
         from apps.bot_init.service import send_message_to_admin, _subscriber_unsubscribed
@@ -36,7 +39,7 @@ class Answer:
                 msg = tbot.send_audio(self.chat_id, audio=self.tg_audio_id)
             else:
                 msg = tbot.send_message(self.chat_id, self.text, reply_markup=self.keyboard, parse_mode="HTML")
-            message_instance = save_message(msg)
+            message_instance = save_message(msg, comment=self.comment)
             return message_instance
         except ApiException as e:
             if "bot was blocked by the user" in str(e) or "user is deactivated" in str(e) or "chat not found" in str(e):

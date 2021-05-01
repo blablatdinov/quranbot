@@ -11,7 +11,7 @@ from telebot import TeleBot
 from loguru import logger
 
 
-def save_message(msg):
+def save_message(msg, comment: str = None):
     """Сохранение сообщения от пользователя."""
     logger.info("Saving message")
     date = make_aware(datetime.fromtimestamp(msg.date))
@@ -24,8 +24,15 @@ def save_message(msg):
     except:  # TODO конкретезировать ошибку
         json_str = str(msg)
     json_text = json.dumps(json_str, indent=2, ensure_ascii=False)
-    message_instance = Message.objects.create(date=date, from_user_id=from_user_id, message_id=message_id,
-                           chat_id=chat_id, text=text, json=json_text)
+    message_instance = Message.objects.create(
+        date=date, 
+        from_user_id=from_user_id, 
+        message_id=message_id,
+        chat_id=chat_id,
+        text=text,
+        json=json_text,
+        comment=comment,
+    )
     return message_instance
 
 
