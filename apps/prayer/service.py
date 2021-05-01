@@ -135,6 +135,19 @@ def get_text_prayer_times(prayer_times: QuerySet, city_name: str, date: datetime
             res += f"{prayer.get_name_display()}: {prayer.time.strftime('%H:%M')} <i> - Ифтар</i>\n"
         else:
             res += f"{prayer.get_name_display()}: {prayer.time.strftime('%H:%M')}\n"
+    if city_name == "Казань":
+        now_datetime = datetime.now()
+        time_to_iftar = timedelta(
+            hours=prayer_times[4].time.hour, 
+            minutes=prayer_times[4].time.minute) \
+        - timedelta(
+            hours=now_datetime.hour, 
+            minutes=now_datetime.minute,
+            seconds=now_datetime.second,
+        )
+        logger.debug(f"{time_to_iftar} {time_to_iftar > timedelta(days=-1)}")
+        time_to_iftar = timedelta(0, 0) if  timedelta(days=0) > time_to_iftar > timedelta(days=-1) else time_to_iftar
+        res += f"Время до ифтара: {time_to_iftar}"
     return res
 
 
@@ -230,4 +243,5 @@ def get_prayer_time_or_no(chat_id: int) -> Answer:
     prayers = get_prayer_time(subscriber.city, today)
     text = get_text_prayer_times(prayers, subscriber.city.name, today)
     keyboard = InlineKeyboard(get_buttons(subscriber, prayers)).keyboard
-    return Answer(text, keyboard=keyboard)
+    comment = "update_iftar_time" if subscriber.city.name == "Казань" else None
+    return Answer(text, keyboard=keyboard, comment=comment)

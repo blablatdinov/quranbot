@@ -9,7 +9,7 @@ class City(models.Model):
     """Модель города."""
 
     link_to_csv = models.CharField(max_length=500, verbose_name="Ссылка для скачивания csv файла с временами намазов")
-    name = models.CharField(max_length=200, verbose_name="Название городаk")
+    name = models.CharField(max_length=200, verbose_name="Название города", unique=True)
 
     class Meta:
         verbose_name = "Город"

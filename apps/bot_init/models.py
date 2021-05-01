@@ -82,6 +82,7 @@ class Message(models.Model):
     json = models.TextField()
     mailing = models.ForeignKey(Mailing, related_name="messages", on_delete=models.PROTECT, blank=True, null=True)
     is_unknown = models.BooleanField(default=False, verbose_name="Необработанное ли это сообщение")
+    comment = models.CharField(max_length=256, verbose_name="Коммент сообщения", null=True, blank=True)
 
     class Meta:
         verbose_name = "Сообщение"
