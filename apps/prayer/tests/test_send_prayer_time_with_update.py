@@ -47,10 +47,21 @@ def test_calculate_time(message_answer, subscriber, prayers):
     answer = get_prayer_time_or_no(subscriber.tg_chat_id)
     answer.send(subscriber.tg_chat_id)
 
-    time_to_iftar = timedelta(hours=15, minutes=31, seconds=26)
+    assert f"Время до ифтара:" in answer.text
+    assert f"Время до ифтара: 15:31:26" in answer.text
+
+
+@pytest.mark.freeze_time('2021-03-18 15:21:43')
+def test_calculate_short_time(message_answer, subscriber, prayers):
+    p = Prayer.objects.filter(name="Ахшам").first()
+    p.time = time(16, 32)
+    p.save()
+
+    answer = get_prayer_time_or_no(subscriber.tg_chat_id)
+    answer.send(subscriber.tg_chat_id)
 
     assert f"Время до ифтара:" in answer.text
-    assert f"Время до ифтара: {time_to_iftar}" in answer.text
+    assert f"Время до ифтара: 01:10:17" in answer.text
 
 
 @pytest.mark.freeze_time('2021-03-18 17:15:00')
@@ -62,8 +73,5 @@ def test_calculate_time_after_iftar(message_answer, subscriber, prayers):
     answer = get_prayer_time_or_no(subscriber.tg_chat_id)
     answer.send(subscriber.tg_chat_id)
 
-    time_to_iftar = timedelta(hours=0, minutes=0)
-    print(time_to_iftar)
-
     assert f"Время до ифтара:" in answer.text
-    assert f"Время до ифтара: {time_to_iftar}" in answer.text
+    assert f"Время до ифтара: 00:00:00" in answer.text

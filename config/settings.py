@@ -74,7 +74,8 @@ except AttributeError as e:
 TG_BOT.name = os.getenv("BOT_NAME", "Quran_365_bot")
 TG_BOT.id = os.getenv("BOT_ID", "705810219")
 
-CELERY_BROKER_URL = os.getenv("REDIS_CONNECTION")
+REDIS_CONNECTION_URL = os.getenv("REDIS_CONNECTION")
+CELERY_BROKER_URL = REDIS_CONNECTION_URL
 
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASKS_SERIALIZER = "json"

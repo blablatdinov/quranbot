@@ -1,7 +1,10 @@
 import re
+import json
 from typing import List
 
+from django.conf import settings
 from telebot.types import InlineKeyboardMarkup
+import redis
 
 from apps.bot_init.markup import InlineKeyboard
 from apps.bot_init.services.answer_service import Answer
@@ -49,6 +52,12 @@ def _add_ayat_in_favourites(text: str, chat_id: int) -> str:
     return 'Аят добавлен в избранные'
 
 
+def _send_keyboard_to_redis(chat_id: int, keyboard: InlineKeyboard):
+    print(keyboard.keyboard)
+    # r = redis.Redis.from_url(settings.REDIS_CONNECTION_URL)
+    # r.set(f"reply_markup_{chat_id}", json.dumps(keyboard.keyboard))
+
+
 def _change_prayer_status(chat_id: int, text: str, to: bool) -> InlineKeyboardMarkup:
     """Меняем статус намаза на прочитанный или не прочитанный"""
     subscriber = get_subscriber_by_chat_id(chat_id)
@@ -75,20 +84,22 @@ def handle_query_service(
         tbot.answer_callback_query(call_id, show_alert=True, text=text)
     elif 'set_prayer_status_to_read' in text:
         keyboard = _change_prayer_status(chat_id, text, True)
-        tbot.edit_message_text(
+        msg = tbot.edit_message_text(
             text=message_text,
             chat_id=chat_id,
             message_id=message_id,
             reply_markup=keyboard,
         )
+        _send_keyboard_to_redis(chat_id, msg.keyboard)
     elif 'set_prayer_status_to_unread' in text:
         keyboard = _change_prayer_status(chat_id, text, False)
-        tbot.edit_message_text(
+        msg = tbot.edit_message_text(
             text=message_text,
             chat_id=chat_id,
             message_id=message_id,
             reply_markup=keyboard,
         )
+        _send_keyboard_to_redis(chat_id, msg.keyboard)
     elif 'unread_prayer_type_minus_one' in text:
         answer = _unread_prayer_type_minus_one(text)
         tbot.edit_message_text(

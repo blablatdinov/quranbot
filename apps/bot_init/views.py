@@ -46,7 +46,7 @@ def text_handler(message):
     logger.info(f"Text message handler. Subscriber={message.chat.id}, text={message.text}")
     save_message(message)
     answer = text_message_service(message.chat.id, message.text, message.message_id)
-    send_answer(answer, message.chat.id)
+    answer.send(message.chat.id)
 
 
 @tbot.callback_query_handler(func=lambda call: True)

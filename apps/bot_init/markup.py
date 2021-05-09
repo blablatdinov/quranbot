@@ -43,6 +43,7 @@ class InlineKeyboard:
 
 class Keyboard:
     """Класс создающий клавиатуру под строкой ввода сообщений."""
+    keyboard: types.ReplyKeyboardMarkup
 
     def __init__(self, buttons):
         """Конструктор класса.

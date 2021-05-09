@@ -33,6 +33,7 @@ def save_message(msg, comment: str = None):
         json=json_text,
         comment=comment,
     )
+    logger.debug(f"utils {comment=}")
     return message_instance
 
 

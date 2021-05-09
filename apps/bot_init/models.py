@@ -1,6 +1,10 @@
 """Базовые модели для работы с телеграмм."""
+import json
+
 from django.conf import settings
 from django.db import models
+from django.db.models.signals import post_save
+import redis
 
 from apps.bot_init.schemas import SUBSCRIBER_ACTIONS
 from apps.content.models import Ayat
@@ -98,6 +102,22 @@ class Message(models.Model):
         from apps.bot_init.service import delete_message_in_tg
         delete_message_in_tg(self.chat_id, self.message_id)
         return True
+
+    @staticmethod
+    def subscribe_to_updates(instance, sender, **kwargs):
+        if not settings.RAMADAN_MODE and not "Время намаза для г. Казань " in instance.text:
+            return
+        r = redis.Redis.from_url(settings.REDIS_CONNECTION_URL)
+        r.set(f"reply_markup_{instance.chat_id}", json.dumps(json.loads(instance.json).get("reply_markup")))
+        data = {
+            "chat_id": instance.chat_id,
+            "message_id": instance.message_id,
+            "text": instance.text,
+        }
+        r.hmset(f"subscribe_to_updates_{instance.chat_id}", data)
+
+
+post_save.connect(Message.subscribe_to_updates, sender=Message)
 
 
 class SubscriberAction(models.Model):

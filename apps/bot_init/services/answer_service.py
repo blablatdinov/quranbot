@@ -39,6 +39,7 @@ class Answer:
                 msg = tbot.send_audio(self.chat_id, audio=self.tg_audio_id)
             else:
                 msg = tbot.send_message(self.chat_id, self.text, reply_markup=self.keyboard, parse_mode="HTML")
+            logger.debug(f"answer {self.comment=}")
             message_instance = save_message(msg, comment=self.comment)
             return message_instance
         except ApiException as e:
@@ -62,6 +63,7 @@ class Answer:
         Функция может принять как единственный экземпляр класса Answer, так и список экземпляров.
         Поэтому в функции нужна проверка
         """
+        logger.debug(f"answer send method {self.comment=}")
         self.chat_id = self.chat_id or chat_id
         self.check_chat_id()
         message = self._send()
