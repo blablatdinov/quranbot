@@ -1,11 +1,12 @@
-from django.core.management.base import BaseCommand, CommandError
-from loguru import logger
+import os
 
-from apps.bot_init.service import get_tbot_instance, count_active_users
+from django.core.management.base import BaseCommand
+from loguru import logger
 
 
 class Command(BaseCommand):
     help = 'command return count of active users'
 
     def handle(self, *args, **options):
-        logger.info(count_active_users())
+        logger.info(os.system('./check_users'))
+

@@ -86,6 +86,7 @@ class Message(models.Model):
     class Meta:
         verbose_name = "Сообщение"
         verbose_name_plural = "Сообщения"
+        ordering = ["-message_id"]
 
     def __str__(self):
         if self.from_user_id == settings.TG_BOT.id:
