@@ -1,14 +1,15 @@
 """Бизнес логика для взаимодействия с телеграмм."""
-from apps.bot_init.markup import InlineKeyboard
+import os
 from time import sleep
 from typing import List, Tuple
-from django.db.models.query import QuerySet
 
+from apps.bot_init.markup import InlineKeyboard
+from django.db.models.query import QuerySet
+from django.conf import settings
 from loguru import logger
 from progressbar import progressbar as pbar
 from telebot.apihelper import ApiException
 
-from django.conf import settings
 from apps.bot_init.models import Mailing, Subscriber, SubscriberAction, Message, AdminMessage, Admin
 from apps.bot_init.utils import save_message, get_tbot_instance
 from apps.bot_init.schemas import SUBSCRIBER_ACTIONS
@@ -202,13 +203,10 @@ def check_user_status_by_typing(chat_id: int):
             _subscriber_unsubscribed(sub.tg_chat_id)
 
 
-def count_active_users():
+def count_active_users() -> str:
     """Подсчитать кол-во активных пользователей."""
-    count = 0
-    for sub in pbar(Subscriber.objects.all()):
-        if check_user_status_by_typing(sub.tg_chat_id):
-            count += 1
-    return count
+    result = os.system('./check_users')
+    return result
 
 
 def send_message_to_winners(subscribers_queryset: QuerySet):
