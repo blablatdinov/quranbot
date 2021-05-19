@@ -33,7 +33,7 @@ gunicorn==20.1.0
 idna==2.10
 inflection==0.5.1
 iniconfig==1.1.1
-ipython==7.21.0
+ipython==7.23.1
 ipython-genutils==0.2.0
 isort==5.8.0
 itypes==1.2.0
@@ -44,6 +44,7 @@ kombu==4.6.11
 loguru==0.5.3
 lxml==4.6.3
 MarkupSafe==2.0.1
+matplotlib-inline==0.1.2
 mccabe==0.6.1
 mixer==7.1.2
 packaging==20.9
@@ -61,7 +62,7 @@ pycodestyle==2.7.0
 pyflakes==2.3.1
 Pygments==2.9.0
 pyparsing==2.4.7
-pyTelegramBotAPI==3.7.7
+pyTelegramBotAPI==3.7.9
 pytest==6.2.4
 pytest-django==4.1.0
 pytest-dotenv==0.5.2
