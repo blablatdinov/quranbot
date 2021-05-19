@@ -79,7 +79,7 @@ pyflakes==2.2.0
 Pygments==2.8.1
 pyparsing==2.4.7
 pyTelegramBotAPI==3.7.7
-pytest==6.2.2
+pytest==6.2.4
 pytest-django==4.1.0
 pytest-dotenv==0.5.2
 pytest-freezegun==0.4.2
