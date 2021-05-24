@@ -74,6 +74,7 @@ class AyatParser:
                 ""
             )
             ayat.arab_text = self.get_arab_text(soup)
+            ayat.trans = self.get_transcription(soup)
             logger.debug(f"{ayat.arab_text=}")
             ayat.save()
 
@@ -122,8 +123,8 @@ class AyatParser:
                     sura=sura,
                     ayat=self.get_ayat(block),
                 )
-                # if not created:
-                ayat.trans = self.get_transcription(block),
+                # TODO: это надо протестировать
+                ayat.trans = self.get_transcription(block)
                 ayat.content = "".join([x for x in self.get_content(block)]).replace(
                     # FIXME починить очистку текста
                     "Ссылки на богословские первоисточники и комментарий:",
