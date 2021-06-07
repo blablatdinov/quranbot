@@ -33,7 +33,7 @@ gunicorn==20.1.0
 idna==2.10
 inflection==0.5.1
 iniconfig==1.1.1
-ipython==7.24.0
+ipython==7.24.1
 ipython-genutils==0.2.0
 isort==5.8.0
 itypes==1.2.0
