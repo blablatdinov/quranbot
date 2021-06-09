@@ -3,19 +3,22 @@ import os
 from time import sleep
 from typing import List, Tuple
 
-from apps.bot_init.markup import InlineKeyboard
-from django.db.models.query import QuerySet
 from django.conf import settings
+from django.db.models.query import QuerySet
 from loguru import logger
-from progressbar import progressbar as pbar
 from telebot.apihelper import ApiException
 
-from apps.bot_init.models import Mailing, Subscriber, SubscriberAction, Message, AdminMessage, Admin
-from apps.bot_init.utils import save_message, get_tbot_instance
+from apps.bot_init.models import (
+    Admin, 
+    AdminMessage, 
+    Message, 
+    Subscriber,
+    SubscriberAction,
+)
 from apps.bot_init.schemas import SUBSCRIBER_ACTIONS
 from apps.bot_init.services.answer_service import Answer, AnswersList
+from apps.bot_init.utils import get_tbot_instance, save_message
 from apps.content.models import MorningContent
-
 
 SCOPES = ["https://www.googleapis.com/auth/drive"]
 SERVICE_ACCOUNT_FILE = settings.BASE_DIR + "/deploy/quranbot-keys.json"

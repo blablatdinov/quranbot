@@ -30,7 +30,7 @@ class Answer:
 
     def _send(self):
         from apps.bot_init.service import send_message_to_admin, _subscriber_unsubscribed
-        from apps.bot_init.views import tbot
+        from apps.bot_init.bot_handlers import tbot
         try:
             if self.tg_audio_id:
                 msg = tbot.send_audio(self.chat_id, audio=self.tg_audio_id)

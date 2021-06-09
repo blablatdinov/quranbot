@@ -84,3 +84,5 @@ if DEBUG:
     ddtrace.patch_all()
 
 RAMADAN_MODE = env("RAMADAN_MODE", bool, default=False)
+
+DEFAULT_CHAR_FIELD_MAX_LENGHT = 128

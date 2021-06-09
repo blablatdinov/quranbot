@@ -6,7 +6,7 @@ from loguru import logger
 from apps.bot_init.models import Subscriber
 from apps.bot_init.service import get_admins_list
 from apps.bot_init.utils import save_message
-from apps.bot_init.views import tbot
+from apps.bot_init.bot_handlers import tbot
 from apps.content.models import File, Podcast
 from apps.content.parsers import get_html, get_soup
 
