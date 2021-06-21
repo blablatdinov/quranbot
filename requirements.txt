@@ -9,7 +9,7 @@ beautifulsoup4==4.9.3
 billiard==3.6.4.0
 boto3==1.17.97
 botocore==1.20.97
-celery==4.4.7
+celery==5.1.1
 certifi==2021.5.30
 chardet==4.0.0
 coreapi==2.3.3
