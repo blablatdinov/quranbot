@@ -7,8 +7,8 @@ backcall==0.2.0
 bandit==1.7.0
 beautifulsoup4==4.9.3
 billiard==3.6.4.0
-boto3==1.17.97
-botocore==1.20.93
+boto3==1.17.93
+botocore==1.20.97
 celery==4.4.7
 certifi==2021.5.30
 chardet==4.0.0
@@ -25,10 +25,11 @@ djangorestframework==3.12.4
 docutils==0.17.1
 drf-yasg==1.20.0
 eradicate==2.0.0
-Faker==8.8.1
+Faker==8.7.0
 flake8==3.9.2
 flake8-bandit==2.1.2
 flake8-broken-line==0.3.0
+flake8-bugbear @ file:///Users/almazilaletdinov/Library/Caches/pypoetry/artifacts/15/95/75/8c7a4504d7eda1a394c3d14349b88577ff2d98d59941944c95bd8672ba/flake8_bugbear-21.4.3-py36.py37.py38-none-any.whl
 flake8-commas==2.0.0
 flake8-comprehensions==3.5.0
 flake8-debugger==4.0.0
@@ -44,7 +45,7 @@ freezegun==1.1.0
 geographiclib==1.50
 geopy==2.1.0
 gitdb==4.0.7
-GitPython==3.1.18
+GitPython==3.1.17
 gunicorn==20.1.0
 idna==2.10
 inflection==0.5.1
@@ -71,9 +72,9 @@ pexpect==4.8.0
 pickleshare==0.7.5
 pluggy==0.13.1
 progressbar2==3.53.1
-prompt-toolkit==3.0.19
+prompt-toolkit==3.0.18
 protobuf==3.17.3
-psycopg2-binary==2.9.1
+psycopg2-binary==2.8.6
 ptyprocess==0.7.0
 py==1.10.0
 pycodestyle==2.7.0
