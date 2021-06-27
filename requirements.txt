@@ -28,7 +28,7 @@ eradicate==2.0.0
 Faker==8.8.2
 flake8==3.9.2
 freezegun==1.1.0
-geographiclib==1.50
+geographiclib==1.52
 geopy==2.1.0
 gitdb==4.0.7
 GitPython==3.1.17
