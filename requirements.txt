@@ -27,20 +27,6 @@ drf-yasg==1.20.0
 eradicate==2.0.0
 Faker==8.8.2
 flake8==3.9.2
-flake8-bandit==2.1.2
-flake8-broken-line==0.3.0
-flake8-bugbear @ file:///Users/almazilaletdinov/Library/Caches/pypoetry/artifacts/15/95/75/8c7a4504d7eda1a394c3d14349b88577ff2d98d59941944c95bd8672ba/flake8_bugbear-21.4.3-py36.py37.py38-none-any.whl
-flake8-commas==2.0.0
-flake8-comprehensions==3.5.0
-flake8-debugger==4.0.0
-flake8-docstrings==1.6.0
-flake8-eradicate==1.0.0
-flake8-isort==4.0.0
-flake8-polyfill==1.0.2
-flake8-print==4.0.0
-flake8-quotes==3.2.0
-flake8-rst-docstrings==0.0.14
-flake8-string-format==0.3.0
 freezegun==1.1.0
 geographiclib==1.50
 geopy==2.1.0
