@@ -1,6 +1,6 @@
 amqp==2.6.1
 appnope==0.1.2
-asgiref==3.3.4
+asgiref==3.4.0
 astor==0.8.1
 attrs==21.2.0
 backcall==0.2.0
