@@ -21,11 +21,17 @@ def save_message(msg):
     text = msg.text
     try:
         json_str = msg.json
-    except:  # TODO конкретезировать ошибку
+    except Exception:  # TODO конкретезировать ошибку
         json_str = str(msg)
     json_text = json.dumps(json_str, indent=2, ensure_ascii=False)
-    message_instance = Message.objects.create(date=date, from_user_id=from_user_id, message_id=message_id,
-                           chat_id=chat_id, text=text, json=json_text)
+    message_instance = Message.objects.create(
+        date=date,
+        from_user_id=from_user_id,
+        message_id=message_id,
+        chat_id=chat_id,
+        text=text,
+        json=json_text,
+    )
     return message_instance
 
 
@@ -48,7 +54,7 @@ def save_callback_data(call) -> CallbackData:
     try:
         json_ = eval(json_)
         json_ = json.dumps(json_, indent=2, ensure_ascii=False)
-    except:
+    except Exception:  # TODO конкретезировать
         pass
     instance = CallbackData.objects.create(
         date=date,

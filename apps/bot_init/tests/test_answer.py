@@ -1,7 +1,6 @@
 import re
 
 import pytest
-from mixer.backend.django import mixer
 from django.conf import settings
 import requests_mock
 
@@ -30,7 +29,7 @@ def answer_without_chat_id():
 @pytest.fixture
 def answer_list(subscriber):
     return AnswersList(
-        Answer(text="wow", chat_id=subscriber.tg_chat_id), 
+        Answer(text="wow", chat_id=subscriber.tg_chat_id),
         Answer(text="wow2", chat_id=subscriber.tg_chat_id),
         Answer(text="wow3", chat_id=subscriber.tg_chat_id),
     )
@@ -61,5 +60,5 @@ def test_sending_without_chat_id(answer_without_chat_id):
 
 def test_answer_list_sending(answer_list, message_answer):
     with requests_mock.Mocker() as m:
-        m.register_uri("POST", re.compile(f"api.telegram.org.+chat_id="), text=message_answer)
+        m.register_uri("POST", re.compile("api.telegram.org.+chat_id="), text=message_answer)
         answer_list.send()

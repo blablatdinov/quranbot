@@ -5,7 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 import telebot
 from loguru import logger
 
-from apps.bot_init.service import registration_subscriber, send_answer, get_referal_answer
+from apps.bot_init.service import send_answer
 from apps.bot_init.services.inline_search_service import inline_query_service
 from apps.bot_init.services.commands_service import CommandService
 from apps.bot_init.services.text_message_service import text_message_service
@@ -68,7 +68,7 @@ def handle_query(call):
 @tbot.message_handler(content_types=["location"])
 def handle_location(message):
     """Обравботка геолокации."""
-    logger.info(f"Geo location handler.")
+    logger.info("Geo location handler.")
     save_message(message)
     answer = set_city_to_subscriber_by_location(
         (message.location.latitude, message.location.longitude),

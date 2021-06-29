@@ -3,14 +3,12 @@ import os
 from time import sleep
 from typing import List, Tuple
 
-from apps.bot_init.markup import InlineKeyboard
 from django.db.models.query import QuerySet
 from django.conf import settings
 from loguru import logger
-from progressbar import progressbar as pbar
 from telebot.apihelper import ApiException
 
-from apps.bot_init.models import Mailing, Subscriber, SubscriberAction, Message, AdminMessage, Admin
+from apps.bot_init.models import Subscriber, SubscriberAction, Message, AdminMessage, Admin
 from apps.bot_init.utils import save_message, get_tbot_instance
 from apps.bot_init.schemas import SUBSCRIBER_ACTIONS
 from apps.bot_init.services.answer_service import Answer, AnswersList
@@ -139,20 +137,20 @@ def get_referer(referal_id: int) -> Subscriber:
     logger.debug(f"Getting referal {referal_id=}")
     try:
         return Subscriber.objects.get(pk=referal_id)
-    except Subscriber.DoesNotExist as e:
+    except Subscriber.DoesNotExist:
         logger.error(f"Referer with id {referal_id} does not exists")
 
 
 def get_or_create_subscriber(chat_id: int, referer_subscriber_id: int = None) -> Tuple[Subscriber, bool]:
     if (subscriber_query_set := Subscriber.objects.filter(tg_chat_id=chat_id)).exists():
-        logger.debug(f"This chat id was registered")
+        logger.debug("This chat id was registered")
         subscriber = subscriber_query_set.first()
         created = False
     else:
         referer = None
         if referer_subscriber_id:
             referer = get_referer(referer_subscriber_id)
-            send_message_to_referer(referer)
+            # send_message_to_referer(referer) TODO: че за фигня
         subscriber = Subscriber.objects.create(
             tg_chat_id=chat_id,
             referer=referer,
@@ -217,7 +215,7 @@ def send_message_to_winners(subscribers_queryset: QuerySet):
 
 def determine_winners():
     referers_pk_list = list(set([
-        x[0] for x in 
+        x[0] for x in
         Subscriber.objects.filter(is_active=True, referer__isnull=False).values_list("referer")
     ]))
     winners = Subscriber.objects.filter(pk__in=referers_pk_list).exclude(tg_chat_id=224890356).order_by("?")[:3]
