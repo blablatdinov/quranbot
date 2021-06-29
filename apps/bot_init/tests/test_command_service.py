@@ -11,7 +11,7 @@ def test_command_service_without_additional_info(morning_content):
     answers = service()
 
     assert service.additional_info is None
-    assert list(set([hasattr(x, "chat_id") for x in answers]))[0] == True
+    assert list(set([hasattr(x, "chat_id") for x in answers]))[0] is True
     assert type(answers) is AnswersList
 
 

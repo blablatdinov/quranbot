@@ -1,15 +1,8 @@
 from apps.bot_init.service import get_admins_list
-import json
-import re
-from pprint import pprint
 
 import pytest
-from django.test import Client
-import requests_mock
-from mixer.backend.django import mixer
 
-from django.conf import settings
-from apps.bot_init.models import AdminMessage, Message, Subscriber
+from apps.bot_init.models import AdminMessage, Subscriber
 from apps.bot_init.services.commands_service import StartCommandService
 
 pytestmark = [pytest.mark.django_db]
@@ -35,7 +28,7 @@ def test_registration_after_deleting(morning_content):
 
 
 def test_start_message_with_referal_service(morning_content, subscriber):
-    StartCommandService(32984, f"/start", additional_info=str(subscriber.id))()
+    StartCommandService(32984, "/start", additional_info=str(subscriber.id))()
 
     assert Subscriber.objects.last().tg_chat_id == 32984
     assert Subscriber.objects.last().referer.id == subscriber.id

@@ -1,5 +1,4 @@
 import pytest
-from mixer.backend.django import mixer
 
 from apps.bot_init.models import SubscriberAction
 from apps.bot_init.services.answer_service import AnswersList, Answer

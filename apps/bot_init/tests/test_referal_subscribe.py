@@ -1,11 +1,7 @@
-import re
-
 import pytest
-import requests_mock
 from django.conf import settings
 
-from apps.bot_init.service import registration_subscriber
-from apps.bot_init.models import Admin, Message, Subscriber, AdminMessage
+from apps.bot_init.models import Subscriber, AdminMessage
 from apps.bot_init.services.commands_service import StartCommandService
 
 pytestmark = [pytest.mark.django_db]
@@ -24,7 +20,7 @@ def message_answer():
 
 
 def test_referer(subscriber, referer_message_answer, message_answer, morning_content):
-    answers = StartCommandService(892342789, f"/start", additional_info=str(subscriber.id))()
+    answers = StartCommandService(892342789, "/start", additional_info=str(subscriber.id))()
 
     assert Subscriber.objects.get(tg_chat_id=892342789).referer == subscriber
     assert answers[0].text == "По вашей реферальной ссылке произошла регистрация"
@@ -34,24 +30,24 @@ def test_referer(subscriber, referer_message_answer, message_answer, morning_con
 
 
 def test_fake_referer(morning_content):
-    answers = StartCommandService(892342789, f"/start", additional_info="7584")()
+    StartCommandService(892342789, "/start", additional_info="7584")()
 
     assert Subscriber.objects.count() == 1
     assert Subscriber.objects.first().referer is None
 
 
 def test_invalid_referal_link(referer_message_answer, message_answer, morning_content):
-    StartCommandService(892342789, f"/start", additional_info="ijoajfe")()
+    StartCommandService(892342789, "/start", additional_info="ijoajfe")()
 
     assert Subscriber.objects.count() == 1
     assert Subscriber.objects.first().referer is None
 
 
 def test_referal_subscribe_in_reactivation_case(subscriber, morning_content):
-    StartCommandService(892342789, f"/start")()
+    StartCommandService(892342789, "/start")()
     subscriber = Subscriber.objects.last()
     subscriber.is_active = False
     subscriber.save()
-    StartCommandService(892342789, f"/start", additional_info=str(subscriber.id))()
+    StartCommandService(892342789, "/start", additional_info=str(subscriber.id))()
 
     assert subscriber.referer is None
