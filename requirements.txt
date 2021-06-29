@@ -21,7 +21,7 @@ lxml==4.6.3
 mixer==7.1.2
 progressbar2==3.53.1
 psycopg2-binary==2.9.1
-pyTelegramBotAPI==3.7.9
+pyTelegramBotAPI==3.8.1
 pytest==6.2.4
 pytest-django==4.4.0
 pytest-dotenv==0.5.2
