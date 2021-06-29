@@ -6,7 +6,6 @@ from apps.bot_init.service import count_active_users
 from apps.bot_init.services.db_dump_logs_uploader import DumpUploader
 
 
-
 @periodic_task(run_every=(crontab(hour=7, minute=30)), name="upload_dump (7:30)")
 def upload_dump():
     """Таска для выгрузки дампа."""

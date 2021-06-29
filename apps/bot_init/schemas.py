@@ -1,5 +1,5 @@
 SUBSCRIBER_ACTIONS = (
     ('subscribed', 'подписался'),
-    ('unsubscribed',  'отписался'),
+    ('unsubscribed', 'отписался'),
     ('reactivated', 'реактивировался'),
 )

@@ -1,5 +1,4 @@
 from django.core.management.base import BaseCommand
-from loguru import logger
 
 from apps.bot_init.service import commit_concourse, count_active_users
 
