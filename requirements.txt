@@ -9,7 +9,7 @@ django-environ==0.4.5
 django-split-settings==1.0.1
 djangorestframework==3.12.4
 drf-yasg==1.20.0
-Faker==8.8.1
+Faker==8.9.0
 flake8==3.9.2
 freezegun==1.1.0
 geopy==2.1.0
