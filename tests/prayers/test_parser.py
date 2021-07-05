@@ -19,7 +19,7 @@ def city():
 
 @pytest.fixture()
 def csv():
-    with open(settings.BASE_DIR + "/apps/prayer/tests/fixtures/Kazan.csv", "rb") as f:
+    with open(settings.BASE_DIR + "/tests/prayers/fixtures/Kazan.csv", "rb") as f:
         return f.read()
 
 
