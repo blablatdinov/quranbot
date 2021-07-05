@@ -29,7 +29,7 @@ def prayers(city):
 
 @pytest.fixture
 def message_answer():
-    with open(f"{settings.BASE_DIR}/apps/bot_init/tests/fixture/sended_after_message.json") as f:
+    with open(f"{settings.BASE_DIR}/tests/bot_init/fixture/sended_after_message.json") as f:
         return json.load(f)
 
 
