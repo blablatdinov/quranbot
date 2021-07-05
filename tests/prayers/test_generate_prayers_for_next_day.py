@@ -11,13 +11,13 @@ pytestmark = [pytest.mark.django_db]
 
 @pytest.fixture
 def nominatim_response():
-    with open("apps/prayer/tests/fixtures/nominatium_kazan_search_response.json", "r") as f:
+    with open("tests/prayers/fixtures/nominatium_kazan_search_response.json", "r") as f:
         return f.read()
 
 
 @pytest.fixture
 def geonames_response():
-    with open("apps/prayer/tests/fixtures/geonames_timezone_response.json", "r") as f:
+    with open("tests/prayers/fixtures/geonames_timezone_response.json", "r") as f:
         return f.read()
 
 
