@@ -12,7 +12,7 @@ pytestmark = [pytest.mark.django_db]
 
 @pytest.fixture
 def message_answer():
-    with open(f"{settings.BASE_DIR}/apps/bot_init/tests/fixture/referer_message.json") as f:
+    with open(f"{settings.BASE_DIR}/tests/bot_init/fixture/referer_message.json") as f:
         return f.read()
 
 
