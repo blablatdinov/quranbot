@@ -13,7 +13,7 @@ pytestmark = [pytest.mark.django_db]
 
 
 def page(filename):
-    with open(f"{settings.BASE_DIR}/apps/prayer/tests/fixtures/{filename}") as f:
+    with open(f"{settings.BASE_DIR}/tests/prayers/fixtures/{filename}") as f:
         return f.read()
 
 

@@ -43,13 +43,13 @@ def vladivostok_prayers(city):
 
 @pytest.fixture
 def nominatium_response():
-    with open("apps/prayer/tests/fixtures/nominatium_vladivostok_search_response.json", "r") as f:
+    with open("tests/prayers/fixtures/nominatium_vladivostok_search_response.json", "r") as f:
         return f.read()
 
 
 @pytest.fixture
 def geonames_response():
-    with open("apps/prayer/tests/fixtures/geonames_vladivostok_timezone_response.json", "r") as f:
+    with open("tests/prayers/fixtures/geonames_vladivostok_timezone_response.json", "r") as f:
         return f.read()
 
 
