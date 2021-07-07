@@ -1,8 +1,8 @@
-from rest_framework import viewsets, mixins, generics
+from rest_framework import viewsets, generics
 
 from apps.content.models import Ayat
 from apps.content.services.get_unused_ayats import get_unused_ayats
-from apps.api.serializers import AyatSerializer, AyatListSerializer
+from apps.api.serializers import AyatSerializer
 
 
 class AyatViewSet(viewsets.ModelViewSet):
