@@ -10,7 +10,7 @@ def ayat():
 
 
 def test(ayat, client):
-    got = client.get(f'/api/v1/getAyat/{ayat.pk}/')
+    got = client.get(f'/api/v1/ayats/{ayat.pk}/')
 
     assert got.status_code == 200
     assert list(got.json().keys()) == ['id', 'additional_content', 'content', 'arab_text', 'trans', 'sura', 'ayat']
