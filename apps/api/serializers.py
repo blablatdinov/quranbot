@@ -6,18 +6,20 @@ from apps.prayer.models import Prayer, PrayerAtUser
 
 class AyatSerializer(serializers.ModelSerializer):
     sura = serializers.SerializerMethodField()
+    id = serializers.IntegerField(source='pk')
 
     def get_sura(self, obj):
         return obj.sura.number
 
     class Meta:
         fields = (
-            "additional_content",
-            "content",
-            "arab_text",
-            "trans",
-            "sura",
-            "ayat",
+            'id',
+            'additional_content',
+            'content',
+            'arab_text',
+            'trans',
+            'sura',
+            'ayat',
         )
         model = Ayat
 
@@ -26,8 +28,8 @@ class FileSerializer(serializers.ModelSerializer):
 
     class Meta:
         fields = (
-            "link_to_file",
-            "tg_file_id",
+            'link_to_file',
+            'tg_file_id',
         )
         model = File
 
@@ -37,8 +39,8 @@ class PodcastSerializer(serializers.ModelSerializer):
 
     class Meta:
         fields = (
-            "title",
-            "audio",
+            'title',
+            'audio',
         )
         model = Podcast
 
@@ -55,10 +57,10 @@ class PrayerTimeAtUserInstanceSerializer(serializers.ModelSerializer):
 
     class Meta:
         fields = (
-            "id",
-            "prayer_name",
-            "prayer_time",
-            "is_read",
+            'id',
+            'prayer_name',
+            'prayer_time',
+            'is_read',
         )
         model = PrayerAtUser
 
@@ -83,8 +85,8 @@ class PrayerTimeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Prayer
         fields = (
-            "prayer_name",
-            "prayer_time",
+            'prayer_name',
+            'prayer_time',
         )
 
 
