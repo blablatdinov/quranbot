@@ -10,11 +10,6 @@ pytestmark = [pytest.mark.django_db]
 
 
 @pytest.fixture()
-def client():
-    return APIClient()
-
-
-@pytest.fixture()
 def chat_id():
     return 234892342
 
