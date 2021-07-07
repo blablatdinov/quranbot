@@ -3,6 +3,7 @@ from mixer.backend.django import mixer
 
 pytestmark = [pytest.mark.django_db]
 
+
 @pytest.fixture(autouse=True)
 def ayats():
     mixer.cycle(7).blend(
