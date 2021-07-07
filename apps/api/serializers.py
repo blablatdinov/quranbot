@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from apps.content.models import File, Ayat, Podcast
+from apps.content.models import File, Podcast
 from apps.prayer.models import Prayer, PrayerAtUser
 
 

@@ -1,4 +1,3 @@
-from _pytest.mark import pytest_configure
 import pytest
 
 pytestmark = [pytest.mark.django_db]
@@ -13,7 +12,16 @@ def test(client, django_assert_max_num_queries):
     with django_assert_max_num_queries(2):
         got = client.get('/api/v1/ayats/')
     payload = got.json()
+    expected_fields = [
+        'id',
+        'additional_content',
+        'content',
+        'arab_text',
+        'trans',
+        'sura',
+        'ayat'
+    ]
 
     assert got.status_code == 200
     assert len(payload['results']) == 50
-    assert list(payload['results'][0].keys()) == ['id', 'additional_content', 'content', 'arab_text', 'trans', 'sura', 'ayat']
+    assert list(payload['results'][0].keys()) == expected_fields

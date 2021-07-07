@@ -23,7 +23,6 @@ class AyatSerializer(serializers.ModelSerializer):
         return obj.sura.number
 
 
-
 class AyatListSerializer(serializers.ModelSerializer):
     sura = serializers.SerializerMethodField()
     id = serializers.IntegerField(source='pk')
