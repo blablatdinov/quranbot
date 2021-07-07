@@ -4,26 +4,6 @@ from apps.content.models import File, Ayat, Podcast
 from apps.prayer.models import Prayer, PrayerAtUser
 
 
-class AyatSerializer(serializers.ModelSerializer):
-    sura = serializers.SerializerMethodField()
-    id = serializers.IntegerField(source='pk')
-
-    def get_sura(self, obj):
-        return obj.sura.number
-
-    class Meta:
-        fields = (
-            'id',
-            'additional_content',
-            'content',
-            'arab_text',
-            'trans',
-            'sura',
-            'ayat',
-        )
-        model = Ayat
-
-
 class FileSerializer(serializers.ModelSerializer):
 
     class Meta:

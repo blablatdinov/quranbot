@@ -5,14 +5,14 @@ from apps.api.api_docs import api_docs_urls
 from apps.api import views
 
 router = DefaultRouter()
-# router.register(r'getAyat', AyatViewSet)
-router.register(r'getPodcast', views.PodcastViewSet)
+router.register(r'ayats', views.AyatViewSet)
+# router.register(r'getPodcast', views.PodcastViewSet)
 
 urlpatterns = [
     path('v1/', include(router.urls)),
-    path('v1/getPrayerTime/', views.PrayerTimeView.as_view()),
-    path('v1/getAyat/', views.AyatAPIView.as_view()),
-    path('v1/getAyat/<int:pk>/', views.AyatDetailView.as_view()),
+    # path('v1/getPrayerTime/', views.PrayerTimeView.as_view()),
+    # path('v1/getAyat/', views.AyatAPIView.as_view()),
+    # path('v1/getAyat/<int:pk>/', views.AyatDetailView.as_view()),
     path('v1/get-not-used-ayats/', views.NotUsedAyats.as_view()),
-    path('v1/setPrayerStatus/', views.PrayerTimeView.as_view()),
+    # path('v1/setPrayerStatus/', views.PrayerTimeView.as_view()),
 ] + api_docs_urls
