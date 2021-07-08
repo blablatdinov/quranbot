@@ -1,8 +1,9 @@
 import pytest
 
-from apps.content.models import MorningContent
+from apps.content.models import MorningContent, Ayat
 
 pytestmark = [pytest.mark.django_db]
+
 
 @pytest.fixture()
 def ayats(mixer):
@@ -20,4 +21,4 @@ def test(client, ayats):
     assert got.status_code == 201
     assert MorningContent.objects.count() > 0
     assert list(payload.keys()) == ['id', 'related_ayats']
-    # assert Ayat.objects.filter(one_day_content=)
+    assert Ayat.objects.filter(one_day_content__pk=payload['id']).count() == 15
