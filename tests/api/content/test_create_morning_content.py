@@ -20,5 +20,5 @@ def test(client, ayats):
 
     assert got.status_code == 201
     assert MorningContent.objects.count() > 0
-    assert list(payload.keys()) == ['id', 'related_ayats']
+    assert list(payload.keys()) == ['id', 'day', 'content_length', 'related_ayats']
     assert Ayat.objects.filter(one_day_content__pk=payload['id']).count() == 15

@@ -12,10 +12,16 @@ class MorningContentCreateSerializer(serializers.Serializer):
 class MorningContentSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(source='pk')
     related_ayats = AyatSerializer(many=True, source='ayat_set')
+    content_length = serializers.SerializerMethodField()
 
     class Meta:
         model = MorningContent
         fields = [
             'id',
+            'day',
+            'content_length',
             'related_ayats',
         ]
+
+    def get_content_length(self, obj):
+        return len(obj.content_for_day())

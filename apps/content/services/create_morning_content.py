@@ -11,6 +11,7 @@ class MorningContentCreator:
 
     def _check_ayats_content_length(self):
         if len(self.morning_content.content_for_day()) > 4096:
+            self.morning_content.delete()
             self.target_ayats.update(one_day_content=None)
             raise ContentTooLong
 
