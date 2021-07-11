@@ -14,10 +14,10 @@ def test_len(ayat):
     additional_content = ''
     got = get_content([ayat], additional_content)
     ayats_len = sum([
-        len(ayat.content), 
-        len(str(ayat.sura.number)), 
-        len(ayat.ayat), 
-        len(ayat.sura.link), 
+        len(ayat.content),
+        len(str(ayat.sura.number)),
+        len(ayat.ayat),
+        len(ayat.sura.link),
         len(additional_content)
     ])
 
