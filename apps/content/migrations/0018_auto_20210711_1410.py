@@ -10,6 +10,7 @@ def delete_too_many_len_content(apps, schema_editor):
         if len(get_content(m.ayat_set.all(), m.additional_content)) > 4096:
             MorningContent.objects.filter(pk__gte=m.pk).delete()
 
+
 def delete_morning_content_without_body(apps, schema_editor):
     MorningContent = apps.get_model('content', 'MorningContent')
     for m in MorningContent.objects.all():
