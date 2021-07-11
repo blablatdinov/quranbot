@@ -1,16 +1,20 @@
 """Модели контента."""
 from django.db import models
+from loguru import logger
+
+from apps.content.services.get_content_from_morning_content import get_content
 
 
 class MorningContent(models.Model):
     """Утренний контент - аяты связанные в один день."""
 
     additional_content = models.TextField(blank=True, verbose_name="Дополнительный текст")
-    day = models.IntegerField(verbose_name="День")
+    day = models.IntegerField(verbose_name="День", unique=True)
 
     class Meta:
         verbose_name = "Ежедневный контент для пользователей"
         verbose_name_plural = "Ежедневный контент для пользователей"
+        ordering = ['-day']
 
     def __str__(self):
         return f"{self.day} день"
@@ -18,14 +22,7 @@ class MorningContent(models.Model):
     def content_for_day(self) -> str:  # TODO подумать насчет генерации контента, сделать property
         """Возвращаем контент в виде строки для этого дня."""
         ayats = Ayat.objects.filter(one_day_content__day=self.day).order_by("pk")
-        result = ""
-        if self.additional_content != "":
-            result += f"{self.additional_content}\n\n"
-        for ayat in ayats:
-            result += f"<b>{ayat.sura.number}:{ayat.ayat})</b> {ayat.content}\n"
-        if result != "":
-            result += f"\nСсылка на источник: <a href='https://umma.ru{ayats[0].sura.link}'>umma.ru</a>"
-        return result
+        return get_content(ayats, self.additional_content)
 
 
 class File(models.Model):
@@ -68,7 +65,7 @@ class Ayat(models.Model):
     arab_text = models.TextField(verbose_name="Арабский текст", blank=True)
     trans = models.TextField(verbose_name="Транслитерация", blank=True)
     sura = models.ForeignKey(Sura, on_delete=models.CASCADE, verbose_name="Номер суры")
-    ayat = models.CharField(max_length=16, verbose_name="Номер аята", blank=True, null=True)
+    ayat = models.CharField(max_length=16, verbose_name="Номер аята", blank=True, null=True)  # TODO отменить пустое значение
     html = models.TextField(verbose_name="Спарсенный HTML текст")
     audio = models.OneToOneField(File, on_delete=models.PROTECT, verbose_name="Аудио файл", blank=True, null=True)
     one_day_content = models.ForeignKey(
@@ -78,6 +75,7 @@ class Ayat(models.Model):
     class Meta:
         verbose_name = "Аят Священного Корана"
         verbose_name_plural = "Аяты Священного Корана"
+        ordering = ['-id']
 
     def __str__(self):
         return f"{self.sura.number}:{self.ayat}"

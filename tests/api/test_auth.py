@@ -1,6 +1,5 @@
 import pytest
 from django.contrib.auth import get_user_model
-from rest_framework.test import RequestsClient
 
 pytestmark = [pytest.mark.django_db]
 

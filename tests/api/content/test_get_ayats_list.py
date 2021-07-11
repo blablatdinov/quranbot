@@ -19,7 +19,8 @@ def test(client, django_assert_max_num_queries):
         'arab_text',
         'trans',
         'sura',
-        'ayat'
+        'ayat',
+        'link',
     ]
 
     assert got.status_code == 200
