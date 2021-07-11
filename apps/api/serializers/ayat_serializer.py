@@ -5,6 +5,7 @@ from apps.content.models import Ayat
 
 class AyatSerializer(serializers.ModelSerializer):
     sura = serializers.SerializerMethodField()
+    link = serializers.SerializerMethodField()
     id = serializers.IntegerField(source='pk')
 
     class Meta:
@@ -16,11 +17,15 @@ class AyatSerializer(serializers.ModelSerializer):
             'trans',
             'sura',
             'ayat',
+            'link',
         ]
         model = Ayat
 
     def get_sura(self, obj):
         return obj.sura.number
+
+    def get_link(self, obj):
+        return f'https://umma.ru{obj.sura.link}'
 
 
 class AyatListSerializer(serializers.ModelSerializer):

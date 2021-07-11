@@ -6,4 +6,3 @@ logger.add(
     rotation="10:00"
     # serialize=True,
 )
-

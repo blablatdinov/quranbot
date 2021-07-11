@@ -20,3 +20,13 @@ def test(client):
 
     assert got.status_code == 200
     assert len(got.json()['results']) == 3
+    assert list(got.json()['results'][0].keys()) == [
+        'id',
+        'additional_content',
+        'content',
+        'arab_text',
+        'trans',
+        'sura',
+        'ayat',
+        'link',
+    ]
