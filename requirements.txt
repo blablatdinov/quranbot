@@ -1,6 +1,6 @@
 beautifulsoup4==4.9.3
 boto3==1.17.109
-botocore==1.20.97
+botocore==1.21.1
 celery==4.4.7
 coverage==5.5
 ddtrace==0.49.4
