@@ -21,5 +21,7 @@ urlpatterns = [
     # path('v1/getAyat/', views.AyatAPIView.as_view()),
     # path('v1/getAyat/<int:pk>/', views.AyatDetailView.as_view()),
     path('v1/get-not-used-ayats/', views.NotUsedAyats.as_view()),
+    path('v1/get-subscribers-count/', views.GetSubscribersCount.as_view()),
+    path('v1/get-data-for-usage-graphic/', views.GetDataForUsageGraphic.as_view()),
     # path('v1/setPrayerStatus/', views.PrayerTimeView.as_view()),
 ] + api_docs_urls
