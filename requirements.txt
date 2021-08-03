@@ -23,7 +23,7 @@ django-split-settings==1.0.1
 djangorestframework==3.12.4
 djangorestframework-simplejwt==4.7.2
 drf-yasg==1.20.0
-Faker==8.10.3
+Faker==8.11.0
 flake8==3.9.2
 freezegun==1.1.0
 geographiclib==1.52
