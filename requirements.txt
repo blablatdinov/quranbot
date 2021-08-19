@@ -58,7 +58,7 @@ ptyprocess==0.7.0
 py==1.10.0
 pycodestyle==2.7.0
 pyflakes==2.3.1
-Pygments==2.9.0
+Pygments==2.10.0
 PyJWT==2.1.0
 pyparsing==2.4.7
 pyTelegramBotAPI==3.8.2
