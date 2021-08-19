@@ -17,7 +17,7 @@ coverage==5.5
 ddtrace==0.50.3
 decorator==5.0.9
 Django==3.2.6
-django-cors-headers==3.7.0
+django-cors-headers==3.8.0
 django-environ==0.4.5
 django-split-settings==1.0.1
 djangorestframework==3.12.4
