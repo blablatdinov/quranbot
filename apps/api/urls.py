@@ -24,5 +24,6 @@ urlpatterns = [
     path('v1/get-subscribers-count/', views.GetSubscribersCount.as_view()),
     path('v1/get-data-for-usage-graphic/', views.GetDataForUsageGraphic.as_view()),
     path('v1/get-ping-to-message/', views.GetPingToMessage.as_view()),
+    path('v1/send-message-to-admin/', views.SendMessageToAdmin.as_view()),
     # path('v1/setPrayerStatus/', views.PrayerTimeView.as_view()),
 ] + api_docs_urls
