@@ -8,7 +8,7 @@ from django.conf import settings
 from loguru import logger
 from telebot.apihelper import ApiException
 
-from apps.bot_init.models import Subscriber, SubscriberAction, Message, AdminMessage, Admin
+from apps.bot_init.models import Subscriber, SubscriberAction, Message, AdminMessage, Admin, Mailing
 from apps.bot_init.utils import save_message, get_tbot_instance
 from apps.bot_init.schemas import SUBSCRIBER_ACTIONS
 from apps.bot_init.services.answer_service import Answer, AnswersList
@@ -23,6 +23,15 @@ tbot = get_tbot_instance()
 def delete_message_in_tg(chat_id: int, message_id: int) -> None:
     """Функция для удаления сообщения в телеграмм."""
     tbot.delete_message(chat_id, message_id)
+
+
+def clean_mailing(mailing: Mailing):
+    """Удаление сообщений у пользователей"""
+    # map(lambda message: message.delete_in_tg(), mailing.messages.all())
+    for message in mailing.messages.all():
+        message.delete_in_tg()
+    mailing.is_cleaned = True
+    mailing.save(update_fields=["is_cleaned"])
 
 
 def get_admins_list() -> List[int]:

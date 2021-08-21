@@ -8,7 +8,11 @@ from apps.content.models import Ayat
 
 class Mailing(models.Model):
     """Класс объеденяющий сообщения для удобного удаления при некорректной рассылке."""
-
+    is_cleaned = models.BooleanField(
+        default=False,
+        verbose_name='Очищены ли сообщения из этой рассылки у пользователей'
+    )
+    # messages - Сообщения в рассылке
     pass
 
     class Meta:
@@ -18,6 +22,9 @@ class Mailing(models.Model):
     def __str__(self):
         return f"Mailing {self.pk}"
 
+    def clean_messages(self):
+        from apps.bot_init.service import clean_mailing
+        clean_mailing(self)
 
 class AdminMessage(models.Model):
     """Административные сообщения."""

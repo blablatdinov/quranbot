@@ -4,6 +4,7 @@ from .get_subscribers_count import GetSubscribersCount  # noqa
 from .get_data_for_usage_graphic import GetDataForUsageGraphic  # noqa
 from .get_ping_to_message import GetPingToMessage  # noqa
 from .send_message_to_admin import SendMessageToAdmin  # noqa
+from .mailings import Mailings, MailingDetail  # noqa
 
 __all__ = [
     AyatViewSet,
@@ -13,4 +14,6 @@ __all__ = [
     GetDataForUsageGraphic,
     GetPingToMessage,
     SendMessageToAdmin,
+    Mailings,
+    MailingDetail,
 ]
