@@ -25,3 +25,10 @@ def user(mixer):
 def client(anon, user):
     anon.force_authenticate(user=user)
     return anon
+
+
+"""
+FAILED tests/api/test_get_data_for_usage_graphic.py::test - Assertio...
+FAILED tests/api/test_get_ping_to_message.py::test - AssertionError:...
+FAILED tests/api/content/test_get_ayats_which_not_used_in_morning_content.py::test
+"""

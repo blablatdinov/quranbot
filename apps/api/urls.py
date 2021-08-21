@@ -21,4 +21,6 @@ urlpatterns = [
     path('v1/get-data-for-usage-graphic/', views.GetDataForUsageGraphic.as_view()),
     path('v1/get-ping-to-message/', views.GetPingToMessage.as_view()),
     path('v1/send-message-to-admin/', views.SendMessageToAdmin.as_view()),
+    path('v1/mailings/<int:pk>/', views.MailingDetail.as_view()),
+    path('v1/mailings/', views.Mailings.as_view()),
 ] + api_docs_urls

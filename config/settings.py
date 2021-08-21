@@ -74,3 +74,5 @@ if DEBUG:
     ddtrace.patch_all()
 
 RAMADAN_MODE = env('RAMADAN_MODE', bool, default=False)
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
