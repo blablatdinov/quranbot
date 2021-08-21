@@ -21,6 +21,7 @@ def test(client, django_assert_max_num_queries):
         'sura',
         'ayat',
         'link',
+        'content_day',
     ]
 
     assert got.status_code == 200
