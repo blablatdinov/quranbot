@@ -22,4 +22,6 @@ def test(ayat, client):
         'sura',
         'ayat',
         'link',
+        'content_day',
+        'html',
     ]

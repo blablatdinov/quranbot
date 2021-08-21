@@ -7,6 +7,7 @@ class AyatSerializer(serializers.ModelSerializer):
     sura = serializers.SerializerMethodField()
     link = serializers.SerializerMethodField()
     id = serializers.IntegerField(source='pk')
+    content_day = serializers.SerializerMethodField()
 
     class Meta:
         fields = [
@@ -18,8 +19,16 @@ class AyatSerializer(serializers.ModelSerializer):
             'sura',
             'ayat',
             'link',
+            'content_day',
+            'html',
         ]
         model = Ayat
+
+    def get_content_day(self, obj):
+        try:
+            return obj.one_day_content.day
+        except AttributeError:
+            return None
 
     def get_sura(self, obj):
         return obj.sura.number

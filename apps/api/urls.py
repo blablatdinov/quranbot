@@ -18,7 +18,7 @@ urlpatterns = [
     path('v1/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('v1/morning-contents/', views.MorningContentView.as_view()),
     # path('v1/getPrayerTime/', views.PrayerTimeView.as_view()),
-    path('v1/get-ayat/', views.AyatAPIView.as_view()),
+    # path('v1/get-ayat/', views.AyatAPIView.as_view()),
     # path('v1/getAyat/<int:pk>/', views.AyatDetailView.as_view()),
     path('v1/get-not-used-ayats/', views.NotUsedAyats.as_view()),
     path('v1/get-subscribers-count/', views.GetSubscribersCount.as_view()),
