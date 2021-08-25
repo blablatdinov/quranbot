@@ -49,7 +49,7 @@ packaging==21.0
 parso==0.8.2
 pexpect==4.8.0
 pickleshare==0.7.5
-pluggy==0.13.1
+pluggy==1.0.0
 progressbar2==3.53.1
 prompt-toolkit==3.0.20
 protobuf==3.17.3
