@@ -4,8 +4,9 @@ import traceback
 
 from config.splitted_settings.boilerplate import DEBUG
 
+
 class DebugErrorMiddleware():
-    
+
     def __init__(self, get_response):
         self._get_response = get_response
 
@@ -17,7 +18,6 @@ class DebugErrorMiddleware():
         return HttpResponse(traceback.format_exc().replace('\n', '<br>'), status=500)
 
 
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -26,7 +26,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
 ]
 
