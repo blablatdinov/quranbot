@@ -8,8 +8,6 @@ from config.splitted_settings.environ import env
 
 import ddtrace
 
-CORS_ORIGIN_ALLOW_ALL = True
-
 include(
     'splitted_settings/boilerplate.py',
     'splitted_settings/db.py',

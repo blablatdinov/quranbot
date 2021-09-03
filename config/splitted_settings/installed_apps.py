@@ -8,7 +8,6 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'drf_yasg',
-    'corsheaders',
 
     'apps.bot_init',
     'apps.content',
