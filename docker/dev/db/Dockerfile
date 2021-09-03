@@ -1,4 +1,4 @@
-FROM postgres:12.0-alpine
+FROM postgres:13.4-alpine
 
 ENV POSTGRES_USER="qbot"
 ENV POSTGRES_PASSWORD="qbot"
