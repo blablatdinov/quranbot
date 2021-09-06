@@ -116,7 +116,11 @@ def find_ayat_by_text(query_text: str, offset: int = None):
         offset = 1
         text = f"По вашему запросу найдено {ayats_count} {format_count_to_text((ayats_count))}:"
         result.append(Answer(text))
+    ayat = queryset[offset - 1]
     buttons = [
+        (
+            ("Добавить в избранное", f"add_in_favourites({ayat.pk})"),
+        ),
         (
             ("<", f"change_query_ayat('{query_text}',{offset - 1})"),
             (f"{offset}/{ayats_count}", "asdf"),
@@ -124,7 +128,6 @@ def find_ayat_by_text(query_text: str, offset: int = None):
         )
     ]
     keyboard = InlineKeyboard(buttons).keyboard
-    ayat = queryset[offset - 1]
     text = ayat.get_content()
     result.append(Answer(text, keyboard))
     return result
