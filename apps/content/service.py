@@ -12,7 +12,7 @@ from apps.content.models import Ayat, MorningContent, Podcast
 
 def get_random_podcast() -> Podcast:
     """Возвращает рандомный подкаст"""
-    podcast = Podcast.objects.order_by("?").first()
+    podcast = Podcast.objects.order_by('?').first()
     logger.debug(podcast)
     return podcast
 
@@ -23,7 +23,7 @@ def get_morning_content(day_num: int) -> str:
         content = MorningContent.objects.get(day=day_num).content_for_day()
         return content
     except MorningContent.DoesNotExist:
-        text = f"Ежедневный контент для дня {day_num} не найден"
+        text = f'Ежедневный контент для дня {day_num} не найден'
         send_message_to_admin(text)
         logger.warning(text)
 
@@ -51,7 +51,7 @@ def get_subscribers_with_content():  # FIXME тесты
     data = []
     for elem in res:
         try:
-            logger.info(f"{elem=}")
+            logger.info(f'{elem=}')
             data.append({
                 elem[0]: elem[1] + f"\nСсылка на источник: <a href='https://umma.ru{elem[2].split('|')[0]}'>источник</a>"
             })
@@ -71,33 +71,33 @@ def do_morning_content_distribution():
 
         if message_instance := send_answer(answer, chat_id):
             message_instance.mailing = mailing
-            message_instance.save(update_fields=["mailing"])
+            message_instance.save(update_fields=['mailing'])
 
-    Subscriber.objects.filter(is_active=True).update(day=F("day") + 1)
+    Subscriber.objects.filter(is_active=True).update(day=F('day') + 1)
 
-    text = f"Рассылка #{mailing.pk} завершена."
+    text = f'Рассылка #{mailing.pk} завершена.'
     msg = send_message_to_admin(text)
     msg.mailing = mailing
-    msg.save(update_fields=["mailing"])
+    msg.save(update_fields=['mailing'])
     # FIXME чет дофига длинная функция получается
 
 
 def search_ayat(text: str) -> Answer:
     """Функция для поиска аята."""
-    queryset = Ayat.objects.filter(content__icontains=text).order_by("pk")
+    queryset = Ayat.objects.filter(content__icontains=text).order_by('pk')
     return queryset
 
 
 def format_count_to_text(number):
     div = number % 10
     if number == 11:
-        return "аятов"
+        return 'аятов'
     elif div == 1:
-        return "аят"
+        return 'аят'
     elif 1 < div < 5:
-        return "аята"
+        return 'аята'
     elif 4 < number:
-        return "аятов"
+        return 'аятов'
 
 
 def find_ayat_by_text(query_text: str, offset: int = None):
@@ -111,20 +111,20 @@ def find_ayat_by_text(query_text: str, offset: int = None):
     result = []
     ayats_count = queryset.count()
     if ayats_count < 1:
-        return Answer("Аятов не найдено")
+        return Answer('Аятов не найдено')
     if offset is None:
         offset = 1
-        text = f"По вашему запросу найдено {ayats_count} {format_count_to_text((ayats_count))}:"
+        text = f'По вашему запросу найдено {ayats_count} {format_count_to_text((ayats_count))}:'
         result.append(Answer(text))
     ayat = queryset[offset - 1]
     buttons = [
         (
-            ("Добавить в избранное", f"add_in_favourites({ayat.pk})"),
+            ('Добавить в избранное', f'add_in_favourites({ayat.pk})'),
         ),
         (
-            ("<", f"change_query_ayat('{query_text}',{offset - 1})"),
-            (f"{offset}/{ayats_count}", "asdf"),
-            (">", f"change_query_ayat('{query_text}',{offset + 1})"),
+            ('<', f"change_query_ayat('{query_text}',{offset - 1})"),
+            (f'{offset}/{ayats_count}', 'asdf'),
+            ('>', f"change_query_ayat('{query_text}',{offset + 1})"),
         )
     ]
     keyboard = InlineKeyboard(buttons).keyboard
