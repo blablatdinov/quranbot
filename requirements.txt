@@ -61,7 +61,7 @@ pickleshare==0.7.5
 pluggy==1.0.0
 progressbar2==3.53.1
 prompt-toolkit==3.0.19
-protobuf==3.17.3
+protobuf==3.18.0
 psycopg2-binary==2.9.1
 ptyprocess==0.7.0
 py==1.10.0
