@@ -1,0 +1,29 @@
+{
+  "ok": true,
+  "result": {
+    "message_id": 11397,
+    "from": {
+      "id": 452230948,
+      "is_bot": true,
+      "first_name": "WokeUpSmiled",
+      "username": "WokeUpSmiled_bot"
+    },
+    "chat": {
+      "id": 358610865,
+      "first_name": "Алмаз",
+      "last_name": "Илалетдинов",
+      "username": "ilaletdinov",
+      "type": "private"
+    },
+    "date": 1615218082,
+    "audio": {
+      "duration": 0,
+      "file_name": "audio",
+      "mime_type": "audio/mpeg",
+      "performer": "Шамиль Аляутдинов",
+      "file_id": "CQACAgIAAxkDAAIshWBGRaJwdieNTKufqZc4m9XAw12jAAIXCwACIyQ4SqTy0Yzg179WHgQ",
+      "file_unique_id": "AgADFwsAAiMkOEo",
+      "file_size": 417
+    }
+  }
+}
