@@ -1,4 +1,10 @@
 {
+  "minor": {
+    "automerge": true
+  },
+  "patch": {
+    "automerge": true
+  },
   "extends": [
     "config:base"
   ]
