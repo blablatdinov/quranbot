@@ -7,7 +7,7 @@ backcall==0.2.0
 beautifulsoup4==4.9.3
 billiard==3.6.4.0
 boto3==1.18.24
-botocore==1.21.35
+botocore==1.21.60
 celery==4.4.7
 certifi==2021.5.30
 chardet==4.0.0
@@ -26,7 +26,7 @@ djangorestframework-simplejwt==4.7.2
 drf-yasg==1.20.0
 eradicate==2.0.0
 execnet==1.9.0
-Faker==8.11.0
+Faker==8.16.0
 flake8==3.9.2
 flake8-eradicate==1.1.0
 flake8-isort==4.0.0
@@ -60,7 +60,7 @@ pexpect==4.8.0
 pickleshare==0.7.5
 pluggy==1.0.0
 progressbar2==3.53.1
-prompt-toolkit==3.0.19
+prompt-toolkit==3.0.20
 protobuf==3.17.3
 psycopg2-binary==2.9.1
 ptyprocess==0.7.0
