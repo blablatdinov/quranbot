@@ -60,7 +60,7 @@ pexpect==4.8.0
 pickleshare==0.7.5
 pluggy==1.0.0
 progressbar2==3.53.1
-prompt-toolkit==3.0.19
+prompt-toolkit==3.0.20
 protobuf==3.17.3
 psycopg2-binary==2.9.1
 ptyprocess==0.7.0
