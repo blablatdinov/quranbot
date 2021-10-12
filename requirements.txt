@@ -50,7 +50,7 @@ kombu==4.6.11
 loguru==0.5.3
 lxml==4.6.3
 MarkupSafe==2.0.1
-matplotlib-inline==0.1.2
+matplotlib-inline==0.1.3
 mccabe==0.6.1
 mixer==7.1.2
 packaging==21.0
