@@ -44,7 +44,7 @@ ipython-genutils==0.2.0
 isort==5.9.3
 itypes==1.2.0
 jedi==0.18.0
-Jinja2==3.0.1
+Jinja2==3.0.2
 jmespath==0.10.0
 kombu==4.6.11
 loguru==0.5.3
