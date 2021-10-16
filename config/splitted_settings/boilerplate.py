@@ -12,4 +12,3 @@ SECRET_KEY = env("SECRET_KEY")
 # Disable built-in ./manage.py test command in favor of pytest
 
 WSGI_APPLICATION = 'config.wsgi.application'
-TEST_RUNNER = 'config.test_runner.PytestTestRunner'
