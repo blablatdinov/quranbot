@@ -46,7 +46,7 @@ itypes==1.2.0
 jedi==0.18.0
 Jinja2==3.0.2
 jmespath==0.10.0
-kombu==4.6.11
+kombu==5.1.0
 loguru==0.5.3
 lxml==4.6.3
 MarkupSafe==2.0.1
