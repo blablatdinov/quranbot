@@ -1,10 +1,12 @@
+from typing import List
+
 from apps.content.models import MorningContent, Ayat
 from apps.content.exceptions import ContentTooLong
 
 
 class MorningContentCreator:
 
-    def __init__(self, day: int, ayats_ids: list[int]):
+    def __init__(self, day: int, ayats_ids: List[int]):
         self.day = day
         self.ayats_ids = ayats_ids
         self._get_target_ayats()
