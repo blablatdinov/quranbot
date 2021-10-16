@@ -5,6 +5,7 @@ if [[ $* == *--show-files* ]]; then
     echo $file
   done
 fi
+python -m isort $changed_files
 if [ "$changed_files" == "" ]; then
   exit 0
 else
