@@ -6,7 +6,7 @@ from apps.content.services.get_unused_ayats import get_unused_ayats
 from apps.api.serializers import AyatSerializer
 
 
-class AyatViewSet(viewsets.ModelViewSet):
+class AyatViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Ayat.objects.all().select_related('sura')
     serializer_class = AyatSerializer
     permission_classes = [AllowAny]
