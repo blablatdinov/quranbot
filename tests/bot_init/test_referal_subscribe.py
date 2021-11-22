@@ -1,7 +1,7 @@
 import pytest
 from django.conf import settings
 
-from apps.bot_init.models import Subscriber, AdminMessage
+from apps.bot_init.models import AdminMessage, Subscriber
 from apps.bot_init.services.commands_service import StartCommandService
 
 pytestmark = [pytest.mark.django_db]

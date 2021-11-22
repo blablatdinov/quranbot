@@ -1,8 +1,8 @@
 import pytest
 import requests_mock
 
-from apps.prayer.service import get_city_timezone
 from apps.prayer.exceptions.city_non_exist import CityNonExist
+from apps.prayer.service import get_city_timezone
 
 
 def test_get_non_existent_city_time_zone():

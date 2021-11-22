@@ -1,8 +1,8 @@
 import pytest
 from django.conf import settings
 
-from apps.bot_init.services.text_message_service import text_message_service
 from apps.bot_init.models import AdminMessage
+from apps.bot_init.services.text_message_service import text_message_service
 
 pytestmark = [pytest.mark.django_db]
 

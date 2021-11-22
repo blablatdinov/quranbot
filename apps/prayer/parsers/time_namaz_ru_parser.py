@@ -1,11 +1,11 @@
-from datetime import datetime, time
 import csv
 import time as time_
+from datetime import datetime, time
 
-from progressbar import progressbar as pbar
+import pytz
 import requests
 from bs4 import BeautifulSoup
-import pytz
+from progressbar import progressbar as pbar
 
 from apps.prayer.models import City, Day, Prayer
 from apps.prayer.schemas import PRAYER_NAMES

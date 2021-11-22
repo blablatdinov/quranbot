@@ -2,20 +2,20 @@
 from datetime import datetime, time, timedelta
 from typing import List, Tuple
 
-from django.db.models import Q, QuerySet
-from django.conf import settings
-from geopy.geocoders import Nominatim, GeoNames
-from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup
-from loguru import logger
 import pytz
+from django.conf import settings
+from django.db.models import Q, QuerySet
+from geopy.geocoders import GeoNames, Nominatim
+from loguru import logger
+from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 from apps.bot_init.markup import InlineKeyboard
 from apps.bot_init.models import Mailing, Subscriber
-from apps.bot_init.services.answer_service import Answer
 from apps.bot_init.service import get_subscriber_by_chat_id, send_answer, send_message_to_admin
+from apps.bot_init.services.answer_service import Answer
+from apps.prayer.exceptions.city_non_exist import CityNonExist
 from apps.prayer.models import City, Prayer, PrayerAtUser, PrayerAtUserGroup
 from apps.prayer.schemas import PRAYER_NAMES
-from apps.prayer.exceptions.city_non_exist import CityNonExist
 
 
 def get_address(x: str, y: str):

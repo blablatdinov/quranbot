@@ -1,8 +1,7 @@
-from apps.bot_init.service import get_admins_list
-
 import pytest
 
 from apps.bot_init.models import AdminMessage, Subscriber
+from apps.bot_init.service import get_admins_list
 from apps.bot_init.services.commands_service import StartCommandService
 
 pytestmark = [pytest.mark.django_db]

@@ -1,9 +1,9 @@
 import pytest
+from django.conf import settings
 from mixer.backend.django import mixer
 
-from apps.content.parsers import AyatParser
 from apps.content.models import Ayat
-from django.conf import settings
+from apps.content.parsers import AyatParser
 
 
 def get_text_from_file(file_name):

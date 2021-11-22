@@ -4,15 +4,15 @@ from typing import List
 from telebot.types import InlineKeyboardMarkup
 
 from apps.bot_init.markup import InlineKeyboard
+from apps.bot_init.models import AdminMessage, Subscriber
+from apps.bot_init.service import get_subscriber_by_chat_id
 from apps.bot_init.services.answer_service import Answer
 from apps.bot_init.services.text_message_service import translate_ayat_into_answer
-from apps.bot_init.models import Subscriber, AdminMessage
-from apps.bot_init.service import get_subscriber_by_chat_id
 from apps.bot_init.utils import get_tbot_instance, save_message
 from apps.content.models import Ayat, File
 from apps.content.service import find_ayat_by_text
 from apps.prayer.models import PrayerAtUser
-from apps.prayer.service import get_buttons, unread_prayer_type_minus_one, get_unread_prayers
+from apps.prayer.service import get_buttons, get_unread_prayers, unread_prayer_type_minus_one
 
 tbot = get_tbot_instance()
 

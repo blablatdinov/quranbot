@@ -3,11 +3,7 @@ from typing import List
 from loguru import logger
 
 from apps.bot_init.models import Subscriber
-from apps.bot_init.service import (
-    _created_subscriber_service,
-    _not_created_subscriber_service,
-    get_referal_answer,
-)
+from apps.bot_init.service import _created_subscriber_service, _not_created_subscriber_service, get_referal_answer
 from apps.bot_init.services.answer_service import Answer, AnswersList
 
 

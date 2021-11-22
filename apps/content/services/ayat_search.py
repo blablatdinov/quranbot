@@ -1,9 +1,8 @@
 from loguru import logger
 
-from apps.content.models import Ayat
-
-from apps.bot_init.services.text_message_service import get_ayat_by_sura_ayat
 from apps.bot_init.exceptions import AyatDoesNotExists
+from apps.bot_init.services.text_message_service import get_ayat_by_sura_ayat
+from apps.content.models import Ayat
 
 
 def get_ayat_by_sura_ayat_numbers(sura_number: int, ayat_number: int):

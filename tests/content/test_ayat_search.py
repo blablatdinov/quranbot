@@ -1,8 +1,8 @@
 import pytest
 from mixer.backend.django import mixer
 
-from apps.content.services.ayat_search import AyatSearcher
 from apps.bot_init.exceptions import AyatDoesNotExists
+from apps.content.services.ayat_search import AyatSearcher
 
 pytestmark = [pytest.mark.django_db]
 

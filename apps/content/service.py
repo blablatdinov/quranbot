@@ -3,10 +3,10 @@ from django.db import connection
 from django.db.models import F
 from loguru import logger
 
+from apps.bot_init.markup import InlineKeyboard, get_default_keyboard
 from apps.bot_init.models import Mailing, Subscriber
-from apps.bot_init.markup import get_default_keyboard, InlineKeyboard
-from apps.bot_init.services.answer_service import Answer
 from apps.bot_init.service import send_answer, send_message_to_admin
+from apps.bot_init.services.answer_service import Answer
 from apps.content.models import Ayat, MorningContent, Podcast
 
 

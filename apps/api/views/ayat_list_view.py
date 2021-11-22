@@ -1,9 +1,9 @@
-from rest_framework import viewsets, generics
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework import generics, viewsets
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
+from apps.api.serializers import AyatSerializer
 from apps.content.models import Ayat
 from apps.content.services.get_unused_ayats import get_unused_ayats
-from apps.api.serializers import AyatSerializer
 
 
 class AyatViewSet(viewsets.ReadOnlyModelViewSet):

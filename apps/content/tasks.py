@@ -1,9 +1,9 @@
 from __future__ import absolute_import, unicode_literals
-from apps.content.podcast_parser import PodcastParser
 
 from celery.schedules import crontab
 from celery.task import periodic_task
 
+from apps.content.podcast_parser import PodcastParser
 from apps.content.service import do_morning_content_distribution
 
 

@@ -5,19 +5,16 @@ from typing import List
 from django.conf import settings
 from loguru import logger
 
-from apps.bot_init.exceptions import SuraDoesNotExists, UnknownMessage
+from apps.bot_init.exceptions import AyatDoesNotExists, SuraDoesNotExists, UnknownMessage
 from apps.bot_init.markup import InlineKeyboard
 from apps.bot_init.models import AdminMessage, Mailing, Subscriber
-from apps.bot_init.service import get_admins_list, get_referal_link, get_subscriber_by_chat_id, get_referals_count
-from apps.bot_init.models import Mailing, Subscriber
+from apps.bot_init.service import get_admins_list, get_referal_link, get_referals_count, get_subscriber_by_chat_id
 from apps.bot_init.services.answer_service import Answer
-from apps.bot_init.service import get_admins_list
 from apps.bot_init.utils import get_tbot_instance
-from apps.bot_init.exceptions import AyatDoesNotExists
 from apps.content.models import Ayat, File
 from apps.content.service import find_ayat_by_text, get_random_podcast
-from apps.prayer.service import get_unread_prayers, set_city_to_subscriber, get_prayer_time_or_no
 from apps.prayer.models import City
+from apps.prayer.service import get_prayer_time_or_no, get_unread_prayers, set_city_to_subscriber
 
 tbot = get_tbot_instance()
 

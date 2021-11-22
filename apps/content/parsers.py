@@ -3,9 +3,9 @@
 import hashlib
 import re
 
+import requests
 from bs4 import BeautifulSoup
 from loguru import logger
-import requests
 from progressbar import progressbar as pbar
 
 from apps.content.models import Ayat, Sura
