@@ -1,7 +1,6 @@
 from django.contrib import admin
 
-from apps.content.models import MorningContent, File, Ayat, Podcast, Sura
-
+from apps.content.models import Ayat, File, MorningContent, Podcast, Sura
 
 admin.site.register(MorningContent)
 admin.site.register(File)

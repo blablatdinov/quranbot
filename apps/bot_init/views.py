@@ -1,17 +1,17 @@
 """Начальная обработка пакетов от телеграмма"""
+import telebot
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-import telebot
 from loguru import logger
 
 from apps.bot_init.service import send_answer
-from apps.bot_init.services.inline_search_service import inline_query_service
-from apps.bot_init.services.commands_service import CommandService
-from apps.bot_init.services.text_message_service import text_message_service
-from apps.bot_init.services.handle_service import handle_query_service
 from apps.bot_init.services.answer_service import Answer
-from apps.bot_init.utils import save_callback_data, save_message, stop_retry, get_tbot_instance
+from apps.bot_init.services.commands_service import CommandService
+from apps.bot_init.services.handle_service import handle_query_service
+from apps.bot_init.services.inline_search_service import inline_query_service
+from apps.bot_init.services.text_message_service import text_message_service
+from apps.bot_init.utils import get_tbot_instance, save_callback_data, save_message, stop_retry
 from apps.prayer.service import set_city_to_subscriber_by_location
 
 tbot = get_tbot_instance()

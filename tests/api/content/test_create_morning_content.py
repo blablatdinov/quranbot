@@ -1,6 +1,6 @@
 import pytest
 
-from apps.content.models import MorningContent, Ayat
+from apps.content.models import Ayat, MorningContent
 
 pytestmark = [pytest.mark.django_db]
 

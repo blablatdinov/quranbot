@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
-from apps.content.models import MorningContent
 from apps.api.serializers.ayat_serializer import AyatSerializer
+from apps.content.models import MorningContent
 
 
 class MorningContentCreateSerializer(serializers.Serializer):

@@ -1,11 +1,11 @@
 import re
 
 import pytest
-from django.conf import settings
 import requests_mock
+from django.conf import settings
 
-from apps.bot_init.services.answer_service import Answer, AnswersList
 from apps.bot_init.models import Message
+from apps.bot_init.services.answer_service import Answer, AnswersList
 
 pytestmark = [pytest.mark.django_db]
 

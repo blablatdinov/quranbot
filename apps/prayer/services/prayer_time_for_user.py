@@ -1,14 +1,14 @@
 # FIXME maybe rename module
 from datetime import datetime, timedelta, tzinfo
 
+import pytz
 from django.db.models import QuerySet
 from django.utils import timezone
 from loguru import logger
-import pytz
 
 from apps.bot_init.service import get_subscriber_by_chat_id
-from apps.prayer.models import Prayer, City, PrayerAtUser, PrayerAtUserGroup
 from apps.prayer.exceptions.subscriber_not_set_city import SubscriberNotSetCity
+from apps.prayer.models import City, Prayer, PrayerAtUser, PrayerAtUserGroup
 
 SUNRISE_INDEX = 1
 

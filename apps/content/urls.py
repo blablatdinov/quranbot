@@ -1,6 +1,6 @@
 from django.urls import path
 
-from apps.content.views import get_content, create_content, get_ayats, send_ayats
+from apps.content.views import create_content, get_ayats, get_content, send_ayats
 
 urlpatterns = [
     path("create/", create_content),

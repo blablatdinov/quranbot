@@ -1,14 +1,15 @@
 # TODO добавить тестов, чтоб не спарсить лишнего
 import json
 import re
+
 import pytest
 import requests_mock
-from mixer.backend.django import mixer
 from django.conf import settings
 from jinja2 import Template
+from mixer.backend.django import mixer
 
-from apps.content.podcast_parser import PodcastParser
 from apps.content.models import Podcast
+from apps.content.podcast_parser import PodcastParser
 
 pytestmark = [pytest.mark.django_db]
 

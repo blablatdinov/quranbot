@@ -2,7 +2,6 @@ from django.contrib import admin
 
 from apps.prayer.models import City, Day, Prayer, PrayerAtUser, PrayerAtUserGroup
 
-
 admin.site.register(City)
 admin.site.register(Day)
 admin.site.register(Prayer)

@@ -1,8 +1,13 @@
 import pytest
 
 from apps.bot_init.models import SubscriberAction
-from apps.bot_init.services.answer_service import AnswersList, Answer
-from apps.bot_init.service import _subscriber_unsubscribed, _created_subscriber_service, _not_created_subscriber_service, get_admins_list
+from apps.bot_init.service import (
+    _created_subscriber_service,
+    _not_created_subscriber_service,
+    _subscriber_unsubscribed,
+    get_admins_list
+)
+from apps.bot_init.services.answer_service import Answer, AnswersList
 
 pytestmark = [pytest.mark.django_db]
 

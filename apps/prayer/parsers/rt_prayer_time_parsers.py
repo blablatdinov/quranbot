@@ -1,10 +1,10 @@
-from datetime import datetime, time
 import csv
 import time as time_
-from loguru import logger
-from progressbar import progressbar as pbar
+from datetime import datetime, time
 
 import requests
+from loguru import logger
+from progressbar import progressbar as pbar
 
 from apps.prayer.models import City, Day, Prayer
 from apps.prayer.schemas import PRAYER_NAMES

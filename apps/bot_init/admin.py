@@ -1,11 +1,11 @@
 import json
 
+from django.conf import settings
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 from loguru import logger
 
-from django.conf import settings
-from apps.bot_init.models import AdminMessage, CallbackData, Mailing, Message, Subscriber, SubscriberAction, Admin
+from apps.bot_init.models import Admin, AdminMessage, CallbackData, Mailing, Message, Subscriber, SubscriberAction
 from apps.content.models import File
 
 

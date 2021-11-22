@@ -1,4 +1,5 @@
 import os.path
+
 from config.splitted_settings.environ import env
 
 DEBUG = env("DEBUG")

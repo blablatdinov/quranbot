@@ -1,8 +1,8 @@
 import pytest
 
-from apps.content.services.create_morning_content import MorningContentCreator
-from apps.content.models import Ayat
 from apps.content.exceptions import ContentTooLong
+from apps.content.models import Ayat
+from apps.content.services.create_morning_content import MorningContentCreator
 
 pytestmark = [pytest.mark.django_db]
 

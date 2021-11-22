@@ -1,9 +1,9 @@
 import pytest
-
 from django.conf import settings
+
 from apps.bot_init.models import Subscriber
-from apps.bot_init.services.commands_service import StartCommandService
 from apps.bot_init.service import get_referals_count
+from apps.bot_init.services.commands_service import StartCommandService
 
 pytestmark = [pytest.mark.django_db]
 

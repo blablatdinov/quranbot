@@ -1,7 +1,7 @@
 import pytest
 
-from apps.bot_init.services.commands_service import CommandService
 from apps.bot_init.services.answer_service import AnswersList
+from apps.bot_init.services.commands_service import CommandService
 
 pytestmark = [pytest.mark.django_db]
 
