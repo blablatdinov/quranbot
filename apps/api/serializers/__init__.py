@@ -1,6 +1,5 @@
-from .ayat_serializer import AyatSerializer, AyatListSerializer
-from .morning_content_serializer import MorningContentSerializer, MorningContentCreateSerializer
-
+from .ayat_serializer import AyatListSerializer, AyatSerializer
+from .morning_content_serializer import MorningContentCreateSerializer, MorningContentSerializer
 
 __all__ = [
     AyatSerializer,

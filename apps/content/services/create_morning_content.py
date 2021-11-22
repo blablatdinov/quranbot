@@ -1,7 +1,7 @@
 from typing import List
 
-from apps.content.models import MorningContent, Ayat
 from apps.content.exceptions import ContentTooLong
+from apps.content.models import Ayat, MorningContent
 
 
 class MorningContentCreator:

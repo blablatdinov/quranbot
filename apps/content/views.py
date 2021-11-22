@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
-from apps.content.models import MorningContent, Ayat
+from apps.content.models import Ayat, MorningContent
 
 
 def get_content(request):

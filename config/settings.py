@@ -1,12 +1,11 @@
 import os
 from collections import namedtuple
 
+import ddtrace
 from loguru import logger
 from split_settings.tools import include
 
 from config.splitted_settings.environ import env
-
-import ddtrace
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

@@ -2,12 +2,12 @@ import re
 from datetime import datetime
 
 import pytest
-from mixer.backend.django import mixer
 import requests_mock
 from django.conf import settings
+from mixer.backend.django import mixer
 
-from apps.prayer.parsers.time_namaz_ru_parser import PrayerTimeParser
 from apps.prayer.models import Prayer
+from apps.prayer.parsers.time_namaz_ru_parser import PrayerTimeParser
 
 pytestmark = [pytest.mark.django_db]
 

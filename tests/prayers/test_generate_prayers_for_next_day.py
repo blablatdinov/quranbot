@@ -1,8 +1,8 @@
 from datetime import datetime
 
 import pytest
-from mixer.backend.django import mixer
 import requests_mock
+from mixer.backend.django import mixer
 
 from apps.prayer.services.prayer_time_for_user import PrayerAtUserGenerator
 

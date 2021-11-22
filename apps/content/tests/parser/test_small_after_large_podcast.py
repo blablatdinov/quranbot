@@ -1,10 +1,10 @@
 import re
 
-import requests_mock
 import pytest
+import requests_mock
 
+from apps.content.models import File, Podcast
 from apps.content.podcast_parser import PodcastParser
-from apps.content.models import Podcast, File
 
 pytestmark = [pytest.mark.django_db]
 

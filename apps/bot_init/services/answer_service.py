@@ -1,5 +1,5 @@
-from telebot.apihelper import ApiException
 from loguru import logger
+from telebot.apihelper import ApiException
 
 from apps.bot_init.markup import InlineKeyboard, Keyboard, get_default_keyboard
 from apps.bot_init.utils import save_message
@@ -29,7 +29,7 @@ class Answer:
         self.chat_id = chat_id
 
     def _send(self):
-        from apps.bot_init.service import send_message_to_admin, _subscriber_unsubscribed
+        from apps.bot_init.service import _subscriber_unsubscribed, send_message_to_admin
         from apps.bot_init.views import tbot
         try:
             if self.tg_audio_id:

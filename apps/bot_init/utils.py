@@ -1,14 +1,14 @@
 """Утилиты для работы бота."""
-from datetime import datetime
 import json
 import re
+from datetime import datetime
 
+from django.conf import settings
 from django.utils.timezone import make_aware
+from loguru import logger
+from telebot import TeleBot
 
 from apps.bot_init.models import CallbackData, Message
-from django.conf import settings
-from telebot import TeleBot
-from loguru import logger
 
 
 def save_message(msg):

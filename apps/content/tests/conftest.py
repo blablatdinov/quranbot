@@ -1,9 +1,8 @@
 import json
 
 import pytest
-from mixer.backend.django import mixer
-
 from django.conf import settings
+from mixer.backend.django import mixer
 
 
 @pytest.fixture

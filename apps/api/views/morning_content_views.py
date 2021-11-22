@@ -2,11 +2,11 @@ from rest_framework import generics
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
-from apps.content.services.create_morning_content import MorningContentCreator
-from apps.content.models import MorningContent
-from apps.api.serializers import MorningContentCreateSerializer, MorningContentSerializer
 from apps.api.paginators import Paginator
+from apps.api.serializers import MorningContentCreateSerializer, MorningContentSerializer
 from apps.content.exceptions.content_too_long import ContentTooLong
+from apps.content.models import MorningContent
+from apps.content.services.create_morning_content import MorningContentCreator
 
 
 class MorningContentView(generics.ListCreateAPIView):
