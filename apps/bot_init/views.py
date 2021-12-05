@@ -1,4 +1,4 @@
-"""Начальная обработка пакетов от телеграмма"""
+"""Начальная обработка пакетов от телеграмма."""
 import telebot
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
@@ -42,7 +42,7 @@ def start_handler(message):
 @tbot.message_handler(content_types=["text"])
 @stop_retry
 def text_handler(message):
-    """Обработчик тестовых сообщений в т. ч. некоторых комманд."""
+    """Обработчик тестовых сообщений в т. ч. некоторых команд."""
     logger.info(f"Text message handler. Subscriber={message.chat.id}, text={message.text}")
     save_message(message)
     answer = text_message_service(message.chat.id, message.text, message.message_id)
@@ -51,15 +51,19 @@ def text_handler(message):
 
 @tbot.callback_query_handler(func=lambda call: True)
 def handle_query(call):
-    """Обравботка нажатий на инлайн кнопку."""
-    logger.info(f"Inline button handler. Subscriber={call.from_user.id}, call_data={call.data}, message_id={call.message.message_id}, message_text={call.message.text}, call_id={call.id}")
+    """Обработка нажатий на инлайн кнопку."""
+    logger.info(
+        f'Inline button handler. Subscriber={call.from_user.id}, '
+        f'call_data={call.data}, message_id={call.message.message_id}, '
+        f'message_text={call.message.text}, call_id={call.id}',
+    )
     save_callback_data(call)
     answer = handle_query_service(
         chat_id=call.from_user.id,
         text=call.data,
         message_id=call.message.message_id,
         message_text=call.message.text,
-        call_id=call.id
+        call_id=call.id,
     )
     if isinstance(answer, Answer) or isinstance(answer, list):
         send_answer(answer, call.from_user.id)
@@ -67,12 +71,12 @@ def handle_query(call):
 
 @tbot.message_handler(content_types=["location"])
 def handle_location(message):
-    """Обравботка геолокации."""
+    """Обработка геолокации."""
     logger.info("Geo location handler.")
     save_message(message)
     answer = set_city_to_subscriber_by_location(
         (message.location.latitude, message.location.longitude),
-        message.chat.id
+        message.chat.id,
     )
     send_answer(answer, message.chat.id)
 
