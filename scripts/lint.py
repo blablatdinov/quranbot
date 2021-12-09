@@ -29,7 +29,7 @@ def find_filer_for_speller(files: List[str]) -> List[str]:
     r'((^| )[^tests].*?(py|md|html))'
     """
     def _check(file: str):
-        if file.startswith('tests') or 'migrations' in file:
+        if 'tests' in file or 'migrations' in file or 'fixtures' in file:
             return False
 
         if file.endswith(tuple(CHECKED_FILES_EXTENSIONS)):
@@ -95,6 +95,8 @@ def get_files_list(file_paths: List[str]) -> List[str]:
     for file_path in file_paths:
         if os.path.isdir(file_path):
             for directory, _, files in os.walk(file_path):
+                if directory.startswith('./.venv'):
+                    continue
                 result += [f'{directory}/{file_path}' for file_path in files]
 
         else:
