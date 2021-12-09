@@ -9,9 +9,13 @@ admin.site.register(Podcast)
 
 @admin.register(Ayat)
 class AyatAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'one_day_content',)
+    """Конфигурация административной панели для аятов."""
+
+    list_display = ('__str__', 'one_day_content')
 
 
 @admin.register(Sura)
 class SuraAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'pars_hash',)
+    """Конфигурация административной панели для сур."""
+
+    list_display = ('__str__', 'pars_hash')

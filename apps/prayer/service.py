@@ -11,7 +11,7 @@ from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 from apps.bot_init.markup import InlineKeyboard
 from apps.bot_init.models import Mailing, Subscriber
-from apps.bot_init.service import get_subscriber_by_chat_id, send_answer, send_message_to_admin
+from apps.bot_init.service import get_subscriber_by_chat_id, send_message_to_admin
 from apps.bot_init.services.answer_service import Answer
 from apps.prayer.exceptions.city_non_exist import CityNonExist
 from apps.prayer.models import City, Prayer, PrayerAtUser, PrayerAtUserGroup
@@ -19,19 +19,20 @@ from apps.prayer.schemas import PRAYER_NAMES
 
 
 def get_address(x: str, y: str):
-    """Получаем аддресс по координатам благодаря библиотеке geopy."""
+    """Получаем адрес по координатам благодаря библиотеке geopy."""
     geolocator = Nominatim(user_agent="qbot")
     location = geolocator.reverse(f"{x}, {y}")
     return location.address
 
 
 def get_city_timezone(city_name: str):
+    """Получить часовой пояс города."""
     geolocator = Nominatim(user_agent="qbot")
     if location := geolocator.geocode(city_name):
         _, (lat, lng) = location
     else:
         raise CityNonExist
-    timezone = GeoNames(username="blablatdinov").reverse_timezone(query=(lat, lng,))
+    timezone = GeoNames(username="blablatdinov").reverse_timezone(query=(lat, lng))
     logger.debug(f"Timezone for {city_name}={timezone}")
     return pytz.timezone(str(timezone.pytz_timezone))
 
@@ -56,7 +57,6 @@ def get_city_not_found_answer(text: str = None) -> Answer:
 
 def set_city_to_subscriber_by_location(location: tuple, chat_id: int) -> Answer:
     """Ищем город и если не находим, то предлагаем пользователю найти в поиске."""
-    # TODO создать ф-ю для доставания подписчика с try, except. Побить функцию
     subscriber = Subscriber.objects.get(tg_chat_id=chat_id)
     address = get_address(location[0], location[1])
 
@@ -65,7 +65,7 @@ def set_city_to_subscriber_by_location(location: tuple, chat_id: int) -> Answer:
         if city := City.objects.filter(name__contains=elem).first():
             answer = set_city_to_subscriber(city, subscriber.tg_chat_id)
             return answer
-    print(location, address)  # TODO логгировать
+    logger.info(f'Finded city {location}, {address}')
     return get_city_not_found_answer()
 
 
@@ -76,9 +76,11 @@ def get_prayer_time(city: City, date: datetime = datetime.today() + timedelta(da
 
 
 def generate_prayer_at_user(chat_id: int, prayers: QuerySet):
-    """Функция должна генерировать новы PrayerAtUser или возвращать те, которые уже есть."""
-    # TODO подумать над названием (сгенерировать или вернуть то, что есть)
-    # TODO сделать тест на разные дни
+    """Функция должна генерировать новы PrayerAtUser или возвращать те, которые уже есть.
+
+    TODO подумать над названием (сгенерировать или вернуть то, что есть)
+    TODO сделать тест на разные дни
+    """
     subscriber = get_subscriber_by_chat_id(chat_id)
     # Найти те, которые уже есть
     if PrayerAtUser.objects.filter(subscriber=subscriber, prayer__day=prayers[0].day):
@@ -105,8 +107,10 @@ def get_buttons(
         subscriber: Subscriber = None,
         prayer_times: QuerySet = None,
         prayer_at_user_pk: int = None) -> List[List[Tuple[str, str]]]:
-    """Возвращает кнопки со статусом намазов."""
-    # TODO если пользователь получил 2 времени намаза в разных городах в один день, вероятно будет ошибка
+    """Возвращает кнопки со статусом намазов.
+
+    TODO если пользователь получил 2 времени намаза в разных городах в один день, вероятно будет ошибка
+    """
     text_for_read_prayer = "set_prayer_status_to_unread({})"
     text_for_unread_prayer = "set_prayer_status_to_read({})"
     if prayer_at_user_pk:
@@ -139,10 +143,12 @@ def get_text_prayer_times(prayer_times: QuerySet, city_name: str, date: datetime
 
 
 def send_prayer_time(date: datetime = None) -> None:
-    """Рассылаем время намаза с кнопками."""
-    # TODO написать тесты
-    # TODO Переписать на сервисный объект
-    # TODO одинаковы куски кода content.service.do_morning_content_distribution
+    """Рассылаем время намаза с кнопками.
+
+    TODO написать тесты
+    TODO Переписать на сервисный объект
+    TODO одинаковы куски кода content.service.do_morning_content_distribution
+    """
     if date is None:
         date = (datetime.today() + timedelta(days=1))
     mailing = Mailing.objects.create()
@@ -152,17 +158,19 @@ def send_prayer_time(date: datetime = None) -> None:
             logger.debug(f"{prayer_times=}")
             text = get_text_prayer_times(prayer_times, subscriber.city.name, date)
             logger.debug(f"{text=}")
-            keyboard = InlineKeyboard(get_buttons(subscriber, prayer_times.exclude(name="sunrise"))).keyboard
+            keyboard = InlineKeyboard(get_buttons(subscriber, prayer_times.exclude(name='sunrise'))).keyboard
             message_instance = Answer(text, keyboard=keyboard).send(subscriber.tg_chat_id)
 
             message_instance.mailing = mailing
-            message_instance.save(update_fields=["mailing"])
-        text = f"Рассылка #{mailing.pk} завершена"
+            message_instance.save(update_fields=['mailing'])
+        text = f'Рассылка #{mailing.pk} завершена'
         msg = send_message_to_admin(text)
         msg.mailing = mailing
         msg.save(update_fields=["mailing"])
     except Exception as e:
-        logger.error(f"Subscriber: {subscriber}, city: {subscriber.city}, dont send prayer time. Error message: {str(e)}")
+        logger.error(
+            f'Subscriber: {subscriber}, city: {subscriber.city}, dont send prayer time. Error message: {str(e)}',
+        )
 
 
 def get_now_prayer(chat_id: int, date_time=None) -> Prayer:
@@ -172,7 +180,7 @@ def get_now_prayer(chat_id: int, date_time=None) -> Prayer:
     prayer = Prayer.objects.filter(
         day__date=date_time,
         city__subscriber__tg_chat_id=chat_id,
-        time__lt=prayer_time
+        time__lt=prayer_time,
     ).last()
     return prayer
 
@@ -184,8 +192,8 @@ def get_unread_prayers_by_chat_id(chat_id: int, date_time: datetime = None) -> Q
     unread_prayers = PrayerAtUser.objects.filter(
         subscriber=subscriber,
         is_read=False,
-        prayer__day__date__lte=date_time,  # меньше или равно
-        prayer__time__lt=date_time.time()
+        prayer__day__date__lte=date_time,
+        prayer__time__lt=date_time.time(),
     ).order_by("-pk")[1:]
     return unread_prayers
 
@@ -200,17 +208,21 @@ def unread_prayer_type_minus_one(chat_id: int, prayer_type_id: int) -> None:
 
 
 def get_keyboard_for_unread_prayers(chat_id: int) -> InlineKeyboardMarkup:
-    """Возвращает клавиатуру для непрочитанных намазаов. Чтобы люди при нажатии могли уменьшать их кол-во."""
+    """Возвращает клавиатуру для непрочитанных намазов. Чтобы люди при нажатии могли уменьшать их кол-во."""
     buttons = []
     for prayer_type_id in [0, 2, 3, 4, 5]:
         prayer_name = PRAYER_NAMES[prayer_type_id][1]
-        buttons.append(((f"{prayer_name} - 1", f"unread_prayer_type_minus_one({prayer_type_id}, {chat_id})"),),)
+        buttons.append(
+            (
+                (f"{prayer_name} - 1", f"unread_prayer_type_minus_one({prayer_type_id}, {chat_id})"),
+            ),
+        )
     return InlineKeyboard(buttons).keyboard
 
 
 def get_unread_prayers(chat_id) -> Answer:
     """Возвращает кол-во непрочитанных намазов с клавиатурой."""
-    text = "Непрочитано\n\n"
+    text = "Не прочитано\n\n"
     unread_prayers = get_unread_prayers_by_chat_id(chat_id)
     for i in [0, 2, 3, 4, 5]:
         prayer_name = PRAYER_NAMES[i][0]
@@ -224,7 +236,7 @@ def get_prayer_time_or_no(chat_id: int) -> Answer:
     subscriber = get_subscriber_by_chat_id(chat_id)
     if subscriber.city is None:
         return get_city_not_found_answer(
-            text="Вы не указали город, отправьте местоположение или воспользуйтесь поиском"
+            text='Вы не указали город, отправьте местоположение или воспользуйтесь поиском',
         )
     today = datetime.now()
     prayers = get_prayer_time(subscriber.city, today)

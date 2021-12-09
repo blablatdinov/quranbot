@@ -22,6 +22,6 @@ def subscriber():
 
 @pytest.fixture
 def tg_audio_answer():
-    with open(f"{settings.BASE_DIR}/apps/content/tests/fixtures/tg_answer.json", "r") as f:
+    with open(f"{settings.BASE_DIR}/tests/content/fixtures/tg_answer.json", "r") as f:
         data = json.load(f)
     return data

@@ -17,22 +17,26 @@ def get_time_by_str(text: str) -> datetime:
 
 
 class PrayerTimeParser():
+    """Парсер для сайта time-namaz.ru."""
 
     def __init__(self, city_name):
         self.city_name = city_name
         self.get_city_name_and_urls()
 
     def get_city_name_and_urls(self):
+        """Получить название города и url."""
         self.city_name_in_db = {
             "ufa": "Уфа",
             "moscow": "Москва",
         }.get(self.city_name)
-        self.links = ["https://www.time-namaz.ru/" + 
+        self.links = [
+            "https://www.time-namaz.ru/" +
             {
                 "ufa": "85_ufa",
                 "moscow": "9_moskva",
-            }.get(self.city_name) + "_vremy_namaza" + x
-            for x in [".html#month_time_namaz", "-next.html#month_time_namaz"]
+            }.get(self.city_name) +
+            "_vremy_namaza" +
+            x for x in [".html#month_time_namaz", "-next.html#month_time_namaz"]
         ]
 
     def _set_prayers_to_city(self, row):
@@ -65,16 +69,20 @@ class PrayerTimeParser():
                 month = self.get_month_number(row.find("th").text)
                 continue
             date_and_times = [x.text for x in row.find_all("td")]
-            date_and_times[0] = date_and_times[0].split(" ")[0] + f".{month}.{datetime.now(tz=pytz.timezone('Europe/Zurich')).year}"
+            date_and_times[0] = (
+                date_and_times[0].split(" ")[0] +
+                f".{month}.{datetime.now(tz=pytz.timezone('Europe/Zurich')).year}"
+            )
             result.append(date_and_times)
         return result
 
     @staticmethod
     def get_month_number(month_name):
+        """Получить номер месяца по имени."""
         return {
             "Январь": 1,
             "Февраль": 2,
-            "Март": 3, 
+            "Март": 3,
             "Апрель": 4,
             "Май": 5,
             "Июнь": 6,
@@ -85,7 +93,6 @@ class PrayerTimeParser():
             "Ноябрь": 11,
             "Декабрь": 12,
         }.get(month_name)
-
 
     def _get_page(self, url):
         response = requests.get(
@@ -98,11 +105,16 @@ class PrayerTimeParser():
                 "Accept-Encoding": "gzip, deflate, br",
                 "Connection": "keep-alive",
                 "Referer": "https://www.time-namaz.ru/85_ufa_vremy_namaza.html",
-                "Cookie": "user_siti=%D0%A3%D1%84%D0%B0; _ym_uid=1616427869978783309; _ym_d=1616427869; _ga=GA1.2.196004999.1616427871; _gid=GA1.2.1839317671.1616427871; PHPSESSID=a9b692157fc71f8acfad25037a16c62a; _ym_isad=1; _gat_gtag_UA_158129949_1=1",
+                'Cookie': (
+                    'user_siti=%D0%A3%D1%84%D0%B0; _ym_uid=1616427869978783309;'
+                    '_ym_d=1616427869; _ga=GA1.2.196004999.1616427871;'
+                    '_gid=GA1.2.1839317671.1616427871; PHPSESSID=a9b692157fc71f8acfad25037a16c62a; _ym_isad=1;'
+                    '_gat_gtag_UA_158129949_1=1'
+                ),
                 "Pragma": "no-cache",
                 "Cache-Control": "no-cache",
                 "TE": "Trailers",
-            }
+            },
         ).text
         soup = BeautifulSoup(response, "lxml")
         self.city = City.objects.get(name=self.city_name_in_db)
@@ -110,5 +122,6 @@ class PrayerTimeParser():
         [self._set_prayers_to_city(x) for x in date_and_times]
 
     def __call__(self):
+        """Entrypoint."""
         urls = self.links
         return [self._get_page(url) for url in urls]

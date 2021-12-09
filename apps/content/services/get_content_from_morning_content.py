@@ -1,4 +1,5 @@
 def get_content(ayats, additional_content):
+    """Получить утренний контент."""
     result = ''
     if additional_content != '':
         result += f'{additional_content}\n\n'

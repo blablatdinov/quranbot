@@ -14,7 +14,7 @@ def get_content(request):
     res = [
         {
             "day": x.day,
-            "content": x.content_for_day()
+            "content": x.content_for_day(),
         }
         for x in morning_content
     ]
@@ -34,7 +34,7 @@ def get_ayats(request):
             "pk": ayat.pk,
             "sura": ayat.sura,
             "ayat": ayat.ayat,
-            "content_length": len(ayat.content)
+            "content_length": len(ayat.content),
         }
         for ayat in Ayat.objects.filter(one_day_content__isnull=True, sura=sura_num).order_by("pk")
     ]

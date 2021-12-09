@@ -18,7 +18,7 @@ tbot = get_tbot_instance()
 
 
 def _get_ayat(text: str) -> List[Answer]:
-    """Получаем аят по pk и возвращам ответ пользователю"""
+    """Получаем аят по pk и возвращаем ответ пользователю."""
     ayat_pk = re.search(r'\d+', text).group(0)
     ayat = Ayat.objects.get(pk=ayat_pk)
     answer = translate_ayat_into_answer(ayat)
@@ -26,8 +26,8 @@ def _get_ayat(text: str) -> List[Answer]:
 
 
 def _unread_prayer_type_minus_one(text: str) -> Answer:
-    """
-    Парсим идентификатор для схемы PRAYER_NAMES и chat_id подписчика.
+    """Парсим идентификатор для схемы PRAYER_NAMES и chat_id подписчика.
+
     Помечаем намаз прочитанным для подписчика
     """
     regexp_result = re.findall(r'\d+', text)
@@ -38,9 +38,7 @@ def _unread_prayer_type_minus_one(text: str) -> Answer:
 
 
 def _add_ayat_in_favourites(text: str, chat_id: int) -> str:
-    """
-    Парсим id аята и добаввляем его в "Избранные" подписчику
-    """
+    """Парсим id аята и добавляем его в "Избранные" подписчику."""
     ayat_pk = re.search(r'\d+', text).group(0)
     ayat = Ayat.objects.get(pk=ayat_pk)
     subscriber = Subscriber.objects.get(tg_chat_id=chat_id)
@@ -50,7 +48,7 @@ def _add_ayat_in_favourites(text: str, chat_id: int) -> str:
 
 
 def _change_prayer_status(chat_id: int, text: str, to: bool) -> InlineKeyboardMarkup:
-    """Меняем статус намаза на прочитанный или не прочитанный"""
+    """Меняем статус намаза на прочитанный или не прочитанный."""
     subscriber = get_subscriber_by_chat_id(chat_id)
     prayer_pk = int(re.search(r'\d+', text).group(0))
     prayer = PrayerAtUser.objects.get(pk=prayer_pk)
@@ -66,7 +64,7 @@ def handle_query_service(
         call_id: int = None,
         message_id: int = None,
         message_text: str = None):
-    """Функция для обработки всех нажатий на инлайн кнопки"""
+    """Функция для обработки всех нажатий на инлайн кнопки."""
     if 'get_ayat' in text:
         answer = _get_ayat(text)
         return answer

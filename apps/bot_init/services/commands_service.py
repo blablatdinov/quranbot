@@ -8,6 +8,7 @@ from apps.bot_init.services.answer_service import Answer, AnswersList
 
 
 class StartCommandService:
+    """Обработчик команды /start."""
 
     def __init__(self, chat_id: int, message_text: str, additional_info: str = None):
         self.answers = AnswersList()
@@ -17,6 +18,7 @@ class StartCommandService:
         self.referer = None
 
     def __call__(self) -> List[Answer]:
+        """Entrypoint."""
         if self.additional_info:
             self.referer = self.get_referer(self.additional_info)
             logger.debug(f"Referal of new subscriber={self.additional_info}")
@@ -24,6 +26,7 @@ class StartCommandService:
         return self.answers
 
     def get_referer(self, referal_id):
+        """Получить пригласившего."""
         try:
             referer = Subscriber.objects.get(pk=int(referal_id))
         except (Subscriber.DoesNotExist, ValueError) as e:
@@ -32,11 +35,13 @@ class StartCommandService:
         return referer
 
     def generate_message_for_referer(self) -> Answer:
+        """Сгенерировать ссылку для пригласившего."""
         logger.debug(f"Send message to referer {self.referer.tg_chat_id=}")
         message = "По вашей реферальной ссылке произошла регистрация"
         return Answer(text=message, chat_id=self.referer.tg_chat_id)
 
     def get_or_create_subscriber(self):
+        """Получить или создать подписчика."""
         if (subscriber_query_set := Subscriber.objects.filter(tg_chat_id=self.chat_id)).exists():
             logger.debug("This chat id was registered")
             subscriber = subscriber_query_set.first()
@@ -63,6 +68,7 @@ class StartCommandService:
 
 
 class CommandService:
+    """Обработчик команд."""
 
     def __init__(self, chat_id: int, message_text: str):
         self.chat_id = chat_id
@@ -70,6 +76,7 @@ class CommandService:
         self.additional_info = self.get_additional_info()
 
     def get_additional_info(self):
+        """Получить доп. информацию из сообщения."""
         splitted_string = self.message_text.split()
         if len(splitted_string) > 1:
             logger.debug(f"{splitted_string=}")
@@ -78,8 +85,13 @@ class CommandService:
             return info
 
     def __call__(self) -> Answer:
+        """Entrypoint."""
         if "start" in self.message_text:
-            answer = StartCommandService(chat_id=self.chat_id, message_text=self.message_text, additional_info=self.additional_info)()
+            answer = StartCommandService(
+                chat_id=self.chat_id,
+                message_text=self.message_text,
+                additional_info=self.additional_info,
+            )()
         elif "referal" in self.message_text:
             answer = get_referal_answer(chat_id=self.chat_id)
 
