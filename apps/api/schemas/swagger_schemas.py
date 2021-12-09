@@ -9,7 +9,7 @@ get_prayer_time_doc = {
             openapi.Parameter(
                 "chat_id",
                 openapi.IN_QUERY,
-                description="Идентификатор чата в телеграм",
+                description="Идентификатор чата в телеграмм",
                 type=openapi.TYPE_STRING,
                 # items=openapi.Items(type=openapi.TYPE_INTEGER),
             ),

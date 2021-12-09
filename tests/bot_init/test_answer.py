@@ -55,7 +55,7 @@ def test_sending_without_chat_id(answer_without_chat_id):
     with pytest.raises(Exception) as exc:
         answer_without_chat_id.send()
 
-        assert "Передайте chat_id либо при иницализации класса Answer либо при вызове метода send" in str(exc)
+        assert "Передайте chat_id либо при инициализации класса Answer либо при вызове метода send" in str(exc)
 
 
 def test_answer_list_sending(answer_list, message_answer):
