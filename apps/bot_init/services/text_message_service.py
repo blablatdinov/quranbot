@@ -20,6 +20,7 @@ tbot = get_tbot_instance()
 
 
 def send_conditions_for_getting_prise(chat_id: int) -> Answer:
+    """Отправить условия участия в конкурсе."""
     text = AdminMessage.objects.get(key="conditions").text
     buttons = (
         (("Принять условия", "accept_with_conditions"),),
@@ -28,27 +29,30 @@ def send_conditions_for_getting_prise(chat_id: int) -> Answer:
     return Answer(
         text=text,
         chat_id=chat_id,
-        keyboard=keyboard.keyboard
+        keyboard=keyboard.keyboard,
     )
 
 
 def get_audio_answer(audio: File) -> Answer:
+    """Преобразовать ответ в аудио.
+
+    Если включен режим отладки, и это не основной бот, file_id работать не будут
+    """
     if (file_id := audio.tg_file_id) and not settings.DEBUG:
-        # Если включен режим отладки, и это не основной бот, file_id работать не будут
         return Answer(tg_audio_id=file_id)
     return Answer(audio.link_to_file)
 
 
 def get_podcast_in_answer_type() -> Answer:
-    """Получаем подкаст и упаковываем его для отправки пользователю"""
+    """Получаем подкаст и упаковываем его для отправки пользователю."""
     podcast = get_random_podcast()
     answer = get_audio_answer(podcast.audio)
     return answer
 
 
 def get_ayat_by_sura_ayat(text: str) -> Ayat:
-    """
-    Функция возвращает аят по номеру суры и аята
+    """Функция возвращает аят по номеру суры и аята.
+
     Например: пользователь присылает 2:3, по базе ищется данный аят и возвращает 2:1-5
     """
     sura_num, ayat_num = [int(x) for x in text.split(':')]
@@ -72,7 +76,7 @@ def get_ayat_by_sura_ayat(text: str) -> Ayat:
 
 
 def get_keyboard_for_ayat(ayat: Ayat):
-    """Возвращает клавиатуру для сообщения с аятом"""
+    """Возвращает клавиатуру для сообщения с аятом."""
     if ayat == Ayat.objects.first():
         next_ayat = Ayat.objects.get(pk=ayat.pk + 1)
         buttons = (
@@ -101,17 +105,23 @@ def get_keyboard_for_ayat(ayat: Ayat):
 
 
 def translate_ayat_into_answer(ayat: Ayat) -> List[Answer]:
-    text = f'<a href="https://umma.ru{ayat.sura.link}">({ayat.sura.number}:{ayat.ayat})</a>\n{ayat.arab_text}\n\n{ayat.content}\n\n<i>{ayat.trans}</i>\n\n'
+    """Преобразование аята в Answer."""
+    text = (
+        f'<a href="https://umma.ru{ayat.sura.link}">({ayat.sura.number}:{ayat.ayat})</a>\n{ayat.arab_text}\n\n'
+        f'{ayat.content}\n\n<i>{ayat.trans}</i>\n\n',
+    )
     return [Answer(text=text, keyboard=get_keyboard_for_ayat(ayat)), get_audio_answer(ayat.audio)]
 
 
 def delete_messages_in_mailing(mailing_pk: int):
+    """Удалить сообщения в рассылке."""
     messages = Mailing.objects.get(pk=mailing_pk).messages.all()
     for message in messages:
         tbot.delete_message(message.chat_id, message.message_id)
 
 
 def get_favourite_ayats(chat_id: int):
+    """Получить избранные аяты."""
     subscriber = Subscriber.objects.get(tg_chat_id=chat_id)
     ayats = subscriber.favourite_ayats.all()
     if ayats.count():
@@ -123,15 +133,18 @@ def get_favourite_ayats(chat_id: int):
 
 
 def get_concourse_info(chat_id: int) -> Answer:
-    text = AdminMessage.objects.get(key="concourse").text
+    """Получить информацию о конкурсе."""
     subscriber = get_subscriber_by_chat_id(chat_id)
-    text += f"\n\nКол-во пользователей зарегистрировавшихся по вашей ссылке: {get_referals_count(subscriber)}"
-    text += f"\n\n{get_referal_link(subscriber)}"
+    text = '{}\n\n{}\n\n{}'.format(
+        AdminMessage.objects.get(key="concourse").text,
+        f'Кол-во пользователей зарегистрировавшихся по вашей ссылке: {get_referals_count(subscriber)}',
+        get_referal_link(subscriber)
+    )
     return Answer(text=text)
 
 
 def text_message_service(chat_id: int, message_text: str, message_id: int = None) -> Answer:
-    """Функция обрабатывает все текстовые сообщения"""
+    """Функция обрабатывает все текстовые сообщения."""
     if 'Подкасты' in message_text:
         logger.info(f"Subscriber={chat_id} getting random podcast")
         answer = get_podcast_in_answer_type()

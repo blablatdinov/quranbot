@@ -10,6 +10,8 @@ from apps.content.models import File
 
 
 class SubscriberActionInline(admin.StackedInline):
+    """Действие подписчика."""
+
     model = SubscriberAction
     extra = 0
 
@@ -39,6 +41,8 @@ class DisplayMailingFilter(admin.SimpleListFilter):
 
 @admin.register(Message)
 class MessageAdmin(admin.ModelAdmin):
+    """Класс для конфигурации сообщения в админке."""
+
     list_display = (
         "get_mailing_or_source", "date", "message_id", "get_message_text",
     )
@@ -77,6 +81,8 @@ class MessageAdmin(admin.ModelAdmin):
 
 @admin.register(Subscriber)
 class SubscriberAdmin(admin.ModelAdmin):
+    """Конфигурация подписчика для административной панели."""
+
     inlines = [SubscriberActionInline]
     search_fields = (
         "tg_chat_id",
@@ -86,10 +92,12 @@ class SubscriberAdmin(admin.ModelAdmin):
 
 @admin.register(SubscriberAction)
 class SubscriberActionAdmin(admin.ModelAdmin):
+    """Конфигурация действия подписчика для административной панели."""
+
     list_display = (
         "subscriber",
         "date_time",
-        "get_colorize_action"
+        "get_colorize_action",
     )
 
     def get_colorize_action(self, obj):

@@ -7,7 +7,7 @@ from apps.content.models import Ayat
 
 
 class Mailing(models.Model):
-    """Класс объеденяющий сообщения для удобного удаления при некорректной рассылке."""
+    """Класс объединяющий сообщения для удобного удаления при некорректной рассылке."""
 
     pass
 
@@ -16,21 +16,23 @@ class Mailing(models.Model):
         verbose_name_plural = "Рассылки"
 
     def __str__(self):
+        """Строковое представление."""
         return f"Mailing {self.pk}"
 
 
 class AdminMessage(models.Model):
     """Административные сообщения."""
 
-    title = models.CharField(max_length=128, verbose_name="Навзвание")
+    title = models.CharField(max_length=128, verbose_name="Название")
     text = models.TextField(verbose_name="Текст сообщения")
     key = models.CharField(max_length=128, verbose_name="Ключ, по которому сообщение вызывается в коде")
 
     class Meta:
-        verbose_name = "Админитративное сообщение"
-        verbose_name_plural = "Админитративное сообщения"
+        verbose_name = "Административное сообщение"
+        verbose_name_plural = "Административные сообщения"
 
     def __str__(self):
+        """Строковое представление."""
         return self.title
 
 
@@ -38,23 +40,26 @@ class Subscriber(models.Model):
     """Модель подписчика бота."""
 
     tg_chat_id = models.IntegerField(verbose_name="Идентификатор подписчика", unique=True)
-    is_active = models.BooleanField(default=True, verbose_name="Подписан ли польователь на бота")
+    is_active = models.BooleanField(default=True, verbose_name="Подписан ли пользователь на бота")
     step = models.CharField(max_length=100, verbose_name="Шаг пользователя", blank=True, null=True)
     comment = models.TextField(null=True, blank=True, verbose_name="Комментарий к подписчику")
     day = models.IntegerField(default=2, verbose_name="День, для рассылки утреннего контента")
     favourite_ayats = models.ManyToManyField(
-        Ayat, related_name="favorit_ayats", blank=True, verbose_name="Избранные аяты"
+        Ayat, related_name="favorit_ayats", blank=True, verbose_name="Избранные аяты",
     )
     city = models.ForeignKey(
-        "prayer.City", verbose_name="Город для рассылки намазов", on_delete=models.PROTECT, blank=True, null=True
+        "prayer.City", verbose_name="Город для рассылки намазов", on_delete=models.PROTECT, blank=True, null=True,
     )
-    referer = models.ForeignKey("self", on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Реферер подписчика")
+    referer = models.ForeignKey(
+        "self", on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Реферер подписчика",
+    )
 
     class Meta:
         verbose_name = "Подписчик"
         verbose_name_plural = "Подписчики"
 
     def __str__(self):
+        """Строковое представление."""
         return str(self.tg_chat_id)
 
 
@@ -68,11 +73,12 @@ class Admin(models.Model):  # TODO создавать админов из .env �
         verbose_name_plural = "Администраторы"
 
     def __str__(self):
+        """Строковое представление."""
         return str(self.subscriber)
 
 
 class Message(models.Model):
-    """Модель для хранения сообщеинй."""
+    """Модель для хранения сообщений."""
 
     date = models.DateTimeField(null=True, verbose_name="Дата отправки")
     from_user_id = models.IntegerField(verbose_name="Идентификатор отправителя")
@@ -89,6 +95,7 @@ class Message(models.Model):
         ordering = ["-message_id"]
 
     def __str__(self):
+        """Строковое представление."""
         if self.from_user_id == settings.TG_BOT.id:
             return f"to {self.chat_id}"
         return f"from {self.chat_id}"
@@ -119,6 +126,7 @@ class SubscriberAction(models.Model):
         verbose_name_plural = "Действия пользователей"
 
     def __str__(self):
+        """Строковое представление."""
         return f"{self.subscriber} {self.action}"
 
 
@@ -136,4 +144,5 @@ class CallbackData(models.Model):
         verbose_name_plural = "Данные с inline кнопок"
 
     def __str__(self):
+        """Строковое представление."""
         return f"{self.chat_id} {self.text}"
