@@ -12,6 +12,7 @@ class UnknownMessage(Exception):
         self.value = args[0]
 
     def __str__(self):
+        """Строковое представление."""
         return self.value
 
 

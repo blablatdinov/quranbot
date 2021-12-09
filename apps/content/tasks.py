@@ -15,4 +15,5 @@ def mailing():
 
 @periodic_task(run_every=(crontab(day_of_week=1, hour=5)), name="parse new podcasts (Monday)")
 def parse_new_podcasts():
+    """Скачать подкасты, вышедшие за неделю."""
     PodcastParser()()

@@ -26,7 +26,7 @@ def test_referer(subscriber, referer_message_answer, message_answer, morning_con
     assert answers[0].text == "По вашей реферальной ссылке произошла регистрация"
     assert answers[1].text == AdminMessage.objects.first().text
     assert answers[2].text == morning_content.content_for_day()
-    assert answers[3].text == "Зарегестрировался новый пользователь."
+    assert answers[3].text == "Зарегистрировался новый пользователь."
 
 
 def test_fake_referer(morning_content):

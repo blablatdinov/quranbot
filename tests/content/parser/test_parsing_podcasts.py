@@ -15,7 +15,7 @@ pytestmark = [pytest.mark.django_db]
 
 
 def get_html(file_name):
-    with open(f"{settings.BASE_DIR}/apps/content/tests/fixtures/{file_name}", "r") as f:
+    with open(f"{settings.BASE_DIR}/tests/content/fixtures/{file_name}", "r") as f:
         return f.read()
 
 
@@ -27,16 +27,16 @@ def get_podcast(podcast_title: str = None):
         # podcast_link_to_file = f"https://umma.ru/uploads/audio/{podcast_title}.mp3"
         podcast_link_to_file = "https://umma.ru/uploads/audio/t2b2gsqq5b.mp3"
 
-    with open(f"{settings.BASE_DIR}/apps/content/tests/fixtures/podcast_single.html", "r") as f:
+    with open(f"{settings.BASE_DIR}/tests/content/fixtures/podcast_single.html", "r") as f:
         return Template(f.read()).render(podcast_title=podcast_title, podcast_link_to_file=podcast_link_to_file)
 
 def get_audio():
-    with open(f"{settings.BASE_DIR}/apps/content/tests/fixtures/empty.mp3", "rb") as f:
+    with open(f"{settings.BASE_DIR}/tests/content/fixtures/empty.mp3", "rb") as f:
         return f.read()
 
 
 def tg_audio_answer():
-    with open(f"{settings.BASE_DIR}/apps/content/tests/fixtures/tg_answer.json", "r") as f:
+    with open(f"{settings.BASE_DIR}/tests/content/fixtures/tg_answer.json", "r") as f:
         data = json.load(f)
     return data
 

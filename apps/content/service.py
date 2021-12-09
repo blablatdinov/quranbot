@@ -11,7 +11,7 @@ from apps.content.models import Ayat, MorningContent, Podcast
 
 
 def get_random_podcast() -> Podcast:
-    """Возвращает рандомный подкаст"""
+    """Возвращает случайный подкаст."""
     podcast = Podcast.objects.order_by('?').first()
     logger.debug(podcast)
     return podcast
@@ -53,7 +53,9 @@ def get_subscribers_with_content():  # FIXME тесты
         try:
             logger.info(f'{elem=}')
             data.append({
-                elem[0]: elem[1] + f"\nСсылка на источник: <a href='https://umma.ru{elem[2].split('|')[0]}'>источник</a>"
+                elem[0]: (
+                    elem[1] + f"\nСсылка на источник: <a href='https://umma.ru{elem[2].split('|')[0]}'>источник</a>",
+                ),
             })
         except Exception as e:
             logger.error(str(e))
@@ -79,7 +81,7 @@ def do_morning_content_distribution():
     msg = send_message_to_admin(text)
     msg.mailing = mailing
     msg.save(update_fields=['mailing'])
-    # FIXME чет дофига длинная функция получается
+    # FIXME слишком длинная функция получается
 
 
 def search_ayat(text: str) -> Answer:
@@ -89,6 +91,7 @@ def search_ayat(text: str) -> Answer:
 
 
 def format_count_to_text(number):
+    """Отформатировать склонение."""
     div = number % 10
     if number == 11:
         return 'аятов'
@@ -125,7 +128,7 @@ def find_ayat_by_text(query_text: str, offset: int = None):
             ('<', f"change_query_ayat('{query_text}',{offset - 1})"),
             (f'{offset}/{ayats_count}', 'asdf'),
             ('>', f"change_query_ayat('{query_text}',{offset + 1})"),
-        )
+        ),
     ]
     keyboard = InlineKeyboard(buttons).keyboard
     text = ayat.get_content()

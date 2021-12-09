@@ -5,6 +5,7 @@ from apps.prayer.models import City
 
 
 def inline_query_service(city_name: str, query_id: int):
+    """Обработчик для поиска города."""
     streets = City.objects.filter(name__icontains=city_name)
     answers = [
         telebot.types.InlineQueryResultArticle(

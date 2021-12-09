@@ -15,6 +15,6 @@ def daily_prayer_time_sender():
 
 @periodic_task(run_every=(crontab(day_of_week=2, hour=6, minute=00)), name="parse prayer times")
 def parse_prayer_times():
+    """Спарсить времена намазов."""
     for city_name in ["moscow", "ufa"]:
         PrayerTimeParser(city_name=city_name)()
-
