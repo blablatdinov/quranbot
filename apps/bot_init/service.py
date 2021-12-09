@@ -15,6 +15,7 @@ from apps.bot_init.utils import get_tbot_instance, save_message
 from apps.content.models import MorningContent
 
 SCOPES = ["https://www.googleapis.com/auth/drive"]
+
 SERVICE_ACCOUNT_FILE = settings.BASE_DIR + "/deploy/quranbot-keys.json"
 tbot = get_tbot_instance()
 
@@ -77,7 +78,7 @@ def send_answer(answer, chat_id) -> Message:
     else:
         raise TypeError(
             "Функция принимает только экземпляры класса Answer или массив экземпляров класса Answer"
-            f"Было передано {type(answer)}"
+            f"Было передано {type(answer)}",
         )
     return message
 
@@ -92,7 +93,7 @@ def send_message_to_admin(message_text: str) -> Message:
 
 
 def _not_created_subscriber_service(subscriber: Subscriber) -> Answer:
-    """Фунция вызывается если пользователь, который уже существует в базе был корректно обработан."""
+    """Функция вызывается если пользователь, который уже существует в базе был корректно обработан."""
     if subscriber.is_active:
         return Answer("Вы уже зарегистрированы", chat_id=subscriber.tg_chat_id)
     _create_action(subscriber, SUBSCRIBER_ACTIONS[2][0])
@@ -108,23 +109,26 @@ def _created_subscriber_service(subscriber: Subscriber) -> List[Answer]:
     _create_action(subscriber, SUBSCRIBER_ACTIONS[0][0])
     answers = [
         Answer(start_message_text, chat_id=subscriber.tg_chat_id),
-        Answer(day_content, chat_id=subscriber.tg_chat_id)
+        Answer(day_content, chat_id=subscriber.tg_chat_id),
     ] + [
-        Answer("Зарегестрировался новый пользователь.", chat_id=admin) for admin in get_admins_list()
+        Answer("Зарегистрировался новый пользователь.", chat_id=admin) for admin in get_admins_list()
     ]
 
     return AnswersList(*answers)
 
 
 def get_referal_link(subscriber: Subscriber) -> str:
+    """Получить реф. ссылку."""
     return f"Ваша реферальная ссылка: https://t.me/{settings.TG_BOT.name}?start={subscriber.pk}"
 
 
 def get_referals_count(subscriber: Subscriber) -> int:
+    """Получить кол-во рефералов."""
     return Subscriber.objects.filter(referer=subscriber, is_active=True).count()
 
 
 def get_referal_answer(chat_id: int) -> Answer:
+    """Получить ответ на запрос по реф. программе."""
     subscriber = get_subscriber_by_chat_id(chat_id)
     referal_link = get_referal_link(subscriber)
     referals_count = get_referals_count(subscriber)
@@ -133,6 +137,7 @@ def get_referal_answer(chat_id: int) -> Answer:
 
 
 def get_referer(referal_id: int) -> Subscriber:
+    """Получить пригласившего."""
     logger.debug(f"Getting referal {referal_id=}")
     try:
         return Subscriber.objects.get(pk=referal_id)
@@ -141,6 +146,7 @@ def get_referer(referal_id: int) -> Subscriber:
 
 
 def get_or_create_subscriber(chat_id: int, referer_subscriber_id: int = None) -> Tuple[Subscriber, bool]:
+    """Получить или создать подписчика."""
     if (subscriber_query_set := Subscriber.objects.filter(tg_chat_id=chat_id)).exists():
         logger.debug("This chat id was registered")
         subscriber = subscriber_query_set.first()
@@ -207,12 +213,14 @@ def count_active_users() -> str:
 
 
 def send_message_to_winners(subscribers_queryset: QuerySet):
+    """Отправить сообщение победителям."""
     text = AdminMessage.objects.get(key="concourse_winner_message").text
     for s in subscribers_queryset:
         Answer(text=text).send(s.tg_chat_id)
 
 
 def determine_winners():
+    """Определить победителей."""
     referers_pk_list = list(set([
         x[0] for x in
         Subscriber.objects.filter(is_active=True, referer__isnull=False).values_list("referer")
@@ -223,5 +231,6 @@ def determine_winners():
 
 
 def commit_concourse():
+    """Завершить конкурс."""
     winners_quesryset = determine_winners()
     send_message_to_winners(winners_quesryset)

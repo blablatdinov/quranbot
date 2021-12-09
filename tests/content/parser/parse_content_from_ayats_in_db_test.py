@@ -12,7 +12,7 @@ def get_text_from_file(file_name):
 
 
 def generate_ayat(file_name):
-    return mixer.blend("content.Ayat", html=get_text_from_file(f"{settings.BASE_DIR}/apps/content/tests/fixtures/{file_name}")) 
+    return mixer.blend("content.Ayat", html=get_text_from_file(f"{settings.BASE_DIR}/tests/content/fixtures/{file_name}")) 
 
 
 # TODO: тест не проверяет если транслитерацию

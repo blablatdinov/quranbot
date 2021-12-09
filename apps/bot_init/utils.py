@@ -21,7 +21,7 @@ def save_message(msg):
     text = msg.text
     try:
         json_str = msg.json
-    except Exception:  # TODO конкретезировать ошибку
+    except Exception:  # TODO конкретизировать ошибку
         json_str = str(msg)
     json_text = json.dumps(json_str, indent=2, ensure_ascii=False)
     message_instance = Message.objects.create(
@@ -54,14 +54,14 @@ def save_callback_data(call) -> CallbackData:
     try:
         json_ = eval(json_)
         json_ = json.dumps(json_, indent=2, ensure_ascii=False)
-    except Exception:  # TODO конкретезировать
+    except Exception:  # TODO конкретизировать
         pass
     instance = CallbackData.objects.create(
         date=date,
         call_id=call_id,
         chat_id=chat_id,
         text=call_data,
-        json=json_
+        json=json_,
     )
     return instance
 

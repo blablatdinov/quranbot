@@ -2,7 +2,10 @@ run:
 	python manage.py runserver
 
 lint:
-	bash lint_script.sh
+	python scripts/lint.py
+
+yaspeller:
+	python scripts/lint.py --speller
 
 test:
 	pytest -n 4

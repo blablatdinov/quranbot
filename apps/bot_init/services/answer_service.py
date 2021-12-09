@@ -6,12 +6,15 @@ from apps.bot_init.utils import save_message
 
 
 class Answer:
+    """Класс-ответ возвращаемый в контроллеры."""
+
     text: str = None
     keyboard: Keyboard or InlineKeyboard = get_default_keyboard()
     tg_audio_id: str = None
     chat_id: int = None
 
     def __repr__(self):
+        """Строковое представление."""
         return f"{self.text[:30]} (chat_id={self.chat_id})"
 
     def __init__(
@@ -50,8 +53,12 @@ class Answer:
                 raise e
 
     def check_chat_id(self):
+        """Проверка идентификатора чата."""
         if self.chat_id is None:
-            raise Exception("Передайте chat_id либо при иницализации класса Answer либо при вызове метода send")  # TODO написать кастомный exception
+            # TODO написать кастомный exception
+            raise Exception(
+                'Передайте chat_id либо при инициализации класса Answer либо при вызове метода send',
+            )
 
     def send(self, chat_id: int = None):
         """Отправляем ответ пользователю.
@@ -66,10 +73,12 @@ class Answer:
 
 
 class AnswersList(list):
+    """Список ответов."""
 
     def __init__(self, *args, **kwargs):
         super(AnswersList, self).__init__(args)
 
     def send(self):
+        """Метод для отправки сообщений."""
         for elem in self:
             elem.send()

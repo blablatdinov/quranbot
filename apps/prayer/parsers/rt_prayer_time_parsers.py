@@ -15,7 +15,8 @@ def get_time_by_str(text: str) -> datetime:
     return datetime.strptime(text, "%d.%m.%Y")
 
 
-class PrayerTimeParser():
+class PrayerTimeParser:
+    """Класс, собирающий времена намазов для РТ."""
 
     def _set_prayers_to_city(self, row):
         day, _ = Day.objects.get_or_create(date=get_time_by_str(row[0]))
@@ -38,6 +39,7 @@ class PrayerTimeParser():
             self._set_prayers_to_city(row)
 
     def __call__(self):
+        """Entrypoint."""
         logger.info(f"Count of city for parsing: {City.objects.count()}")
         for i, city in enumerate(City.objects.all(), start=1):
             self.city = city
