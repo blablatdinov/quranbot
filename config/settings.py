@@ -2,6 +2,7 @@ import os
 from collections import namedtuple
 
 import ddtrace
+import toml
 from loguru import logger
 from split_settings.tools import include
 
@@ -85,3 +86,8 @@ if DEBUG:
     ddtrace.patch_all()
 
 RAMADAN_MODE = env('RAMADAN_MODE', bool, default=False)
+
+with open(f'{BASE_DIR}/pyproject.toml', 'r') as f:
+    PYPROJECT_FILE = toml.loads(f.read())
+
+VERSION = PYPROJECT_FILE['tool']['poetry']['version']
