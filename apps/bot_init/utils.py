@@ -21,7 +21,8 @@ def save_message(msg):
     text = msg.text
     try:
         json_str = msg.json
-    except Exception:  # TODO конкретизировать ошибку
+    except Exception as e:  # TODO конкретизировать ошибку
+        logger.error(f'{e}')
         json_str = str(msg)
     json_text = json.dumps(json_str, indent=2, ensure_ascii=False)
     message_instance = Message.objects.create(
@@ -54,7 +55,8 @@ def save_callback_data(call) -> CallbackData:
     try:
         json_ = eval(json_)
         json_ = json.dumps(json_, indent=2, ensure_ascii=False)
-    except Exception:  # TODO конкретизировать
+    except Exception as e:  # TODO конкретизировать
+        logger.error(f'{e}')
         pass
     instance = CallbackData.objects.create(
         date=date,
