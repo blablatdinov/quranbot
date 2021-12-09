@@ -31,8 +31,7 @@ class MorningContent(models.Model):
 class File(models.Model):
     """Модель файла."""
 
-    # TODO добавить путь к файлу если есть, verbose_name
-    name = models.CharField(max_length=128, blank=True, null=True)
+    name = models.CharField(max_length=128, blank=True, null=True, verbose_name='Имя файла')
     link_to_file = models.CharField(max_length=512, verbose_name='Ссылка на файл', blank=True, null=True)
     tg_file_id = models.CharField(
         max_length=512,
