@@ -62,14 +62,25 @@ def get_subscribers_with_content():  # FIXME тесты
     return data
 
 
+def _check_morning_content():
+    """Проверка на сколько еще осталось утреннего контента.
+
+    Если менее 10 дней, отправится оповещение админам.
+    """
+    subscriber_max_day = Subscriber.objects.order_by('day').last().day
+    morning_content_max_day = MorningContent.objects.order_by('day').last().day
+    if days := (morning_content_max_day - subscriber_max_day) < 4:
+        send_message_to_admin(f'Контента осталось на {days}')
+
+
 def do_morning_content_distribution():
     """Выполняем рассылку утреннего контента."""
-    # TODO можно заранее сгенерировать контент, Заранее оповещать админов, что контент кончается
     mailing = Mailing.objects.create()
     subscriber_content = get_subscribers_with_content()
+    _check_morning_content()
     for elem in subscriber_content:
         chat_id, content = list(elem.items())[0]
-        answer = Answer(content, keyboard=get_default_keyboard())  # TODO впиши коммент про answers это же не ответ
+        answer = Answer(content, keyboard=get_default_keyboard())
 
         if message_instance := send_answer(answer, chat_id):
             message_instance.mailing = mailing
@@ -81,7 +92,6 @@ def do_morning_content_distribution():
     msg = send_message_to_admin(text)
     msg.mailing = mailing
     msg.save(update_fields=['mailing'])
-    # FIXME слишком длинная функция получается
 
 
 def search_ayat(text: str) -> Answer:
