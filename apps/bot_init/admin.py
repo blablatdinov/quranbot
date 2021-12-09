@@ -125,5 +125,5 @@ admin.site.register(CallbackData)
 admin.site.register(Admin)
 
 staging_level = 'dev' if settings.DEBUG else 'prod'
-admin.site.site_title = f"Quran_365_bot v2.3.2 {staging_level}"
-admin.site.site_header = f"Quran_365_bot v2.3.2 {staging_level}"
+admin.site.site_title = f'Quran_365_bot v{settings.VERSION} {staging_level}'
+admin.site.site_header = f'Quran_365_bot v{settings.VERSION} {staging_level}'
