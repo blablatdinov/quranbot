@@ -25,7 +25,7 @@ def test_download_small_after_large(small_content, large_content, subscriber, tg
         parser.download_and_send_audio_file()
         parser.create_podcast()
 
-        parser.title = "Нихера себе размерчик"
+        parser.title = "Огромный себе размерчик"
         parser.link_to_file = "https://nifiga-sebe.mp3"
         parser.article_link = "https://nifiga-sebe.ru"
         parser.download_and_send_audio_file()
