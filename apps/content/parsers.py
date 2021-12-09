@@ -20,7 +20,7 @@ def get_html(url: str) -> str:
 
 
 def get_soup(html: str) -> BeautifulSoup:
-    """Функция преабразует html в soup объект."""
+    """Функция преобразует html в soup объект."""
     return BeautifulSoup(html, "lxml")
 
 
@@ -66,12 +66,13 @@ class AyatParser:
         return text
 
     def parse_content_from_db(self):
+        """Собрать контент с БД."""
         for ayat in pbar(Ayat.objects.all()):
             soup = get_soup(ayat.html)
             ayat.content = "".join([x for x in self.get_content(soup)]).replace(
                 # FIXME починить очистку текста
                 "Ссылки на богословские первоисточники и комментарий:",
-                ""
+                "",
             )
             ayat.arab_text = self.get_arab_text(soup)
             ayat.trans = self.get_transcription(soup)
@@ -128,7 +129,7 @@ class AyatParser:
                 ayat.content = "".join([x for x in self.get_content(block)]).replace(
                     # FIXME починить очистку текста
                     "Ссылки на богословские первоисточники и комментарий:",
-                    ""
+                    "",
                 )
                 ayat.html = str(block)
                 ayat.save()

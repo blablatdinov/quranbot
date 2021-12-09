@@ -5,6 +5,7 @@ from apps.content.models import Ayat, MorningContent
 
 
 class MorningContentCreator:
+    """Класс для создания утреннего контента."""
 
     def __init__(self, day: int, ayats_ids: List[int]):
         self.day = day
@@ -21,6 +22,7 @@ class MorningContentCreator:
         self.target_ayats = Ayat.objects.filter(pk__in=self.ayats_ids)
 
     def __call__(self):
+        """Entrypoint."""
         self.morning_content = MorningContent.objects.create(
             day=self.day,
         )
