@@ -28,6 +28,7 @@ boto3 = "^1.18.63"
 redis = "^4.0.0"
 hiredis = "^2.0.0"
 coreapi = "^2.3.3"
+toml = "^0.10.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.4"
