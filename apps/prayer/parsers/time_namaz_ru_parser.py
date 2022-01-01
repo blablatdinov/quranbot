@@ -23,6 +23,11 @@ class PrayerTimeParser():
         self.city_name = city_name
         self.get_city_name_and_urls()
 
+    def __call__(self):
+        """Entrypoint."""
+        urls = self.links
+        return [self._get_page(url) for url in urls]
+
     def get_city_name_and_urls(self):
         """Получить название города и url."""
         self.city_name_in_db = {
@@ -40,7 +45,8 @@ class PrayerTimeParser():
         ]
 
     def _set_prayers_to_city(self, row):
-        day, _ = Day.objects.get_or_create(date=get_time_by_str(row[0]))
+        date_index = 0
+        day, _ = Day.objects.get_or_create(date=get_time_by_str(row[date_index]))
         s = [1, 2, 3, 4, 5, 6]
         prayers = []
         for x in range(len(s)):
@@ -120,8 +126,3 @@ class PrayerTimeParser():
         self.city = City.objects.get(name=self.city_name_in_db)
         date_and_times = self._get_row(soup)
         [self._set_prayers_to_city(x) for x in date_and_times]
-
-    def __call__(self):
-        """Entrypoint."""
-        urls = self.links
-        return [self._get_page(url) for url in urls]
