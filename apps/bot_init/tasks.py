@@ -8,12 +8,12 @@ from apps.bot_init.services.db_dump_logs_uploader import DumpUploader
 
 
 @periodic_task(run_every=(crontab(hour=7, minute=30)), name="upload_dump (7:30)")
-def upload_dump():
+def upload_dump() -> None:
     """Таска для выгрузки дампа."""
     DumpUploader()()
 
 
 @periodic_task(run_every=(crontab(hour=6, minute=30)), name="check_users (6:30)")
-def check_users():
+def check_users() -> None:
     """Таска для проверки кол-ва активных пользователей."""
     count_active_users()

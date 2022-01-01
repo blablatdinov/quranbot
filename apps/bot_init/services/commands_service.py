@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional, Tuple
 
 from loguru import logger
 
@@ -10,7 +10,7 @@ from apps.bot_init.services.answer_service import Answer, AnswersList
 class StartCommandService:
     """Обработчик команды /start."""
 
-    def __init__(self, chat_id: int, message_text: str, additional_info: str = None):
+    def __init__(self, chat_id: int, message_text: str, additional_info: str = None) -> None:
         self.answers = AnswersList()
         self.chat_id = chat_id
         self.message_text = message_text
@@ -25,7 +25,7 @@ class StartCommandService:
         self.answers += self.registration_subscriber()
         return self.answers
 
-    def get_referer(self, referal_id):
+    def get_referer(self, referal_id: int) -> Subscriber:
         """Получить пригласившего."""
         try:
             referer = Subscriber.objects.get(pk=int(referal_id))
@@ -40,7 +40,7 @@ class StartCommandService:
         message = "По вашей реферальной ссылке произошла регистрация"
         return Answer(text=message, chat_id=self.referer.tg_chat_id)
 
-    def get_or_create_subscriber(self):
+    def get_or_create_subscriber(self) -> Tuple[Subscriber, bool]:
         """Получить или создать подписчика."""
         if (subscriber_query_set := Subscriber.objects.filter(tg_chat_id=self.chat_id)).exists():
             logger.debug("This chat id was registered")
@@ -70,12 +70,12 @@ class StartCommandService:
 class CommandService:
     """Обработчик команд."""
 
-    def __init__(self, chat_id: int, message_text: str):
+    def __init__(self, chat_id: int, message_text: str) -> None:
         self.chat_id = chat_id
         self.message_text = message_text
         self.additional_info = self.get_additional_info()
 
-    def get_additional_info(self):
+    def get_additional_info(self) -> Optional[str]:
         """Получить доп. информацию из сообщения."""
         splitted_string = self.message_text.split()
         if len(splitted_string) > 1:
