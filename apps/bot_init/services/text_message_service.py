@@ -114,14 +114,14 @@ def translate_ayat_into_answer(ayat: Ayat) -> List[Answer]:
     return [Answer(text=text, keyboard=get_keyboard_for_ayat(ayat)), get_audio_answer(ayat.audio)]
 
 
-def delete_messages_in_mailing(mailing_pk: int):
+def delete_messages_in_mailing(mailing_pk: int) -> None:
     """Удалить сообщения в рассылке."""
     messages = Mailing.objects.get(pk=mailing_pk).messages.all()
     for message in messages:
         tbot.delete_message(message.chat_id, message.message_id)
 
 
-def get_favourite_ayats(chat_id: int):
+def get_favourite_ayats(chat_id: int) -> Answer:
     """Получить избранные аяты."""
     subscriber = Subscriber.objects.get(tg_chat_id=chat_id)
     ayats = subscriber.favourite_ayats.all()
