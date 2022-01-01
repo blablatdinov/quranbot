@@ -38,7 +38,7 @@ def _unread_prayer_type_minus_one(text: str) -> Answer:
 
 
 def _add_ayat_in_favourites(text: str, chat_id: int) -> str:
-    """Парсим id аята и добавляем его в "Избранные" подписчику."""
+    """Парсим id аята и добавляем его в 'Избранные' подписчику."""
     ayat_pk = re.search(r'\d+', text).group(0)
     ayat = Ayat.objects.get(pk=ayat_pk)
     subscriber = Subscriber.objects.get(tg_chat_id=chat_id)
@@ -89,14 +89,14 @@ def handle_query_service(
             reply_markup=keyboard,
         )
     elif 'unread_prayer_type_minus_one' in text:
-        answer = _unread_prayer_type_minus_one(text)
+        answer = unread_prayer_type_minus_one(text)
         tbot.edit_message_text(
             text=answer.text,
             chat_id=chat_id,
             message_id=message_id,
             reply_markup=answer.keyboard,
         )
-    elif "change_query_ayat" in text:
+    elif 'change_query_ayat' in text:
         query_text, offset = eval(re.search(r'\(.+\)', text).group(0))
         answer = find_ayat_by_text(query_text, offset)[0]
         tbot.edit_message_text(
@@ -106,9 +106,9 @@ def handle_query_service(
             chat_id=chat_id,
             parse_mode='HTML',
         )
-    elif "accept_with_conditions" in text:
-        text = AdminMessage.objects.get(key="print_instructions").text
+    elif 'accept_with_conditions' in text:
+        text = AdminMessage.objects.get(key='print_instructions').text
         Answer(text=text).send(chat_id)
-        document_file_id = File.objects.get(name="PDF_ramadan_dairy").tg_file_id
+        document_file_id = File.objects.get(name='PDF_ramadan_dairy').tg_file_id
         message = tbot.send_document(chat_id, document_file_id)
         save_message(message)

@@ -20,12 +20,17 @@ class PrayerTimeParser:
 
     def _set_prayers_to_city(self, row):
         day, _ = Day.objects.get_or_create(date=get_time_by_str(row[0]))
-        s = [1, 3, 4, 6, 7, 8]
+        target_column_indexes = [1, 3, 4, 6, 7, 8]
         prayers = []
-        for x in range(len(s)):
-            prayer_time = time_.strptime(row[s[x]], "%H:%M")
+        for x in range(len(target_column_indexes)):
+            prayer_time = time_.strptime(row[target_column_indexes[x]], "%H:%M")
             prayer_time = time(hour=prayer_time.tm_hour, minute=prayer_time.tm_min)
-            prayers.append(Prayer(city=self.city, day=day, name=PRAYER_NAMES[x][0], time=prayer_time))
+            prayers.append(Prayer(
+                city=self.city,
+                day=day,
+                name=PRAYER_NAMES[x][0],
+                time=prayer_time
+            ))
         Prayer.objects.bulk_create(prayers)
 
     def _get_csv_file(self):
