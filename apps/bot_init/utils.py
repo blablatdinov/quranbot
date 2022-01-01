@@ -2,16 +2,17 @@
 import json
 import re
 from datetime import datetime
+from typing import Callable
 
 from django.conf import settings
 from django.utils.timezone import make_aware
 from loguru import logger
-from telebot import TeleBot
+from telebot import TeleBot, types
 
 from apps.bot_init.models import CallbackData, Message
 
 
-def save_message(msg):
+def save_message(msg: types.Message) -> Message:
     """Сохранение сообщения от пользователя."""
     logger.info("Saving message")
     date = make_aware(datetime.fromtimestamp(msg.date))
@@ -41,7 +42,7 @@ def get_tbot_instance() -> TeleBot:
     return TeleBot(settings.TG_BOT.token, threaded=False)
 
 
-def save_callback_data(call) -> CallbackData:
+def save_callback_data(call: types.CallbackQuery) -> CallbackData:
     """Функция для сохранения данных из inline кнопки."""
     logger.info("Saving callback data")
     date = make_aware(datetime.fromtimestamp(call.message.date))
@@ -68,9 +69,9 @@ def save_callback_data(call) -> CallbackData:
     return instance
 
 
-def stop_retry(func):
+def stop_retry(func: Callable) -> Callable:
     """Декоратор, предотвращает повторный ответ на одно сообщение."""
-    def wrapper(message):
+    def wrapper(message: types.Message) -> None:
         if Message.objects.filter(message_id=message.message_id):
             logger.error("Finding double message")
             return
