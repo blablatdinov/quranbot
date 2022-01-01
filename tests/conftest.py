@@ -1,4 +1,5 @@
 import pytest
+import requests_mock
 from django.contrib.auth import get_user_model
 from rest_framework.test import APIClient
 
@@ -25,3 +26,9 @@ def user(mixer):
 def client(anon, user):
     anon.force_authenticate(user=user)
     return anon
+
+
+@pytest.fixture()
+def http_mock():
+    with requests_mock.Mocker() as m:
+        yield m
