@@ -1,3 +1,6 @@
+start:
+	python manage.py start
+
 run:
 	python manage.py runserver
 
