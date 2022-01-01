@@ -4,6 +4,7 @@ from typing import List
 
 from django.conf import settings
 from loguru import logger
+from telebot.types import InlineKeyboardMarkup
 
 from apps.bot_init.exceptions import AyatDoesNotExists, SuraDoesNotExists, UnknownMessage
 from apps.bot_init.markup import InlineKeyboard
@@ -75,16 +76,16 @@ def get_ayat_by_sura_ayat(text: str) -> Ayat:
     raise AyatDoesNotExists
 
 
-def get_keyboard_for_ayat(ayat: Ayat):
+def get_keyboard_for_ayat(ayat: Ayat) -> InlineKeyboardMarkup:
     """Возвращает клавиатуру для сообщения с аятом."""
-    if ayat == Ayat.objects.first():
+    if ayat == Ayat.objects.order_by('id').first():
         next_ayat = Ayat.objects.get(pk=ayat.pk + 1)
         buttons = (
             (('Добавить в избранное', f'add_in_favourites({ayat.pk})'),),
             ((str(next_ayat), f'get_ayat({next_ayat.pk})'),),
         )
         return InlineKeyboard(buttons).keyboard
-    elif ayat == Ayat.objects.last():
+    elif ayat == Ayat.objects.order_by('id').last():
         prev_ayat = Ayat.objects.get(pk=ayat.pk - 1)
         buttons = (
             (('Добавить в избранное', f'add_in_favourites({ayat.pk})'),),
@@ -113,14 +114,14 @@ def translate_ayat_into_answer(ayat: Ayat) -> List[Answer]:
     return [Answer(text=text, keyboard=get_keyboard_for_ayat(ayat)), get_audio_answer(ayat.audio)]
 
 
-def delete_messages_in_mailing(mailing_pk: int):
+def delete_messages_in_mailing(mailing_pk: int) -> None:
     """Удалить сообщения в рассылке."""
     messages = Mailing.objects.get(pk=mailing_pk).messages.all()
     for message in messages:
         tbot.delete_message(message.chat_id, message.message_id)
 
 
-def get_favourite_ayats(chat_id: int):
+def get_favourite_ayats(chat_id: int) -> Answer:
     """Получить избранные аяты."""
     subscriber = Subscriber.objects.get(tg_chat_id=chat_id)
     ayats = subscriber.favourite_ayats.all()
@@ -138,7 +139,7 @@ def get_concourse_info(chat_id: int) -> Answer:
     text = '{}\n\n{}\n\n{}'.format(
         AdminMessage.objects.get(key="concourse").text,
         f'Кол-во пользователей зарегистрировавшихся по вашей ссылке: {get_referals_count(subscriber)}',
-        get_referal_link(subscriber)
+        get_referal_link(subscriber),
     )
     return Answer(text=text)
 
