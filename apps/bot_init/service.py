@@ -1,7 +1,7 @@
 """Бизнес логика для взаимодействия с телеграмм."""
 import os
 from time import sleep
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 from django.conf import settings
 from django.db.models.query import QuerySet
@@ -30,12 +30,12 @@ def get_admins_list() -> List[int]:
     return settings.TG_BOT.admins + [admin.subscriber.tg_chat_id for admin in Admin.objects.all()]
 
 
-def _create_action(subscriber: Subscriber, action: str):
+def _create_action(subscriber: Subscriber, action: str) -> None:
     """Создаем запись в БД о подписке, отписке или реактивации бота пользователем."""
     SubscriberAction.objects.create(subscriber=subscriber, action=action)
 
 
-def _subscriber_unsubscribed(chat_id: int):
+def _subscriber_unsubscribed(chat_id: int) -> None:
     """Действия, выполняемые при блокировке бота пользователем."""
     subscriber = Subscriber.objects.get(tg_chat_id=chat_id)
     subscriber.is_active = False
@@ -43,7 +43,7 @@ def _subscriber_unsubscribed(chat_id: int):
     _create_action(subscriber, SUBSCRIBER_ACTIONS[1][0])
 
 
-def _send_answer(answer: Answer, chat_id: int):  # TODO где будет регистрация tbot
+def _send_answer(answer: Answer, chat_id: int) -> None:
     """Отправляем сообщение пользователю."""
     try:
         if answer.tg_audio_id:
@@ -64,7 +64,7 @@ def _send_answer(answer: Answer, chat_id: int):  # TODO где будет рег
             raise e
 
 
-def send_answer(answer, chat_id) -> Message:
+def send_answer(answer: Answer, chat_id: int) -> Message:
     """Отправляем ответ пользователю.
 
     Функция может принять как единственный экземпляр класса Answer, так и список экземпляров.
@@ -175,7 +175,7 @@ def registration_subscriber(chat_id: int, referer_subscriber_id: int = None) -> 
     return answer
 
 
-def update_webhook(host=f"{settings.TG_BOT.webhook_host}/{settings.TG_BOT.token}"):
+def update_webhook(host: str = f"{settings.TG_BOT.webhook_host}/{settings.TG_BOT.token}") -> None:
     """Обновляем webhook."""
     tbot.remove_webhook()
     sleep(1)
@@ -183,7 +183,7 @@ def update_webhook(host=f"{settings.TG_BOT.webhook_host}/{settings.TG_BOT.token}
     logger.info(tbot.get_webhook_info())
 
 
-def get_subscriber_by_chat_id(chat_id: int):
+def get_subscriber_by_chat_id(chat_id: int) -> Optional[Subscriber]:
     """Получить подписчика по идентификатору."""
     try:
         subscriber = Subscriber.objects.get(tg_chat_id=chat_id)
@@ -192,7 +192,7 @@ def get_subscriber_by_chat_id(chat_id: int):
         logger.info(f"Subscriber {chat_id} does not exist")
 
 
-def check_user_status_by_typing(chat_id: int):
+def check_user_status_by_typing(chat_id: int) -> bool:
     """Определить подписан ли пользователь на бота, попробовав отправить сигнал о печати."""
     sub = get_subscriber_by_chat_id(chat_id)
     try:
@@ -212,14 +212,14 @@ def count_active_users() -> str:
     return result
 
 
-def send_message_to_winners(subscribers_queryset: QuerySet):
+def send_message_to_winners(subscribers_queryset: QuerySet[Subscriber]) -> None:
     """Отправить сообщение победителям."""
     text = AdminMessage.objects.get(key="concourse_winner_message").text
     for s in subscribers_queryset:
         Answer(text=text).send(s.tg_chat_id)
 
 
-def determine_winners():
+def determine_winners() -> QuerySet[Subscriber]:
     """Определить победителей."""
     referers_pk_list = list(set([
         x[0] for x in
@@ -230,7 +230,7 @@ def determine_winners():
     return winners
 
 
-def commit_concourse():
+def commit_concourse() -> None:
     """Завершить конкурс."""
     winners_quesryset = determine_winners()
     send_message_to_winners(winners_quesryset)

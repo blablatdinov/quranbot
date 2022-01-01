@@ -15,7 +15,7 @@ class Mailing(models.Model):
         verbose_name = "Рассылка"
         verbose_name_plural = "Рассылки"
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Строковое представление."""
         return f"Mailing {self.pk}"
 
@@ -31,7 +31,7 @@ class AdminMessage(models.Model):
         verbose_name = "Административное сообщение"
         verbose_name_plural = "Административные сообщения"
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Строковое представление."""
         return self.title
 
@@ -58,7 +58,7 @@ class Subscriber(models.Model):
         verbose_name = "Подписчик"
         verbose_name_plural = "Подписчики"
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Строковое представление."""
         return str(self.tg_chat_id)
 
@@ -72,7 +72,7 @@ class Admin(models.Model):  # TODO создавать админов из .env �
         verbose_name = "Администратор"
         verbose_name_plural = "Администраторы"
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Строковое представление."""
         return str(self.subscriber)
 
@@ -94,13 +94,13 @@ class Message(models.Model):
         verbose_name_plural = "Сообщения"
         ordering = ["-message_id"]
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Строковое представление."""
         if self.from_user_id == settings.TG_BOT.id:
             return f"to {self.chat_id}"
         return f"from {self.chat_id}"
 
-    def delete_in_tg(self):
+    def delete_in_tg(self) -> bool:
         """Метод удаляет сообщение у пользователя в телеграмм."""
         from apps.bot_init.service import delete_message_in_tg
         delete_message_in_tg(self.chat_id, self.message_id)
@@ -125,7 +125,7 @@ class SubscriberAction(models.Model):
         verbose_name = "Действия пользователя"
         verbose_name_plural = "Действия пользователей"
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Строковое представление."""
         return f"{self.subscriber} {self.action}"
 
@@ -143,6 +143,6 @@ class CallbackData(models.Model):
         verbose_name = "Данные с inline кнопок"
         verbose_name_plural = "Данные с inline кнопок"
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Строковое представление."""
         return f"{self.chat_id} {self.text}"

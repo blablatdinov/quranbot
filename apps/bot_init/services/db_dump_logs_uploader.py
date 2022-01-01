@@ -20,7 +20,7 @@ class DumpUploader:
             endpoint_url='https://storage.yandexcloud.net',
         )
 
-    def upload_to_storage(self, relative_path: str, upload_to: str = None):
+    def upload_to_storage(self, relative_path: str, upload_to: str = None) -> None:
         """Выгрузка в s3 storage."""
         if upload_to is None:
             upload_to = f"quranbot_dumps/{relative_path}"
@@ -30,7 +30,7 @@ class DumpUploader:
             upload_to,
         )
 
-    def dump_database_for_developers(self):
+    def dump_database_for_developers(self) -> None:
         """Выгрузить дамп для разработки.
 
         Из дампа удаляются сообщения и данные с кнопок.
@@ -43,12 +43,12 @@ class DumpUploader:
         )
         os.system(command)
 
-    def remove_file(self, relative_path: str):
+    def remove_file(self, relative_path: str) -> None:
         """Удалить файл."""
         path = os.path.join(settings.BASE_DIR, relative_path)
         os.remove(path)
 
-    def dump_database(self):
+    def dump_database(self) -> None:
         """Выгрузить дамп."""
         name = f"qbot_db_{self.formatted_date}.sql.gz"
         command = f"pg_dump -U qbot qbot_db -h localhost | gzip -c --best > {settings.BASE_DIR}/{name}"
@@ -61,17 +61,16 @@ class DumpUploader:
         walker = os.walk(f"{settings.BASE_DIR}/logs")
         files = next(walker)[2]
         result = [
-            file for file in files
-            if re.search(r"app\..+log", file)
+            file for file in files if re.search(r"app\..+log", file)
         ]
         return result
 
-    def remove_unused_logs(self):
+    def remove_unused_logs(self) -> None:
         """Удалить неиспользуемые логи."""
         for file in self.find_unused_logs():
             self.remove_file(f"logs/{file}")
 
-    def dump_logs(self):
+    def dump_logs(self) -> None:
         """Выгрузить логи в s3."""
         logs_archive_filename = f"logs_{self.formatted_date}.tar.gz"
         command = f"tar zcvf {logs_archive_filename} logs"
@@ -80,7 +79,7 @@ class DumpUploader:
         self.remove_file(logs_archive_filename)
         self.remove_unused_logs()
 
-    def __call__(self):
+    def __call__(self) -> None:
         """Функция снимает дамп базы данных и загружает его на облако."""
         logger.info("dump start")
         start_time = datetime.datetime.now()

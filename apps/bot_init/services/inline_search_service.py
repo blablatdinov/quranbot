@@ -4,7 +4,7 @@ from apps.bot_init.utils import get_tbot_instance
 from apps.prayer.models import City
 
 
-def inline_query_service(city_name: str, query_id: int):
+def inline_query_service(city_name: str, query_id: int) -> None:
     """Обработчик для поиска города."""
     streets = City.objects.filter(name__icontains=city_name)
     answers = [
