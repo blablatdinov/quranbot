@@ -1,5 +1,4 @@
-import json
-
+import ujson
 from django.conf import settings
 from django.contrib import admin
 from django.utils.safestring import mark_safe
@@ -44,15 +43,35 @@ class MessageAdmin(admin.ModelAdmin):
     """Класс для конфигурации сообщения в админке."""
 
     list_display = (
-        "get_mailing_or_source", "date", "message_id", "get_message_text",
+        "get_mailing_or_source", "date", "message_id", "get_message_text"
     )
+    exclude = ('json',)
     search_fields = ("text", "from_user_id", "chat_id")
+    readonly_fields = (
+        'date', 'from_user_id', 'message_id', 'chat_id', 'text', 'is_unknown', 'get_formatted_json',
+    )
     list_filter = (DisplayMailingFilter,)
+
+    def _count_spaces_in_start_line(self, line) -> int:
+        for i, x in enumerate(line):
+            if x != ' ':
+                return i
+
+        return 0
+
+    def get_formatted_json(self, message: Message):
+        """Форматирование json'a для админки."""
+        text_lines = ujson.dumps(eval(message.json), indent=2, ensure_ascii=False).split('\n')
+        res = []
+        for line in text_lines:
+            indent = self._count_spaces_in_start_line(line) * 10
+            res.append(f'<span style="margin-left: {indent}px">{line}</span>')
+        return mark_safe('<br>'.join(res))
 
     def get_message_text(self, obj):
         """Метод выводит в колонку админки текст сообщения."""
         if obj.text is None:
-            json_ = json.loads(obj.json)
+            json_ = ujson.loads(obj.json)
             try:
                 if audio := json_.get("audio"):
                     return mark_safe("<b>Аудио</b> - " + audio["title"])
@@ -75,6 +94,7 @@ class MessageAdmin(admin.ModelAdmin):
 
     get_message_text.short_description = "Текст"
     get_mailing_or_source.short_description = "Источник или номер рассылки"
+    get_formatted_json.short_description = 'Json сообщения'
 
     list_per_page = 50
 
