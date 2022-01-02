@@ -43,7 +43,7 @@ class DumpUploader:
             'pg_dump -U qbot qbot_db -h localhost '
             '--exclude-table-data="bot_init_callbackdata" '
             '--exclude-table-data="bot_init_message" > '
-            f'{settings.BASE_DIR}/dumps/dev_dump.sql && gzip {settings.BASE_DIR}/dumps/dev_dump.sql -f',
+            f'{settings.BASE_DIR}/dumps/dev_dump.sql && gzip {settings.BASE_DIR}/dumps/dev_dump.sql -f'
         )
         os.system(command)
 
