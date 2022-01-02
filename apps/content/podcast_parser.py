@@ -30,14 +30,14 @@ class PodcastParser:
         ...
 
     @staticmethod
-    def get_subscriber_for_first_sending():
+    def get_subscriber_for_first_sending() -> Subscriber:
         """Получить подписчика, чтобы отправить ему файлы и получить их идентификаторы."""
         return Subscriber.objects.get(tg_chat_id=get_admins_list()[0])
 
     def is_last_page(self, status_code):
         """Метод проверяет, является ли страница последней."""
         if status_code == 404:
-            raise AchievedLastPageException("Достигнута последняя страница")
+            raise AchievedLastPageException('Достигнута последняя страница')
 
     def get_articles_links_from_page(self):
         """Получить ссылки на статьи со страницы."""
@@ -54,13 +54,13 @@ class PodcastParser:
 
     def get_articles_page(self):
         """Получить страницу со статьями."""
-        response = requests.get(f"https://umma.ru/audlo/shamil-alyautdinov/page/{self.page_num}")
+        response = requests.get(f'https://umma.ru/audlo/shamil-alyautdinov/page/{self.page_num}')
         self.is_last_page(response.status_code)
         self.article_page_soup = get_soup(response.text)
 
     def send_audio_to_telegram(self, content, title):
         """Отправить аудиофайл в телеграмм."""
-        logger.info("Sending...")
+        logger.info('Sending...')
         msg = tbot.send_audio(
             self.sub.tg_chat_id,
             content,
@@ -73,18 +73,18 @@ class PodcastParser:
     def download_and_send_audio_file(self):
         """Скачать и отправить файл."""
         logger.info(
-            f"Download and send {self.title},\n"
-            f"{self.link_to_file=},\n"
-            f"{self.article_link=},",
+            f'Download and send {self.title},\n'
+            f'{self.link_to_file=},\n'
+            f'{self.article_link=},',
         )
         r = requests.get(self.link_to_file)
         file_size = sys.getsizeof(r.content)
-        logger.info(f"file size={file_size / 1024 / 1024} MB")
+        logger.info(f'file size={file_size / 1024 / 1024} MB')
         if file_size < 50 * 1024 * 1024:
             self.sending_audio_message_instance = self.send_audio_to_telegram(r.content, self.title)
             save_message(self.sending_audio_message_instance)
 
-        is_sended = hasattr(self, "sending_audio_message_instance")
+        is_sended = hasattr(self, 'sending_audio_message_instance')
         del r
 
         self.audio_file = File.objects.create(
@@ -92,7 +92,7 @@ class PodcastParser:
             tg_file_id=self.sending_audio_message_instance.audio.file_id if is_sended else None,
         )
         # Чтобы на следующей итерации если файл большой, то не присваивать File tg_file_id
-        delattr(self, "sending_audio_message_instance") if is_sended else None
+        delattr(self, 'sending_audio_message_instance') if is_sended else None
 
     def create_podcast(self):
         """Создать подкаст."""
@@ -112,7 +112,7 @@ class PodcastParser:
         for article_link in self.get_articles_links_from_page():
             self.article_link = article_link
             if self.check_article_link_already_parsed(article_link):
-                logger.info(f"Find exist podcast {article_link}")
+                logger.info(f'Find exist podcast {article_link}')
                 raise PodcastAlreadyExistException  # TODO протестировать этот момент
             self.get_article_info(article_link)
             self.download_and_send_audio_file()
@@ -120,7 +120,7 @@ class PodcastParser:
 
     def __call__(self):
         """Entrypoint."""
-        logger.info("Start parsing podcasts...")
+        logger.info('Start parsing podcasts...')
         self.page_num = 1
         self.sub = self.get_subscriber_for_first_sending()
 
@@ -136,4 +136,4 @@ class PodcastParser:
 
             self.page_num += 1
 
-        logger.info("Parsing end")
+        logger.info('Parsing end')
