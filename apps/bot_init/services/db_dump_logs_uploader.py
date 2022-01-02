@@ -12,8 +12,10 @@ class DumpUploader:
     """Класс, выгружающий дамп БД."""
 
     def __init__(self) -> None:
-        session = boto3.session.Session()
         self.formatted_date = datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
+        if not settings.ENABLE_S3:
+            return
+        session = boto3.session.Session()
         self.bucket_name = "blablatdinov"
         self.s3_client = session.client(
             service_name='s3',
@@ -22,6 +24,8 @@ class DumpUploader:
 
     def upload_to_storage(self, relative_path: str, upload_to: str = None) -> None:
         """Выгрузка в s3 storage."""
+        if not settings.ENABLE_S3:
+            return
         if upload_to is None:
             upload_to = f"quranbot_dumps/{relative_path}"
         self.s3_client.upload_file(
