@@ -31,4 +31,5 @@ static/
 # logs
 logs/
 
-
+# tmp files
+tmp*
