@@ -1,3 +1,5 @@
+import datetime
+
 from rest_framework import serializers
 
 from apps.content.models import File, Podcast
@@ -29,10 +31,10 @@ class PrayerTimeAtUserInstanceSerializer(serializers.ModelSerializer):
     prayer_name = serializers.SerializerMethodField()
     prayer_time = serializers.SerializerMethodField()
 
-    def get_prayer_name(self, obj):
+    def get_prayer_name(self, obj: PrayerAtUser) -> str:
         return obj.prayer.get_name_display()
 
-    def get_prayer_time(self, obj):
+    def get_prayer_time(self, obj: PrayerAtUser) -> datetime.datetime.time:
         return obj.prayer.time
 
     class Meta:
@@ -56,10 +58,10 @@ class PrayerTimeSerializer(serializers.ModelSerializer):
     prayer_time = serializers.SerializerMethodField()
     prayer_name = serializers.SerializerMethodField()
 
-    def get_prayer_name(self, obj):
+    def get_prayer_name(self, obj: Prayer) -> str:
         return obj.get_name_display()
 
-    def get_prayer_time(self, obj):
+    def get_prayer_time(self, obj: Prayer) -> datetime.datetime.time:
         return obj.time
 
     class Meta:

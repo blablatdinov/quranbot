@@ -23,5 +23,5 @@ class MorningContentSerializer(serializers.ModelSerializer):
             'related_ayats',
         ]
 
-    def get_content_length(self, obj):
+    def get_content_length(self, obj: MorningContent) -> int:
         return len(obj.content_for_day())

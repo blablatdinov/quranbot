@@ -1,9 +1,9 @@
-from django.db.models import QuerySet
+from typing import Iterable
 
 from apps.content.models import Ayat
 
 
-def get_content(ayats: QuerySet[Ayat], additional_content: str) -> str:
+def get_content(ayats: Iterable[Ayat], additional_content: str) -> str:
     """Получить утренний контент."""
     result = ''
     if additional_content != '':

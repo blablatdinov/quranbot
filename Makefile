@@ -5,7 +5,7 @@ run:
 	python manage.py runserver
 
 lint:
-	python scripts/lint.py
+	poetry run isort . && poetry run flake8 .
 
 yaspeller:
 	python scripts/lint.py --speller

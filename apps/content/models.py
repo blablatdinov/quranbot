@@ -1,8 +1,6 @@
 """Модели контента."""
 from django.db import models
 
-from apps.content.services.get_content_from_morning_content import get_content
-
 
 class MorningContent(models.Model):
     """Утренний контент - аяты связанные в один день."""
@@ -24,6 +22,7 @@ class MorningContent(models.Model):
 
         TODO подумать насчет генерации контента, сделать property
         """
+        from apps.content.services.get_content_from_morning_content import get_content
         ayats = Ayat.objects.filter(one_day_content__day=self.day).order_by('pk')
         return get_content(ayats, self.additional_content)
 
