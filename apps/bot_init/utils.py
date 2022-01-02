@@ -14,7 +14,7 @@ from apps.bot_init.models import CallbackData, Message
 
 def save_message(msg: types.Message) -> Message:
     """Сохранение сообщения от пользователя."""
-    logger.info("Saving message")
+    logger.info('Saving message')
     date = make_aware(datetime.fromtimestamp(msg.date))
     from_user_id = msg.from_user.id
     message_id = msg.message_id
@@ -44,15 +44,15 @@ def get_tbot_instance() -> TeleBot:
 
 def save_callback_data(call: types.CallbackQuery) -> CallbackData:
     """Функция для сохранения данных из inline кнопки."""
-    logger.info("Saving callback data")
+    logger.info('Saving callback data')
     date = make_aware(datetime.fromtimestamp(call.message.date))
     call_id = call.id
     chat_id = str(call.from_user.id)
     call_data = call.data
     json_ = str(call)
-    json_ = re.sub(r"<telebot\.types\.User[^>]+>", f"'{settings.TG_BOT.name}'", json_)
-    json_ = re.sub(r"<telebot\.types\.Chat[^>]+>", str(chat_id), json_)
-    json_ = re.sub(r"<telebot\.types\.[^>]+>", "None", json_)
+    json_ = re.sub(r'<telebot\.types\.User[^>]+>', f'"{settings.TG_BOT.name}"', json_)
+    json_ = re.sub(r'<telebot\.types\.Chat[^>]+>', str(chat_id), json_)
+    json_ = re.sub(r'<telebot\.types\.[^>]+>', 'None', json_)
     try:
         json_ = eval(json_)
         json_ = json.dumps(json_, indent=2, ensure_ascii=False)
@@ -73,7 +73,7 @@ def stop_retry(func: Callable) -> Callable:
     """Декоратор, предотвращает повторный ответ на одно сообщение."""
     def wrapper(message: types.Message) -> None:
         if Message.objects.filter(message_id=message.message_id):
-            logger.error("Finding double message")
+            logger.error('Finding double message')
             return
         func(message)
 

@@ -1,27 +1,29 @@
 from datetime import datetime
+from typing import List
 
 from apps.prayer.models import City, Prayer
 
 SUNRISE_INDEX = 1
 
 
-class PrayerTimeGetter():
+class PrayerTimeGetter:
     """Получатель для времени намаза."""
+    city: City
+    sunrise_time: datetime.time
+    prayers: List[Prayer]
 
-    def __init__(self, city_name) -> None:
+    def __init__(self, city_name: str) -> None:
         self.city_name = city_name
-        pass
 
-    def set_attrs(self):
+    def set_attrs(self) -> None:
         """Установить атрибуты для класса."""
-        self.city = self.city_name
         self.sunrise_time = self.prayers[SUNRISE_INDEX].time
         self.prayers = [
             prayer_time for prayer_time in self.prayers
-            if prayer_time.name != "sunrise"
+            if prayer_time.name != 'sunrise'
         ]
 
-    def __call__(self):
+    def __call__(self) -> 'PrayerTimeGetter':
         """Entrypoint."""
         self.city = City.objects.filter(name__icontains=self.city_name).first()
         self.prayers = Prayer.objects.filter(city=self.city, day__date=datetime.today())
