@@ -1,6 +1,7 @@
 import csv
 import time as time_
 from datetime import datetime, time
+from typing import List
 
 import pytz
 import requests
@@ -16,19 +17,19 @@ def get_time_by_str(text: str) -> datetime:
     return datetime.strptime(text, '%d.%m.%Y')
 
 
-class PrayerTimeParser():
+class PrayerTimeParser:
     """Парсер для сайта time-namaz.ru."""
 
-    def __init__(self, city_name):
+    def __init__(self, city_name: str) -> None:
         self.city_name = city_name
         self.get_city_name_and_urls()
 
-    def __call__(self):
+    def __call__(self) -> List[str]:
         """Entrypoint."""
         urls = self.links
         return [self._get_page(url) for url in urls]
 
-    def get_city_name_and_urls(self):
+    def get_city_name_and_urls(self) -> None:
         """Получить название города и url."""
         self.city_name_in_db = {
             'ufa': 'Уфа',
@@ -44,7 +45,7 @@ class PrayerTimeParser():
             x for x in ['.html#month_time_namaz', '-next.html#month_time_namaz']
         ]
 
-    def _set_prayers_to_city(self, row):
+    def _set_prayers_to_city(self, row: List) -> None:
         date_index = 0
         day, _ = Day.objects.get_or_create(date=get_time_by_str(row[date_index]))
         s = [1, 2, 3, 4, 5, 6]
@@ -57,17 +58,17 @@ class PrayerTimeParser():
             prayers.append(Prayer(city=self.city, day=day, name=PRAYER_NAMES[x][0], time=prayer_time))
         Prayer.objects.bulk_create(prayers)
 
-    def _get_csv_file(self):
+    def _get_csv_file(self) -> None:
         r = requests.get(self.city.link_to_csv)
         self.csv_file = r.content.decode('utf-8')
 
-    def _parse_prayer_times_for_city(self):
+    def _parse_prayer_times_for_city(self) -> None:
         self._get_csv_file()
         csv_reader = csv.reader(self.csv_file.splitlines(), delimiter=';')
         for row in pbar(csv_reader):
             self._set_prayers_to_city(row)
 
-    def _get_row(self, soup):
+    def _get_row(self, soup: BeautifulSoup) -> List:
         result = []
         table = soup.find('table', class_='namaz_time')
         for index, row in enumerate(table.find_all('tr', class_='')):
@@ -100,7 +101,7 @@ class PrayerTimeParser():
             'Декабрь': 12,
         }.get(month_name)
 
-    def _get_page(self, url):
+    def _get_page(self, url: str) -> None:
         response = requests.get(
             url,
             headers={

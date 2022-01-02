@@ -1,10 +1,11 @@
+from django.db.models import QuerySet
 from loguru import logger
 
 from apps.bot_init.exceptions import AyatDoesNotExists, SuraDoesNotExists
 from apps.content.models import Ayat
 
 
-def get_ayat_by_sura_ayat_numbers(sura_number: int, ayat_number: int):
+def get_ayat_by_sura_ayat_numbers(sura_number: int, ayat_number: int) -> QuerySet[Ayat]:
     """Получить аят по номеру суры, аята."""
     logger.info(f'{sura_number}:{ayat_number}')
     if sura_number and ayat_number:
@@ -18,21 +19,21 @@ def get_ayat_by_sura_ayat_numbers(sura_number: int, ayat_number: int):
 class AyatSearcher:
     """Класс для поиска аятов."""
 
-    def __init__(self, sura_number: int, ayat_number: int):
+    def __init__(self, sura_number: int, ayat_number: int) -> None:
         self.sura_number = sura_number
         self.ayat_number = ayat_number
 
-    def _hyphen_cases(self, ayat):
+    def _hyphen_cases(self, ayat: Ayat) -> Ayat:
         low_limit, up_limit = [int(x) for x in str(ayat).split(':')[1].split('-')]
         if self.ayat_number in range(low_limit, up_limit + 1):
             return ayat
 
-    def _comma_separated_cases(self, ayat):
+    def _comma_separated_cases(self, ayat: Ayat) -> Ayat:
         name = [int(x) for x in str(ayat).split(':')[1].split(',')]
         if self.ayat_number in name:
             return ayat
 
-    def _check_ayat(self, ayat):
+    def _check_ayat(self, ayat: Ayat) -> Ayat:
         if '-' in str(ayat):  # Для кейсов типа 2:1-5
             return self._hyphen_cases(ayat)
         elif ',' in str(ayat):  # Для кейсов типа 3:5,6
@@ -53,7 +54,7 @@ class AyatSearcher:
             return self._check_ayat(ayat)
         raise AyatDoesNotExists
 
-    def __call__(self):
+    def __call__(self) -> Ayat:
         """Entrypoint."""
         if self.sura_number and self.ayat_number:
             return self.get_ayat_by_sura_ayat()

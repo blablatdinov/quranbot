@@ -1,4 +1,9 @@
-def get_content(ayats, additional_content):
+from django.db.models import QuerySet
+
+from apps.content.models import Ayat
+
+
+def get_content(ayats: QuerySet[Ayat], additional_content: str) -> str:
     """Получить утренний контент."""
     result = ''
     if additional_content != '':

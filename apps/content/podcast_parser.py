@@ -1,7 +1,9 @@
 import sys
+from typing import List
 
 import requests
 from loguru import logger
+from telebot import types
 
 from apps.bot_init.models import Subscriber
 from apps.bot_init.service import get_admins_list
@@ -26,7 +28,7 @@ class PodcastAlreadyExistException(Exception):
 class PodcastParser:
     """Парсер подкастов."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         ...
 
     @staticmethod
@@ -34,31 +36,31 @@ class PodcastParser:
         """Получить подписчика, чтобы отправить ему файлы и получить их идентификаторы."""
         return Subscriber.objects.get(tg_chat_id=get_admins_list()[0])
 
-    def is_last_page(self, status_code):
+    def is_last_page(self, status_code: int) -> None:
         """Метод проверяет, является ли страница последней."""
         if status_code == 404:
             raise AchievedLastPageException('Достигнута последняя страница')
 
-    def get_articles_links_from_page(self):
+    def get_articles_links_from_page(self) -> List:
         """Получить ссылки на статьи со страницы."""
         return [
             'https://umma.ru' + x.find('div', class_='main').find('a')['href']
             for x in self.article_page_soup.find_all('article')
         ]
 
-    def get_article_info(self, article_link):
+    def get_article_info(self, article_link: str) -> None:
         """Получить информацию статьи."""
         soup = get_soup(get_html(article_link))
         self.link_to_file = soup.find('audio').find('a')['href']
         self.title = soup.find('h1').text.strip()
 
-    def get_articles_page(self):
+    def get_articles_page(self) -> None:
         """Получить страницу со статьями."""
         response = requests.get(f'https://umma.ru/audlo/shamil-alyautdinov/page/{self.page_num}')
         self.is_last_page(response.status_code)
         self.article_page_soup = get_soup(response.text)
 
-    def send_audio_to_telegram(self, content, title):
+    def send_audio_to_telegram(self, content: bytes, title: str) -> types.Message:
         """Отправить аудиофайл в телеграмм."""
         logger.info('Sending...')
         msg = tbot.send_audio(
@@ -70,7 +72,7 @@ class PodcastParser:
         )
         return msg
 
-    def download_and_send_audio_file(self):
+    def download_and_send_audio_file(self) -> None:
         """Скачать и отправить файл."""
         logger.info(
             f'Download and send {self.title},\n'
@@ -94,7 +96,7 @@ class PodcastParser:
         # Чтобы на следующей итерации если файл большой, то не присваивать File tg_file_id
         delattr(self, 'sending_audio_message_instance') if is_sended else None
 
-    def create_podcast(self):
+    def create_podcast(self) -> None:
         """Создать подкаст."""
         Podcast.objects.create(
             title=self.title,
@@ -102,11 +104,11 @@ class PodcastParser:
             audio=self.audio_file,
         )
 
-    def check_article_link_already_parsed(self, article_link):
+    def check_article_link_already_parsed(self, article_link: str) -> Podcast:
         """Проверить имеется ли в базе этот подкаст."""
         return Podcast.objects.filter(article_link=article_link).exists()
 
-    def parse_one_page(self):
+    def parse_one_page(self) -> None:
         """Собрать информацию с одной страницы."""
         self.get_articles_page()
         for article_link in self.get_articles_links_from_page():
@@ -118,7 +120,7 @@ class PodcastParser:
             self.download_and_send_audio_file()
             self.create_podcast()
 
-    def __call__(self):
+    def __call__(self) -> None:
         """Entrypoint."""
         logger.info('Start parsing podcasts...')
         self.page_num = 1
