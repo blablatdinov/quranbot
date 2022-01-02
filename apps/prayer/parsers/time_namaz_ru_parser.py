@@ -58,10 +58,6 @@ class PrayerTimeParser:
             prayers.append(Prayer(city=self.city, day=day, name=PRAYER_NAMES[x][0], time=prayer_time))
         Prayer.objects.bulk_create(prayers)
 
-    def _get_csv_file(self) -> None:
-        r = requests.get(self.city.link_to_csv)
-        self.csv_file = r.content.decode('utf-8')
-
     def _parse_prayer_times_for_city(self) -> None:
         self._get_csv_file()
         csv_reader = csv.reader(self.csv_file.splitlines(), delimiter=';')
