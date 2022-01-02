@@ -7,21 +7,21 @@ from apps.content.models import Ayat, MorningContent
 class MorningContentCreator:
     """Класс для создания утреннего контента."""
 
-    def __init__(self, day: int, ayats_ids: List[int]):
+    def __init__(self, day: int, ayats_ids: List[int]) -> None:
         self.day = day
         self.ayats_ids = ayats_ids
         self._get_target_ayats()
 
-    def _check_ayats_content_length(self):
+    def _check_ayats_content_length(self) -> None:
         if len(self.morning_content.content_for_day()) > 4096:
             self.morning_content.delete()
             self.target_ayats.update(one_day_content=None)
             raise ContentTooLong
 
-    def _get_target_ayats(self):
+    def _get_target_ayats(self) -> None:
         self.target_ayats = Ayat.objects.filter(pk__in=self.ayats_ids)
 
-    def __call__(self):
+    def __call__(self) -> MorningContent:
         """Entrypoint."""
         self.morning_content = MorningContent.objects.create(
             day=self.day,

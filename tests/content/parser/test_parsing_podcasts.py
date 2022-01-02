@@ -6,7 +6,6 @@ import pytest
 import requests_mock
 from django.conf import settings
 from jinja2 import Template
-from mixer.backend.django import mixer
 
 from apps.content.models import Podcast
 from apps.content.podcast_parser import PodcastParser
@@ -24,11 +23,11 @@ def get_podcast(podcast_title: str = None):
         podcast_title = 'Как терпеть?'
         podcast_link_to_file = 'https://umma.ru/uploads/audio/t2b2gsqq5b.mp3'
     else:
-        # podcast_link_to_file = f'https://umma.ru/uploads/audio/{podcast_title}.mp3'
         podcast_link_to_file = 'https://umma.ru/uploads/audio/t2b2gsqq5b.mp3'
 
     with open(f'{settings.BASE_DIR}/tests/content/fixtures/podcast_single.html', 'r') as f:
         return Template(f.read()).render(podcast_title=podcast_title, podcast_link_to_file=podcast_link_to_file)
+
 
 def get_audio():
     with open(f'{settings.BASE_DIR}/tests/content/fixtures/empty.mp3', 'rb') as f:
@@ -59,11 +58,14 @@ def test_parse_podasts(subscriber):
 
         m.get('https://umma.ru/uploads/audio/t2b2gsqq5b.mp3', content=get_audio())
         m.register_uri('POST', re.compile(r'https://api.telegram.org/bot.+/sendAudio\?'), json=tg_audio_answer())
-        
+
         PodcastParser()()
 
     assert Podcast.objects.count() == 10
-    assert Podcast.objects.first().audio.tg_file_id == 'CQACAgIAAxkDAAIshWBGRaJwdieNTKufqZc4m9XAw12jAAIXCwACIyQ4SqTy0Yzg179WHgQ'
+    assert (
+        Podcast.objects.first().audio.tg_file_id ==
+        'CQACAgIAAxkDAAIshWBGRaJwdieNTKufqZc4m9XAw12jAAIXCwACIyQ4SqTy0Yzg179WHgQ'
+    )
     assert Podcast.objects.first().audio.link_to_file == 'https://umma.ru/uploads/audio/t2b2gsqq5b.mp3'
     assert Podcast.objects.first().title == 'Как терпеть?'
 
@@ -86,7 +88,7 @@ def test_parse_new_podcasts(subscriber):
 
         m.get('https://umma.ru/uploads/audio/t2b2gsqq5b.mp3', content=get_audio())
         m.register_uri('POST', re.compile(r'https://api.telegram.org/bot.+/sendAudio\?'), json=tg_audio_answer())
-        
+
         PodcastParser()()
 
     with requests_mock.Mocker() as m:
@@ -117,7 +119,7 @@ def test_parse_new_podcasts(subscriber):
         m.get('https://umma.ru/tavassul-chto-nelzya/', text=get_podcast('tavassul-chto-nelzya'))
         m.get('https://umma.ru/tavassul-chto-mozhno/', text=get_podcast('tavassul-chto-mozhno'))
         m.register_uri('POST', re.compile(r'https://api.telegram.org/bot.+/sendAudio\?'), json=tg_audio_answer())
-        
+
         PodcastParser()()
 
     assert Podcast.objects.count() == 20

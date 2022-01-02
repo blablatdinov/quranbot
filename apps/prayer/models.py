@@ -15,7 +15,7 @@ class City(models.Model):
         verbose_name = 'Город'
         verbose_name_plural = 'Города'
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Строковое представление."""
         return f'{self.name} ({self.link_to_csv})'
 
@@ -29,7 +29,7 @@ class Day(models.Model):
         verbose_name = 'Дата'
         verbose_name_plural = 'Даты'
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Строковое представление."""
         return self.date.strftime('%d.%m.%Y')
 
@@ -52,7 +52,7 @@ class Prayer(models.Model):
         verbose_name = 'Время намаза'
         verbose_name_plural = 'Времена намазов'
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Строковое представление."""
         return f'{self.city} {self.day} {self.time} {self.get_name_display()}'
 
@@ -73,6 +73,6 @@ class PrayerAtUser(models.Model):
         verbose_name = 'Запись о намазе для пользователя'
         verbose_name_plural = 'Записи о намазе для пользователей'
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Строковое представление."""
         return f'{self.subscriber} {self.prayer}'

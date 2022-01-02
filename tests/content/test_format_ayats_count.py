@@ -5,7 +5,7 @@ from apps.content.service import format_count_to_text
 pytestmark = [pytest.mark.django_db]
 
 
-@pytest.mark.parametrize('number,text',[
+@pytest.mark.parametrize('number,text', [
     (1, 'аят'),
     (20, 'аятов'),
     (2, 'аята'),

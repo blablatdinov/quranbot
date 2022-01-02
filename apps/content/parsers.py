@@ -33,7 +33,7 @@ class AyatParser:
     current_sura_ayat_count: int
     result = []
 
-    def __init__(self):
+    def __init__(self) -> None:
         ...
 
     @staticmethod
@@ -66,7 +66,7 @@ class AyatParser:
             text += re.sub(r'\[\d+\]', '', paragraph.text)  # TODO вынести в очищение контента
         return text
 
-    def parse_content_from_db(self):
+    def parse_content_from_db(self) -> None:
         """Собрать контент с БД."""
         for ayat in pbar(Ayat.objects.all()):
             soup = get_soup(ayat.html)
@@ -85,7 +85,7 @@ class AyatParser:
         """Возвращает номер аята."""
         return soup.find('h3').text.split(':')[1]
 
-    def get_sura_links(self):
+    def get_sura_links(self) -> str:
         """Получаем ссылки на все суры."""
         soup = get_soup(get_html(self.url))
         lis = soup.find('ol', class_='items-list').find_all('li')[1:]
@@ -108,7 +108,7 @@ class AyatParser:
         response = requests.request('POST', url, headers=headers, data=payload)
         return response.text
 
-    def run(self):
+    def run(self) -> None:
         """Запуск парсера."""
         for sura in Sura.objects.all():
             page = self.get_page(sura.number, sura.child_elements_count)
@@ -138,7 +138,7 @@ class AyatParser:
             logger.info(f'Sura {sura.number} was parsed')
 
 
-def run_parser():
+def run_parser() -> None:
     """Функция для удобного запуска парсера."""
     parser = AyatParser()
     parser.run()
