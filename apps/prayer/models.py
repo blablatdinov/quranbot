@@ -37,7 +37,9 @@ class Day(models.Model):
 class PrayerAtUserGroup(models.Model):
     """Модель для группировке намазов у пользователя."""
 
-    pass
+    class Meta:
+        verbose_name = 'Группа времен намазов, привязанный к пользователю'
+        verbose_name_plural = 'Группы времен намазов, привязанный к пользователю'
 
 
 class Prayer(models.Model):
