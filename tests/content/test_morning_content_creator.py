@@ -11,7 +11,7 @@ pytestmark = [pytest.mark.django_db]
 def big_ayat(mixer):
     return mixer.blend(
         'content.Ayat',
-        content='a' * 5000
+        content='a' * 5000,
     )
 
 

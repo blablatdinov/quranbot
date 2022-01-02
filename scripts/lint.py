@@ -13,7 +13,7 @@ CHECKED_FILES_EXTENSIONS = [
 ]
 
 
-def check_files_exists(files: List[str]):
+def check_files_exists(files: List[str]) -> None:
     """Проверить есть ли файлы для линтера."""
     if not files:
         typer.echo(typer.style('No files to check', fg=typer.colors.GREEN))
@@ -28,7 +28,7 @@ def find_filer_for_speller(files: List[str]) -> List[str]:
 
     r'((^| )[^tests].*?(py|md|html))'
     """
-    def _check(file: str):
+    def _check(file: str) -> bool:
         if 'tests' in file or 'migrations' in file or 'fixtures' in file:
             return False
 
@@ -42,7 +42,7 @@ def find_filer_for_speller(files: List[str]) -> List[str]:
 
 def find_for_linter(files: List[str]) -> List[str]:
     """Найти файлы для линтера."""
-    def _check(file: str):
+    def _check(file: str) -> bool:
         return file.endswith('py')
 
     result = list(filter(_check, files))
@@ -50,7 +50,7 @@ def find_for_linter(files: List[str]) -> List[str]:
     return result
 
 
-def lint_files(changed_files_list: List[str], show_files: bool = False):
+def lint_files(changed_files_list: List[str], show_files: bool = False) -> None:
     """Проверить линтером файлы и отсортировать импорты."""
     finded_files = find_for_linter(changed_files_list)
     if show_files:
@@ -66,7 +66,7 @@ def lint_files(changed_files_list: List[str], show_files: bool = False):
         raise typer.Exit(1)
 
 
-def spelling_files(changed_files_list: List[str], show_files: bool = False):
+def spelling_files(changed_files_list: List[str], show_files: bool = False) -> None:
     """Проверить на орфографию."""
     finded_files = find_filer_for_speller(changed_files_list)
     if show_files:
@@ -79,7 +79,7 @@ def spelling_files(changed_files_list: List[str], show_files: bool = False):
     )
 
 
-def print_files(files: List[str]):
+def print_files(files: List[str]) -> None:
     """Вывести файлы в консоль."""
     typer.echo(typer.style('\nFiles list:\n', fg=typer.colors.GREEN))
     files_list = ''.join([f'\t{x}\n' for x in files])
@@ -113,7 +113,7 @@ def main(
     show_files: Optional[bool] = typer.Option(
         None, '--show-files', help='Укажите, если нужно показать файлы, которые будут проверяться.',
     ),
-):
+) -> None:
     """Скрипт для проверки измененных файлов линтером."""
     if files:
         changed_files_list = get_files_list(list(files))

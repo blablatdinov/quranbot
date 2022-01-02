@@ -12,5 +12,5 @@ INSTALLED_APPS = [
 
     'apps.bot_init',
     'apps.content',
-    'apps.prayer'
+    'apps.prayer',
 ]

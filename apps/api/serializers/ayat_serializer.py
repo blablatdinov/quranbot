@@ -21,10 +21,10 @@ class AyatSerializer(serializers.ModelSerializer):
         ]
         model = Ayat
 
-    def get_sura(self, obj):
+    def get_sura(self, obj: Ayat) -> int:
         return obj.sura.number
 
-    def get_link(self, obj):
+    def get_link(self, obj: Ayat) -> str:
         return f'https://umma.ru{obj.sura.link}'
 
 
@@ -41,5 +41,5 @@ class AyatListSerializer(serializers.ModelSerializer):
         ]
         model = Ayat
 
-    def get_sura(self, obj):
+    def get_sura(self, obj: Ayat) -> int:
         return obj.sura.number

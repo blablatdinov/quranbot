@@ -23,14 +23,13 @@ def test_get_token(anon, user):
     assert list(got.json().keys()) == ['refresh', 'access']
 
 
-# FIXME
-# def test_auth_by_token(anon, user):
-#     token = anon.post('/api/v1/token/', data={
-#         'username': user.username,
-#         'password': 'asdf',
-#     }).json()['access']
-#     # Authorzation: Bearer <token>
-#     anon.credentials(HTTP_AUTHORIZATION='Bearer ' + token)
-#     got = anon.get('/api/v1/ayats/')
+def test_auth_by_token(anon, user):
+    token = anon.post('/api/v1/token/', data={
+        'username': user.username,
+        'password': 'asdf',
+    }).json()['access']
+    # Authorzation: Bearer <token>
+    anon.credentials(HTTP_AUTHORIZATION='Bearer ' + token)
+    got = anon.get('/api/v1/ayats/')
 
-#     assert got.status_code == 200
+    assert got.status_code == 200

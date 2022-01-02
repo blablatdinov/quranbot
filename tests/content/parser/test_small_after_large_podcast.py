@@ -15,7 +15,7 @@ def test_download_small_after_large(small_content, large_content, subscriber, tg
         m.get('https://nifiga-sebe.mp3', content=large_content)
         m.get('https://small.mp3', content=small_content)
         m.register_uri('POST', re.compile(r'https://api.telegram.org/bot.+/sendAudio\?'), json=tg_audio_answer)
-        
+
         parser = PodcastParser()
         parser.sub = subscriber
 
@@ -31,8 +31,10 @@ def test_download_small_after_large(small_content, large_content, subscriber, tg
         parser.download_and_send_audio_file()
         parser.create_podcast()
 
-
     assert Podcast.objects.count() == 2
     assert File.objects.count() == 2
-    assert Podcast.objects.first().audio.tg_file_id == 'CQACAgIAAxkDAAIshWBGRaJwdieNTKufqZc4m9XAw12jAAIXCwACIyQ4SqTy0Yzg179WHgQ'
+    assert (
+        Podcast.objects.first().audio.tg_file_id ==
+        'CQACAgIAAxkDAAIshWBGRaJwdieNTKufqZc4m9XAw12jAAIXCwACIyQ4SqTy0Yzg179WHgQ'
+    )
     assert Podcast.objects.last().audio.tg_file_id is None
