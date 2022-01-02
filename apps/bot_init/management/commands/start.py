@@ -3,7 +3,7 @@ from loguru import logger
 
 from apps.bot_init.views import tbot
 
-log = logger.bind(task="app")
+log = logger.bind(task='app')
 
 
 class Command(BaseCommand):

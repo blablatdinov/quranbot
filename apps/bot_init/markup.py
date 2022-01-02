@@ -80,8 +80,8 @@ def get_default_keyboard(additional_buttons: List = None) -> types.InlineKeyboar
     if additional_buttons is None:
         additional_buttons = []
     buttons = [
-        ("🎧 Подкасты",),
-        ("🕋 Время намаза",),
-        ("🌟 Избранное", "🔍 Найти аят"),
+        ('🎧 Подкасты',),
+        ('🕋 Время намаза',),
+        ('🌟 Избранное', '🔍 Найти аят'),
     ] + additional_buttons
     return Keyboard(buttons).keyboard

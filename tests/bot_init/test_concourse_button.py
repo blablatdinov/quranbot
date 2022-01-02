@@ -8,8 +8,8 @@ pytestmark = [pytest.mark.django_db]
 
 
 def test_button_service(subscriber):
-    answer = text_message_service(subscriber.tg_chat_id, "Конкурс")
+    answer = text_message_service(subscriber.tg_chat_id, 'Конкурс')
 
-    assert AdminMessage.objects.get(key="concourse").text in answer.text
-    assert f"https://t.me/{settings.TG_BOT.name}?start={subscriber.pk}" in answer.text
-    assert "Кол-во пользователей зарегистрировавшихся по вашей ссылке: " in answer.text
+    assert AdminMessage.objects.get(key='concourse').text in answer.text
+    assert f'https://t.me/{settings.TG_BOT.name}?start={subscriber.pk}' in answer.text
+    assert 'Кол-во пользователей зарегистрировавшихся по вашей ссылке: ' in answer.text
