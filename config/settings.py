@@ -3,7 +3,6 @@ from collections import namedtuple
 
 import ddtrace
 import toml
-from django.db.models import BigAutoField
 from loguru import logger
 from split_settings.tools import include
 
@@ -82,13 +81,13 @@ CELERY_BROKER_URL = os.getenv('REDIS_CONNECTION')
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASKS_SERIALIZER = 'json'
 
-if DEBUG:
-    ddtrace.tracer.enabled = not DEBUG
+if DEBUG:  # noqa: F821
+    ddtrace.tracer.enabled = not DEBUG  # noqa: F821
     ddtrace.patch_all()
 
 RAMADAN_MODE = env('RAMADAN_MODE', bool, default=False)
 
-with open(f'{BASE_DIR}/pyproject.toml', 'r') as f:
+with open(f'{BASE_DIR}/pyproject.toml', 'r') as f:  # noqa: F821
     PYPROJECT_FILE = toml.loads(f.read())
 
 VERSION = PYPROJECT_FILE['tool']['poetry']['version']

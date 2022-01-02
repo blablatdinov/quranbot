@@ -8,7 +8,7 @@ pytestmark = [pytest.mark.django_db]
 
 @pytest.fixture()
 def morning_contents():
-    return mixer.cycle(5).blend('content.MorningContent',)
+    return mixer.cycle(5).blend('content.MorningContent')
 
 
 @pytest.fixture(autouse=True)

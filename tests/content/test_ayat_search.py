@@ -32,6 +32,6 @@ def test_logic(ayat, sura_num, ayat_num, expected_ayat_num):
 
 def test_undefined_ayat_searching():
     with pytest.raises(AyatDoesNotExists) as exc:
-        queryset = AyatSearcher(sura_number=10, ayat_number='101')()
+        AyatSearcher(sura_number=10, ayat_number='101')()
 
     assert 'AyatDoesNotExist' in str(exc)

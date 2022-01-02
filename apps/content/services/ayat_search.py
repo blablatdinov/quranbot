@@ -19,7 +19,7 @@ def get_ayat_by_sura_ayat_numbers(sura_number: int, ayat_number: int) -> QuerySe
 class AyatSearcher:
     """Класс для поиска аятов."""
 
-    def __init__(self, sura_number: int, ayat_number: int) -> None:
+    def __init__(self, sura_number: int, ayat_number: str) -> None:
         self.sura_number = sura_number
         self.ayat_number = ayat_number
 

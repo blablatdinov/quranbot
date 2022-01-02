@@ -11,13 +11,12 @@ get_prayer_time_doc = {
                 openapi.IN_QUERY,
                 description='Идентификатор чата в телеграмм',
                 type=openapi.TYPE_STRING,
-                # items=openapi.Items(type=openapi.TYPE_INTEGER),
             ),
             openapi.Parameter(
                 'city',
                 openapi.IN_QUERY,
                 description='city',
-                type=openapi.TYPE_STRING,  # Вывести список доступных городов
+                type=openapi.TYPE_STRING,  # TODO: Вывести список доступных городов
             ),
         ],
     ),
