@@ -62,7 +62,7 @@ def check_user_status_by_typing(chat_id: int) -> bool:
 
 def count_active_users() -> int:
     """Подсчитать кол-во активных пользователей."""
-    result = os.system('./check_users')
+    result = os.system('bin/qbot_utils_linux check_subscribers')
     return result
 
 
