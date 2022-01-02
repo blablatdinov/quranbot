@@ -8,7 +8,7 @@ pytestmark = [pytest.mark.django_db]
 def ayats():
     mixer.cycle(7).blend(
         'content.Ayat',
-        one_day_content=mixer.blend('content.MorningContent')
+        one_day_content=mixer.blend('content.MorningContent'),
     )
     mixer.cycle(3).blend(
         'content.Ayat',

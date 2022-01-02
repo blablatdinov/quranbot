@@ -7,18 +7,19 @@ pytestmark = [pytest.mark.django_db]
 
 
 @pytest.fixture()
-def ayat(mixer):
-    first = mixer.blend('content.Ayat', ayat=1, sura__number=1)
-    mixer.blend('content.Ayat', ayat=1, sura__number=2)
-    return first
+def ayats(mixer):
+    return (
+        mixer.blend('content.Ayat', ayat=1, sura__number=1),
+        mixer.blend('content.Ayat', ayat=1, sura__number=2),
+    )
 
 
-def test(ayat):
-    got = get_keyboard_for_ayat(ayat)
+def test(ayats):
+    got = get_keyboard_for_ayat(ayats[0])
     expected_keyboard = InlineKeyboard(
         (
-            (('Добавить в избранное', 'add_in_favourites(1)'),),
-            (('2:1', 'get_ayat(2)'),),
+            (('Добавить в избранное', f'add_in_favourites({ayats[0].pk})'),),
+            (('2:1', f'get_ayat({ayats[1].pk})'),),
         ),
     ).keyboard
 

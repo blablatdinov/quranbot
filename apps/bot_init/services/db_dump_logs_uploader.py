@@ -13,11 +13,10 @@ class DumpUploader:
 
     def __init__(self) -> None:
         self.formatted_date = datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
-        self.bucket_name = 'blablatdinov'
         if not settings.ENABLE_S3:
             return
         session = boto3.session.Session()
-        self.bucket_name = "blablatdinov"
+        self.bucket_name = 'blablatdinov'
         self.s3_client = session.client(
             service_name='s3',
             endpoint_url='https://storage.yandexcloud.net',
