@@ -94,3 +94,5 @@ with open(f'{BASE_DIR}/pyproject.toml', 'r') as f:
 VERSION = PYPROJECT_FILE['tool']['poetry']['version']
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+ENABLE_S3 = env('ENABLE_S3', bool, default=False)
