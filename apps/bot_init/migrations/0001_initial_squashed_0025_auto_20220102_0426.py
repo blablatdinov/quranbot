@@ -46,7 +46,7 @@ class Migration(migrations.Migration):
     dependencies = [
         ('content', '0007_auto_20200808_1917'),
         ('content', '0002_auto_20200802_2052'),
-        ('prayer', '0003_auto_20200810_1012'),
+        # ('prayer', '0003_auto_20200810_1012'),
         ('content', '0001_initial'),
     ]
 
@@ -70,7 +70,6 @@ class Migration(migrations.Migration):
                 ('comment', models.TextField(blank=True, null=True, verbose_name='Комментарий к подписчику')),
                 ('day', models.IntegerField(default=2, verbose_name='День, для рассылки утреннего контента')),
                 ('favourite_ayats', models.ManyToManyField(blank=True, related_name='favorit_ayats', to='content.Ayat', verbose_name='Избранные аяты')),
-                ('city', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='prayer.city', verbose_name='Город для рассылки намазов')),
             ],
             options={
                 'verbose_name': 'Подписчик',
