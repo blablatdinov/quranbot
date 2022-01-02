@@ -7,4 +7,4 @@ export DJANGO_SETTINGS_MODULE=config.settings
 /home/www/.poetry/bin/poetry install --no-dev
 /home/www/.poetry/bin/poetry run python manage.py migrate
 
-supervisorctl restart qbot qbot_worker
+sudo supervisorctl restart qbot qbot_worker
