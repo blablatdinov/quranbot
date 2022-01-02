@@ -12,4 +12,4 @@ admin.site.register(PrayerAtUserGroup)
 class PrayerAtUserAdmin(admin.ModelAdmin):
     """Настройки админки для модели намаза пользователя."""
 
-    list_display = ("__str__", "is_read")
+    list_display = ('__str__', 'is_read')

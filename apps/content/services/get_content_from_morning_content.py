@@ -6,5 +6,5 @@ def get_content(ayats, additional_content):
     for ayat in ayats:
         result += f'<b>{ayat.sura.number}:{ayat.ayat})</b> {ayat.content}\n'
     if result != '':
-        result += f"\nСсылка на источник: <a href='https://umma.ru{ayats[0].sura.link}'>umma.ru</a>"
+        result += f'\nСсылка на источник: <a href="https://umma.ru{ayats[0].sura.link}">umma.ru</a>'
     return result

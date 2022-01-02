@@ -112,7 +112,7 @@ def get_keyboard_for_ayat(ayat: Ayat) -> InlineKeyboardMarkup:
 def translate_ayat_into_answer(ayat: Ayat) -> List[Answer]:
     """Преобразование аята в Answer."""
     text = (
-        f"<a href='https://umma.ru{ayat.sura.link}'>({ayat.sura.number}:{ayat.ayat})</a>\n{ayat.arab_text}\n\n"
+        f'<a href="https://umma.ru{ayat.sura.link}">({ayat.sura.number}:{ayat.ayat})</a>\n{ayat.arab_text}\n\n'
         f'{ayat.content}\n\n<i>{ayat.trans}</i>\n\n',
     )
     return [Answer(text=text, keyboard=get_keyboard_for_ayat(ayat)), get_audio_answer(ayat.audio)]
@@ -160,7 +160,7 @@ def text_message_service(chat_id: int, message_text: str, message_id: int = None
         logger.info(f'Subscriber={chat_id} getting ...')
         answer = get_concourse_info(chat_id)
     elif ':' in message_text:
-        logger.info(f"Subscriber={chat_id} search ayat query='{message_text}'")
+        logger.info(f'Subscriber={chat_id} search ayat query="{message_text}"')
         try:
             ayat = get_ayat_by_sura_ayat(message_text)
             answer = translate_ayat_into_answer(ayat)

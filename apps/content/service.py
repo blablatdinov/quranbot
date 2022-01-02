@@ -48,7 +48,7 @@ def get_subscribers_with_content() -> Dict:  # FIXME тесты
         try:
             data.append({
                 elem[0]: (
-                    elem[1] + f"\nСсылка на источник: <a href='https://umma.ru{elem[2].split('|')[0]}'>источник</a>",
+                    elem[1] + f'\nСсылка на источник: <a href="https://umma.ru{elem[2].split("|")[0]}">источник</a>',
                 ),
             })
         except Exception as e:
@@ -128,9 +128,9 @@ def find_ayat_by_text(query_text: str, offset: int = None) -> Union[Answer, List
             ('Добавить в избранное', f'add_in_favourites({ayat.pk})'),
         ),
         (
-            ('<', f"change_query_ayat('{query_text}',{offset - 1})"),
+            ('<', f'change_query_ayat("{query_text}",{offset - 1})'),
             (f'{offset}/{ayats_count}', 'asdf'),
-            ('>', f"change_query_ayat('{query_text}',{offset + 1})"),
+            ('>', f'change_query_ayat("{query_text}",{offset + 1})'),
         ),
     ]
     keyboard = InlineKeyboard(buttons).keyboard
