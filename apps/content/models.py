@@ -40,6 +40,10 @@ class File(models.Model):
         help_text='Может быть пустым, т. к. некоторые файлы слишком велики для отправки.',
     )
 
+    class Meta:
+        verbose_name = 'Файл'
+        verbose_name_plural = 'Файлы'
+
     def __str__(self) -> str:
         """Строковое представление."""
         return self.link_to_file or self.tg_file_id
@@ -58,6 +62,10 @@ class Sura(models.Model):
     def __str__(self) -> str:
         """Строковое представление."""
         return f'Сура {self.number}'
+
+    class Meta:
+        verbose_name = 'Сура'
+        verbose_name_plural = 'Суры'
 
 
 class Ayat(models.Model):
