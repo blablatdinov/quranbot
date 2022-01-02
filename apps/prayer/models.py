@@ -5,11 +5,17 @@ from apps.bot_init.models import Subscriber
 from apps.prayer.schemas import PRAYER_NAMES
 
 
+class ParsingSource(models.TextChoices):
+    DUM_RT = 'DUM_RT', 'Дум РТ (http://dumrt.ru/)'
+    TIME_NAMAZ = 'TIME_NAMAZ', 'Сайт https://time-namaz.ru'
+
+
 class City(models.Model):
     """Модель города."""
 
-    link_to_csv = models.CharField(max_length=500, verbose_name='Ссылка для скачивания csv файла с временами намазов')
+    link = models.CharField(max_length=500, verbose_name='Ссылка для скачивания csv файла с временами намазов')
     name = models.CharField(max_length=200, verbose_name='Название города')
+    source = models.CharField('Источник для парсинга намазов', max_length=16, choices=ParsingSource.choices)
 
     class Meta:
         verbose_name = 'Город'
@@ -17,7 +23,7 @@ class City(models.Model):
 
     def __str__(self) -> str:
         """Строковое представление."""
-        return f'{self.name} ({self.link_to_csv})'
+        return f'{self.name} ({self.link})'
 
 
 class Day(models.Model):
