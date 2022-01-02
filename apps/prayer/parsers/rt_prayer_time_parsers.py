@@ -35,7 +35,7 @@ class PrayerTimeParser:
         Prayer.objects.bulk_create(prayers)
 
     def _get_csv_file(self) -> None:
-        r = requests.get(self.city.link_to_csv)
+        r = requests.get(self.city.link)
         self.csv_file = r.content.decode('utf-8')
 
     def _parse_prayer_times_for_city(self) -> None:
