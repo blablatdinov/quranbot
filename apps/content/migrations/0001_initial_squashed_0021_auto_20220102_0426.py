@@ -46,6 +46,15 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
+            name='File',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('link_to_file', models.CharField(blank=True, max_length=512, null=True, verbose_name='Ссылка на файл')),
+                ('tg_file_id', models.CharField(blank=True, help_text='Может быть пустым, т. к. некоторые файлы слишком велики для отправки.', max_length=512, null=True, verbose_name='Идентификатор файла в телеграмм')),
+                ('name', models.CharField(blank=True, max_length=128, null=True)),
+            ],
+        ),
+        migrations.CreateModel(
             name='MorningContent',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
@@ -74,10 +83,10 @@ class Migration(migrations.Migration):
                 ('additional_content', models.TextField(blank=True, verbose_name='Допопнительный контент')),
                 ('arab_text', models.TextField(blank=True, verbose_name='Арабский текст')),
                 ('trans', models.TextField(blank=True, verbose_name='Транслитерация')),
-                ('sura', models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='content.sura', verbose_name='Номер суры')),
+                ('sura', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='content.sura', verbose_name='Номер суры')),
                 ('ayat', models.CharField(blank=True, max_length=16, null=True, verbose_name='Номер аята')),
                 ('html', models.TextField(verbose_name='Спарсенный HTML текст')),
-                ('audio', models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='content.audiofile', verbose_name='Аудио файл')),
+                ('audio', models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='content.file', verbose_name='Аудио файл')),
                 ('one_day_content', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='content.morningcontent', verbose_name='Ежедневный контент')),
                 ('content', models.TextField(blank=True, verbose_name='Текст аята')),
             ],
@@ -91,22 +100,13 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('title', models.CharField(max_length=128, verbose_name='Название')),
-                ('audio', models.OneToOneField(on_delete=django.db.models.deletion.PROTECT, to='content.audiofile', verbose_name='Аудио файл')),
+                ('audio', models.OneToOneField(on_delete=django.db.models.deletion.PROTECT, to='content.file', verbose_name='Аудио файл')),
                 ('article_link', models.CharField(blank=True, max_length=512, null=True, verbose_name='Ссылка на статью')),
             ],
             options={
                 'verbose_name': 'Аудио подкаст',
                 'verbose_name_plural': 'Аудио подкасты',
             },
-        ),
-        migrations.CreateModel(
-            name='File',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('link_to_file', models.CharField(blank=True, max_length=512, null=True, verbose_name='Ссылка на файл')),
-                ('tg_file_id', models.CharField(blank=True, help_text='Может быть пустым, т. к. некоторые файлы слишком велики для отправки.', max_length=512, null=True, verbose_name='Идентификатор файла в телеграмм')),
-                ('name', models.CharField(blank=True, max_length=128, null=True)),
-            ],
         ),
         migrations.RunPython(
             delete_morning_content_without_body,
