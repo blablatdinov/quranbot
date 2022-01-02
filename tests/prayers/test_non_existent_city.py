@@ -1,7 +1,7 @@
 import pytest
 
 from apps.prayer.exceptions.city_non_exist import CityNonExist
-from apps.prayer.service import get_city_timezone
+from apps.prayer.services.geography import get_city_timezone
 
 
 @pytest.fixture()

@@ -18,7 +18,7 @@ class Answer:
 
     def __repr__(self) -> str:
         """Строковое представление."""
-        return f"{self.text[:30]} (chat_id={self.chat_id})"
+        return f'{self.text[:30]} (chat_id={self.chat_id})'
 
     def __init__(
         self,
@@ -41,18 +41,18 @@ class Answer:
             if self.tg_audio_id:
                 msg = tbot.send_audio(self.chat_id, audio=self.tg_audio_id)
             else:
-                msg = tbot.send_message(self.chat_id, self.text, reply_markup=self.keyboard, parse_mode="HTML")
+                msg = tbot.send_message(self.chat_id, self.text, reply_markup=self.keyboard, parse_mode='HTML')
             message_instance = save_message(msg)
             return message_instance
         except ApiException as e:
-            if "bot was blocked by the user" in str(e) or "user is deactivated" in str(e) or "chat not found" in str(e):
+            if 'bot was blocked by the user' in str(e) or 'user is deactivated' in str(e) or 'chat not found' in str(e):
                 _subscriber_unsubscribed(self.chat_id)
-            elif "message text is empty" in str(e):  # TODO законченный контент отлавливается в рассылке сообщений
-                send_message_to_admin("Закончился ежедневный контент")
-                raise Exception("Закончился ежедневный контент")
+            elif 'message text is empty' in str(e):  # TODO законченный контент отлавливается в рассылке сообщений
+                send_message_to_admin('Закончился ежедневный контент')
+                raise Exception('Закончился ежедневный контент')
             else:
                 logger.error(e)
-                send_message_to_admin(f"Непредвиденная ошибка\n\n{e}")
+                send_message_to_admin(f'Непредвиденная ошибка\n\n{e}')
                 raise e
 
     def check_chat_id(self) -> None:

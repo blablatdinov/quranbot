@@ -1,20 +1,15 @@
 """Бизнес логика для контента."""
+from typing import Dict, List, Union
+
 from django.db import connection
 from django.db.models import F
 from loguru import logger
 
 from apps.bot_init.markup import InlineKeyboard, get_default_keyboard
 from apps.bot_init.models import Mailing, Subscriber
-from apps.bot_init.service import send_answer, send_message_to_admin
+from apps.bot_init.service import send_message_to_admin
 from apps.bot_init.services.answer_service import Answer
-from apps.content.models import Ayat, MorningContent, Podcast
-
-
-def get_random_podcast() -> Podcast:
-    """Возвращает случайный подкаст."""
-    podcast = Podcast.objects.order_by('?').first()
-    logger.debug(podcast)
-    return podcast
+from apps.content.models import Ayat, MorningContent
 
 
 def get_morning_content(day_num: int) -> str:
@@ -28,7 +23,7 @@ def get_morning_content(day_num: int) -> str:
         logger.warning(text)
 
 
-def get_subscribers_with_content():  # FIXME тесты
+def get_subscribers_with_content() -> Dict:  # FIXME тесты
     """Получаем данные для утренней рассылки одним запросом."""
     with connection.cursor() as cursor:
         cursor.execute("""
@@ -51,7 +46,6 @@ def get_subscribers_with_content():  # FIXME тесты
     data = []
     for elem in res:
         try:
-            logger.info(f'{elem=}')
             data.append({
                 elem[0]: (
                     elem[1] + f"\nСсылка на источник: <a href='https://umma.ru{elem[2].split('|')[0]}'>источник</a>",
@@ -62,7 +56,7 @@ def get_subscribers_with_content():  # FIXME тесты
     return data
 
 
-def _check_morning_content():
+def _check_morning_content() -> None:
     """Проверка на сколько еще осталось утреннего контента.
 
     Если менее 10 дней, отправится оповещение админам.
@@ -73,7 +67,7 @@ def _check_morning_content():
         send_message_to_admin(f'Контента осталось на {days}')
 
 
-def do_morning_content_distribution():
+def do_morning_content_distribution() -> None:
     """Выполняем рассылку утреннего контента."""
     mailing = Mailing.objects.create()
     subscriber_content = get_subscribers_with_content()
@@ -82,7 +76,7 @@ def do_morning_content_distribution():
         chat_id, content = list(elem.items())[0]
         answer = Answer(content, keyboard=get_default_keyboard())
 
-        if message_instance := send_answer(answer, chat_id):
+        if message_instance := answer.send(chat_id):
             message_instance.mailing = mailing
             message_instance.save(update_fields=['mailing'])
 
@@ -95,12 +89,12 @@ def do_morning_content_distribution():
 
 
 def search_ayat(text: str) -> Answer:
-    """Функция для поиска аята."""
+    """Функция для поиска по тексту аята."""
     queryset = Ayat.objects.filter(content__icontains=text).order_by('pk')
     return queryset
 
 
-def format_count_to_text(number):
+def format_count_to_text(number: int) -> str:
     """Отформатировать склонение."""
     div = number % 10
     if number == 11:
@@ -113,11 +107,10 @@ def format_count_to_text(number):
         return 'аятов'
 
 
-def find_ayat_by_text(query_text: str, offset: int = None):
+def find_ayat_by_text(query_text: str, offset: int = None) -> Union[Answer, List[Answer]]:
     """Найти аят по тексту.
 
     Функция находит аят и определяет страницу
-
     """
     queryset = search_ayat(query_text)
     logger.debug(queryset)
