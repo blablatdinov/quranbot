@@ -3,6 +3,7 @@ from collections import namedtuple
 
 import ddtrace
 import toml
+from django.db.models import BigAutoField
 from loguru import logger
 from split_settings.tools import include
 
@@ -91,3 +92,5 @@ with open(f'{BASE_DIR}/pyproject.toml', 'r') as f:
     PYPROJECT_FILE = toml.loads(f.read())
 
 VERSION = PYPROJECT_FILE['tool']['poetry']['version']
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
