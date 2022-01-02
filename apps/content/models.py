@@ -1,8 +1,6 @@
 """Модели контента."""
 from django.db import models
 
-from apps.content.services.get_content_from_morning_content import get_content
-
 
 class MorningContent(models.Model):
     """Утренний контент - аяты связанные в один день."""
@@ -15,7 +13,7 @@ class MorningContent(models.Model):
         verbose_name_plural = 'Ежедневный контент для пользователей'
         ordering = ['-day']
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Строковое представление."""
         return f'{self.day} день'
 
@@ -24,6 +22,7 @@ class MorningContent(models.Model):
 
         TODO подумать насчет генерации контента, сделать property
         """
+        from apps.content.services.get_content_from_morning_content import get_content
         ayats = Ayat.objects.filter(one_day_content__day=self.day).order_by('pk')
         return get_content(ayats, self.additional_content)
 
@@ -41,7 +40,7 @@ class File(models.Model):
         help_text='Может быть пустым, т. к. некоторые файлы слишком велики для отправки.',
     )
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Строковое представление."""
         return self.link_to_file or self.tg_file_id
 
@@ -56,7 +55,7 @@ class Sura(models.Model):
     link = models.CharField(max_length=128, verbose_name='Ссылка на суру')
     child_elements_count = models.IntegerField(verbose_name='Кол-во записей аятов в суре')
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Строковое представление."""
         return f'Сура {self.number}'
 
@@ -82,7 +81,7 @@ class Ayat(models.Model):
         verbose_name_plural = 'Аяты Священного Корана'
         ordering = ['-id']
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Строковое представление."""
         return f'{self.sura.number}:{self.ayat}'
 
@@ -105,6 +104,6 @@ class Podcast(models.Model):
         verbose_name = 'Аудио подкаст'
         verbose_name_plural = 'Аудио подкасты'
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Строковое представление."""
         return self.title

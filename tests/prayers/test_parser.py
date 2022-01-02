@@ -28,7 +28,6 @@ def test_parser(city, csv):
         PrayerTimeParser()()
 
     assert Prayer.objects.count() == 144
-    # assert False, Prayer.objects.count()
 
 
 def test_get_time_by_str():
