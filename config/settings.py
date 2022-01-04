@@ -93,3 +93,5 @@ VERSION = PYPROJECT_FILE['tool']['poetry']['version']
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 ENABLE_S3 = env('ENABLE_S3', bool, default=False)
+
+CSRF_TRUSTED_ORIGINS = ['https://quranbot.blablatdinov.ru']
