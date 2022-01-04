@@ -20,7 +20,7 @@ def message_answer():
 
 
 def test_referer(subscriber, referer_message_answer, message_answer, morning_content):
-    answers = StartCommandService(892342789, '/start', additional_info=str(subscriber.id))()
+    answers = StartCommandService(892342789, '/start', additional_info=str(subscriber.tg_chat_id))()
 
     assert Subscriber.objects.get(tg_chat_id=892342789).referer == subscriber
     assert answers[0].text == 'По вашей реферальной ссылке произошла регистрация'
@@ -48,6 +48,6 @@ def test_referal_subscribe_in_reactivation_case(subscriber, morning_content):
     subscriber = Subscriber.objects.last()
     subscriber.is_active = False
     subscriber.save()
-    StartCommandService(892342789, '/start', additional_info=str(subscriber.id))()
+    StartCommandService(892342789, '/start', additional_info=str(subscriber.tg_chat_id))()
 
     assert subscriber.referer is None

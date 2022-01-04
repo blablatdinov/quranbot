@@ -33,3 +33,6 @@ logs/
 
 # tmp files
 tmp*
+
+# bin files
+bin/
