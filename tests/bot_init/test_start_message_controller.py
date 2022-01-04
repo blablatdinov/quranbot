@@ -27,10 +27,10 @@ def test_registration_after_deleting(morning_content):
 
 
 def test_start_message_with_referal_service(morning_content, subscriber):
-    StartCommandService(32984, '/start', additional_info=str(subscriber.id))()
+    StartCommandService(32984, '/start', additional_info=str(subscriber.tg_chat_id))()
 
     assert Subscriber.objects.last().tg_chat_id == 32984
-    assert Subscriber.objects.last().referer.id == subscriber.id
+    assert Subscriber.objects.last().referer.tg_chat_id == subscriber.tg_chat_id
 
 
 def test_active_user_start_command(subscriber):
