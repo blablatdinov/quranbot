@@ -28,8 +28,26 @@ class PodcastAlreadyExistException(Exception):
 class PodcastParser:
     """Парсер подкастов."""
 
-    def __init__(self) -> None:
-        ...
+    def __call__(self) -> None:
+        """Entrypoint."""
+        logger.info('Start parsing podcasts...')
+        self.page_num = 1
+        self.sub = self.get_subscriber_for_first_sending()
+
+        while True:
+            try:
+                self.parse_one_page()
+            except AchievedLastPageException:
+                break
+            except PodcastAlreadyExistException:
+                break
+            except Exception as e:
+                logger.error(str(e))
+
+            self.page_num += 1
+
+        logger.debug(f'{Podcast.objects.count()=}')
+        logger.info('Parsing end')
 
     @staticmethod
     def get_subscriber_for_first_sending() -> Subscriber:
@@ -119,23 +137,3 @@ class PodcastParser:
             self.get_article_info(article_link)
             self.download_and_send_audio_file()
             self.create_podcast()
-
-    def __call__(self) -> None:
-        """Entrypoint."""
-        logger.info('Start parsing podcasts...')
-        self.page_num = 1
-        self.sub = self.get_subscriber_for_first_sending()
-
-        while True:
-            try:
-                self.parse_one_page()
-            except AchievedLastPageException:
-                break
-            except PodcastAlreadyExistException:
-                break
-            except Exception as e:
-                logger.error(str(e))
-
-            self.page_num += 1
-
-        logger.info('Parsing end')

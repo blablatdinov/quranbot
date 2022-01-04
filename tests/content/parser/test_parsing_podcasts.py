@@ -1,9 +1,10 @@
 # TODO добавить тестов, чтоб не спарсить лишнего
-import json
+import random
 import re
 
 import pytest
 import requests_mock
+import ujson
 from django.conf import settings
 from jinja2 import Template
 
@@ -34,32 +35,41 @@ def get_audio():
         return f.read()
 
 
+@pytest.fixture()
 def tg_audio_answer():
-    with open(f'{settings.BASE_DIR}/tests/content/fixtures/tg_answer.json', 'r') as f:
-        data = json.load(f)
-    return data
+
+    def _tg_audio_answer(request, context):
+        context.status_code = 200
+        with open(f'{settings.BASE_DIR}/tests/content/fixtures/tg_answer.json', 'r') as f:
+            data = ujson.load(f)
+            data['result']['message_id'] = random.randrange(9999)
+        return ujson.dumps(data)
+
+    return _tg_audio_answer
 
 
-def test_parse_podasts(subscriber):
-    with requests_mock.Mocker() as m:
-        m.get('https://umma.ru/audlo/shamil-alyautdinov/page/1', text=get_html('podcasts_page.html'))
-        m.get('https://umma.ru/audlo/shamil-alyautdinov/page/2', status_code=404)
+@pytest.fixture()
+def podcasts_mock(http_mock, tg_audio_answer):
+    http_mock.get('https://umma.ru/audlo/shamil-alyautdinov/page/1', text=get_html('podcasts_page.html'))
+    http_mock.get('https://umma.ru/audlo/shamil-alyautdinov/page/2', status_code=404)
 
-        m.get('https://umma.ru/kak-terpet/', text=get_podcast())
-        m.get('https://umma.ru/dela-i-molitva-hadis/', text=get_podcast())
-        m.get('https://umma.ru/tavassul-salyafiti/', text=get_podcast())
-        m.get('https://umma.ru/tavassul-sufii/', text=get_podcast())
-        m.get('https://umma.ru/tavassul-9-punktov/', text=get_podcast())
-        m.get('https://umma.ru/tavassul-uchenie-al-azhara/', text=get_podcast())
-        m.get('https://umma.ru/skolko-u-tebya-veri/', text=get_podcast())
-        m.get('https://umma.ru/muzika--eto-haram/', text=get_podcast())
-        m.get('https://umma.ru/tavassul-chto-nelzya/', text=get_podcast())
-        m.get('https://umma.ru/tavassul-chto-mozhno/', text=get_podcast())
+    http_mock.get('https://umma.ru/kak-terpet/', text=get_podcast())
+    http_mock.get('https://umma.ru/dela-i-molitva-hadis/', text=get_podcast())
+    http_mock.get('https://umma.ru/tavassul-salyafiti/', text=get_podcast())
+    http_mock.get('https://umma.ru/tavassul-sufii/', text=get_podcast())
+    http_mock.get('https://umma.ru/tavassul-9-punktov/', text=get_podcast())
+    http_mock.get('https://umma.ru/tavassul-uchenie-al-azhara/', text=get_podcast())
+    http_mock.get('https://umma.ru/skolko-u-tebya-veri/', text=get_podcast())
+    http_mock.get('https://umma.ru/muzika--eto-haram/', text=get_podcast())
+    http_mock.get('https://umma.ru/tavassul-chto-nelzya/', text=get_podcast())
+    http_mock.get('https://umma.ru/tavassul-chto-mozhno/', text=get_podcast())
 
-        m.get('https://umma.ru/uploads/audio/t2b2gsqq5b.mp3', content=get_audio())
-        m.register_uri('POST', re.compile(r'https://api.telegram.org/bot.+/sendAudio\?'), json=tg_audio_answer())
+    http_mock.get('https://umma.ru/uploads/audio/t2b2gsqq5b.mp3', content=get_audio())
+    http_mock.register_uri('POST', re.compile(r'https://api.telegram.org/bot.+/sendAudio\?'), text=tg_audio_answer)
 
-        PodcastParser()()
+
+def test_parse_podasts(subscriber, podcasts_mock):
+    PodcastParser()()
 
     assert Podcast.objects.count() == 10
     assert (
@@ -70,7 +80,7 @@ def test_parse_podasts(subscriber):
     assert Podcast.objects.first().title == 'Как терпеть?'
 
 
-def test_parse_new_podcasts(subscriber):
+def test_parse_new_podcasts(subscriber, tg_audio_answer):
     with requests_mock.Mocker() as m:
         m.get('https://umma.ru/audlo/shamil-alyautdinov/page/1', text=get_html('podcast_2_page.html'))
         m.get('https://umma.ru/audlo/shamil-alyautdinov/page/2', status_code=404)
@@ -87,7 +97,7 @@ def test_parse_new_podcasts(subscriber):
         m.get('https://umma.ru/vse-vo-blago/', text=get_podcast('vse-vo-blago'))
 
         m.get('https://umma.ru/uploads/audio/t2b2gsqq5b.mp3', content=get_audio())
-        m.register_uri('POST', re.compile(r'https://api.telegram.org/bot.+/sendAudio\?'), json=tg_audio_answer())
+        m.register_uri('POST', re.compile(r'https://api.telegram.org/bot.+/sendAudio\?'), text=tg_audio_answer)
 
         PodcastParser()()
 
@@ -118,7 +128,7 @@ def test_parse_new_podcasts(subscriber):
         m.get('https://umma.ru/muzika--eto-haram/', text=get_podcast('muzika--eto-haram'))
         m.get('https://umma.ru/tavassul-chto-nelzya/', text=get_podcast('tavassul-chto-nelzya'))
         m.get('https://umma.ru/tavassul-chto-mozhno/', text=get_podcast('tavassul-chto-mozhno'))
-        m.register_uri('POST', re.compile(r'https://api.telegram.org/bot.+/sendAudio\?'), json=tg_audio_answer())
+        m.register_uri('POST', re.compile(r'https://api.telegram.org/bot.+/sendAudio\?'), text=tg_audio_answer)
 
         PodcastParser()()
 
