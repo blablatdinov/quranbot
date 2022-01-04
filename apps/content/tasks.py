@@ -7,7 +7,7 @@ from apps.content.podcast_parser import PodcastParser
 from apps.content.service import do_morning_content_distribution
 
 
-@periodic_task(run_every=(crontab(hour=7, minute=0)), name='mailing (7:00)')
+# @periodic_task(run_every=(crontab(hour=7, minute=0)), name='mailing (7:00)')
 def mailing() -> None:
     """Таска для рассылки ежедневного контента."""
     do_morning_content_distribution()
