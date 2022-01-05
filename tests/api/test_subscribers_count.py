@@ -15,7 +15,7 @@ def subscribers(mixer):
 
 
 def test(client):
-    got = client.get('/api/v1/get-subscribers-count/')
+    got = client.get('/api/v1/bot/get-subscribers-count/')
 
     assert got.status_code == 200
     assert list(got.json().keys()) == ['active', 'all']

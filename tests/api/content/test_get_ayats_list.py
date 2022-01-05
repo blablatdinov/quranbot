@@ -10,7 +10,8 @@ def ayats(mixer):
 
 def test(client, django_assert_max_num_queries):
     with django_assert_max_num_queries(2):
-        got = client.get('/api/v1/ayats/')
+        got = client.get('/api/v1/content/ayats/')
+
     payload = got.json()
     expected_fields = [
         'id',

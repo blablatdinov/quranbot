@@ -15,7 +15,7 @@ def mailing_messages(mixer, mailing):
 
 def test(client, django_assert_max_num_queries):
     with django_assert_max_num_queries(3):
-        got = client.get('/api/v1/mailings/')
+        got = client.get('/api/v1/bot/mailings/')
 
     assert got.status_code == 200
     assert list(got.json()['results'][0].keys()) == ['id', 'is_cleaned', 'recipients_count']

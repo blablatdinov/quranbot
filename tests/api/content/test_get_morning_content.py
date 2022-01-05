@@ -12,7 +12,7 @@ def ayats(mixer):
 
 
 def test(client, ayats):
-    got = client.get('/api/v1/morning-contents/')
+    got = client.get('/api/v1/content/morning-contents/')
     payload = got.json()['results']
 
     assert got.status_code == 200
