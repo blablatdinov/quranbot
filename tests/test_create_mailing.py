@@ -12,7 +12,7 @@ def subscriber(mixer):
 
 def test(client):
     got = client.post('/api/v1/mailings/', data={
-        'text': 'some text'
+        'text': 'some text',
     })
 
     assert got.status_code == 201

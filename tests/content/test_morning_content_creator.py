@@ -1,8 +1,8 @@
 import pytest
 
-from apps.content.services.create_morning_content import MorningContentCreator
-from apps.content.models import Ayat
 from apps.content.exceptions import ContentTooLong
+from apps.content.models import Ayat
+from apps.content.services.create_morning_content import MorningContentCreator
 
 pytestmark = [pytest.mark.django_db]
 
@@ -11,7 +11,7 @@ pytestmark = [pytest.mark.django_db]
 def big_ayat(mixer):
     return mixer.blend(
         'content.Ayat',
-        content='a' * 5000
+        content='a' * 5000,
     )
 
 

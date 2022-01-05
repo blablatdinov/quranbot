@@ -1,3 +1,5 @@
+from typing import Optional
+
 from rest_framework import serializers
 
 from apps.content.models import Ayat
@@ -24,16 +26,16 @@ class AyatSerializer(serializers.ModelSerializer):
         ]
         model = Ayat
 
-    def get_content_day(self, obj):
+    def get_content_day(self, obj: Ayat) -> Optional[int]:
         try:
             return obj.one_day_content.day
         except AttributeError:
             return None
 
-    def get_sura(self, obj):
+    def get_sura(self, obj: Ayat) -> int:
         return obj.sura.number
 
-    def get_link(self, obj):
+    def get_link(self, obj: Ayat) -> str:
         return f'https://umma.ru{obj.sura.link}'
 
 
@@ -50,5 +52,5 @@ class AyatListSerializer(serializers.ModelSerializer):
         ]
         model = Ayat
 
-    def get_sura(self, obj):
+    def get_sura(self, obj: Ayat) -> int:
         return obj.sura.number

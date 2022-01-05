@@ -18,7 +18,7 @@ def test_len(ayat):
         len(str(ayat.sura.number)),
         len(ayat.ayat),
         len(ayat.sura.link),
-        len(additional_content)
+        len(additional_content),
     ])
 
     assert len(got) == ayats_len + 69

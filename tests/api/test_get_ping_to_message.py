@@ -1,6 +1,6 @@
 from datetime import datetime
-import pytest
 
+import pytest
 from django.conf import settings
 
 pytestmark = [pytest.mark.django_db]

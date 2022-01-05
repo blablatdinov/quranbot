@@ -38,7 +38,7 @@ ngrok http 8000
 ./.env
     export HOST=https://7db5d686bee3.ngrok.io
 ```
-Создаем суперпользвоателя
+Создаем суперпользователя
 
 ```
 ./manage.py createsuperuser

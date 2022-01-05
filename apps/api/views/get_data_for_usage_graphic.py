@@ -1,9 +1,9 @@
 import datetime
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import serializers
 from django.conf import settings
+from rest_framework import serializers
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from apps.bot_init.models import Message
 
@@ -20,15 +20,16 @@ class GetDataForUsageGraphic(APIView):
         start_date, end_date = [datetime.datetime.strptime(x, '%Y-%m-%d') for x in dates_range.split(',')]
         delta = datetime.timedelta(days=1)
         result = []
-        from loguru import logger
         while start_date <= end_date:
             date_range = (start_date, start_date + datetime.timedelta(days=1))
-            logger.debug(
-                f'date {start_date}, date range: {date_range}'
-            )
             result.append({
                 'date': start_date,
-                'message_count': Message.objects.filter(date__range=date_range).exclude(from_user_id=settings.TG_BOT.id).count()
+                'message_count': (
+                    Message.objects
+                    .filter(date__range=date_range)
+                    .exclude(from_user_id=settings.TG_BOT.id)
+                    .count()
+                ),
             })
             start_date += delta
         return Response(

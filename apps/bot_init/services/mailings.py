@@ -1,9 +1,9 @@
+from apps.bot_init.markup import get_default_keyboard
 from apps.bot_init.models import Mailing, Subscriber
 from apps.bot_init.services.answer_service import Answer
-from apps.bot_init.markup import get_default_keyboard
 
 
-def execute_mailing(text: str):
+def execute_mailing(text: str) -> Mailing:
     keyboard = get_default_keyboard()
     mailing = Mailing.objects.create()
     for subscriber in Subscriber.objects.filter(is_active=True):

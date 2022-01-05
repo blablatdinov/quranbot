@@ -1,10 +1,10 @@
 from rest_framework import generics
-from rest_framework.views import APIView
-from rest_framework.response import Response
 from rest_framework.generics import get_object_or_404
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
+from apps.api.serializers import MailingCreateSerializer, MailingSerializer
 from apps.bot_init.models import Mailing
-from apps.api.serializers import MailingSerializer, MailingCreateSerializer
 from apps.bot_init.services.mailings import execute_mailing
 
 

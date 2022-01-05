@@ -2,15 +2,16 @@
 # FIXME сделать нормальный парсинг аудио
 import hashlib
 import re
+from typing import List
 
+import requests
 from bs4 import BeautifulSoup
 from loguru import logger
-import requests
 from progressbar import progressbar as pbar
 
 from apps.content.models import Ayat, Sura
 
-base_url = "https://umma.ru"
+base_url = 'https://umma.ru'
 
 
 def get_html(url: str) -> str:
@@ -20,101 +21,102 @@ def get_html(url: str) -> str:
 
 
 def get_soup(html: str) -> BeautifulSoup:
-    """Функция преабразует html в soup объект."""
-    return BeautifulSoup(html, "lxml")
+    """Функция преобразует html в soup объект."""
+    return BeautifulSoup(html, 'lxml')
 
 
 class AyatParser:
     """Класс выполняющий парсинг Корана."""
 
-    url = "https://umma.ru/perevod-korana/"
+    url = 'https://umma.ru/perevod-korana/'
     current_sura_num = 0
     current_sura_ayat_count: int
     result = []
 
-    def __init__(self):
+    def __init__(self) -> None:
         ...
 
     @staticmethod
     def get_sura(soup: BeautifulSoup) -> str:
         """Возвращает суру."""
-        return soup.find("h3").text.split(":")[0]
+        return soup.find('h3').text.split(':')[0]
 
     @staticmethod
     def get_transcription(soup: BeautifulSoup) -> str:
         """Возвращает транслитерацию аята."""
-        return soup.find("div", class_="transcription").text.strip()
+        return soup.find('div', class_='transcription').text.strip()
 
     @staticmethod
     def get_arab_text(soup: BeautifulSoup) -> str:
         """Возвращает арабский текст."""
-        return soup.find("a", class_="quran-speaker").text.strip()
+        return soup.find('a', class_='quran-speaker').text.strip()
 
     @staticmethod
     def get_content(soup: BeautifulSoup) -> str:
         """Возвращает содержание перевода."""
-        text = ""
-        text_block = soup.find("div", class_="text")
-        for paragraph in text_block.find_all("p"):
+        text = ''
+        text_block = soup.find('div', class_='text')
+        for paragraph in text_block.find_all('p'):
             if (
-                    "***" in paragraph.text or
-                    paragraph.text == "Ссылки на богословские первоисточники и комментарий:" or
-                    "Подробнее см." in paragraph.text
+                    '***' in paragraph.text or
+                    paragraph.text == 'Ссылки на богословские первоисточники и комментарий:' or
+                    'Подробнее см.' in paragraph.text
             ):
                 return text
-            text += re.sub(r"\[\d+\]", "", paragraph.text)  # TODO вынести в очищение контента
+            text += re.sub(r'\[\d+\]', '', paragraph.text)  # TODO вынести в очищение контента
         return text
 
-    def parse_content_from_db(self):
+    def parse_content_from_db(self) -> None:
+        """Собрать контент с БД."""
         for ayat in pbar(Ayat.objects.all()):
             soup = get_soup(ayat.html)
-            ayat.content = "".join([x for x in self.get_content(soup)]).replace(
+            ayat.content = ''.join([x for x in self.get_content(soup)]).replace(
                 # FIXME починить очистку текста
-                "Ссылки на богословские первоисточники и комментарий:",
-                ""
+                'Ссылки на богословские первоисточники и комментарий:',
+                '',
             )
             ayat.arab_text = self.get_arab_text(soup)
             ayat.trans = self.get_transcription(soup)
-            logger.debug(f"{ayat.arab_text=}")
+            logger.debug(f'{ayat.arab_text=}')
             ayat.save()
 
     @staticmethod
     def get_ayat(soup: BeautifulSoup) -> str:
         """Возвращает номер аята."""
-        return soup.find("h3").text.split(":")[1]
+        return soup.find('h3').text.split(':')[1]
 
-    def get_sura_links(self):
+    def get_sura_links(self) -> str:
         """Получаем ссылки на все суры."""
         soup = get_soup(get_html(self.url))
-        lis = soup.find("ol", class_="items-list").find_all("li")[1:]
+        lis = soup.find('ol', class_='items-list').find_all('li')[1:]
         for li in lis:
-            yield li.find("a")["href"]
+            yield li.find('a')['href']
 
     @staticmethod
-    def get_sura_html(html: str):
+    def get_sura_html(html: str) -> List:
         """Функция разбивает суру на аяты."""
         soup = get_soup(html)
-        blocks = [block for block in soup.find_all("div", class_="quran-block")]
+        blocks = [block for block in soup.find_all('div', class_='quran-block')]
         return blocks
 
     @staticmethod
     def get_page(sura_num: int, sura_ayat_count: int) -> str:
         """Функция достает все аяты в суре."""
-        url = f"https://umma.ru/api/v2/quran/{sura_num}"
-        payload = f"action=quran&paged={sura_ayat_count}&offset=0"
-        headers = {"Content-Type": "application/x-www-form-urlencoded"}
-        response = requests.request("POST", url, headers=headers, data=payload)
+        url = f'https://umma.ru/api/v2/quran/{sura_num}'
+        payload = f'action=quran&paged={sura_ayat_count}&offset=0'
+        headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+        response = requests.request('POST', url, headers=headers, data=payload)
         return response.text
 
-    def run(self):
+    def run(self) -> None:
         """Запуск парсера."""
         for sura in Sura.objects.all():
             page = self.get_page(sura.number, sura.child_elements_count)
             if hashlib.sha256(str(page).encode()).hexdigest() == sura.pars_hash:
-                logger.info(f"Sura #{sura.number} not changed")
+                logger.info(f'Sura #{sura.number} not changed')
                 continue
             sura.pars_hash = hashlib.sha256(str(page).encode()).hexdigest()
-            sura.save(update_fields=["pars_hash"])
+            sura.save(update_fields=['pars_hash'])
 
             blocks = self.get_sura_html(page)
             for block in blocks:
@@ -125,18 +127,18 @@ class AyatParser:
                 )
                 # TODO: это надо протестировать
                 ayat.trans = self.get_transcription(block)
-                ayat.content = "".join([x for x in self.get_content(block)]).replace(
+                ayat.content = ''.join([x for x in self.get_content(block)]).replace(
                     # FIXME починить очистку текста
-                    "Ссылки на богословские первоисточники и комментарий:",
-                    ""
+                    'Ссылки на богословские первоисточники и комментарий:',
+                    '',
                 )
                 ayat.html = str(block)
                 ayat.save()
 
-            logger.info(f"Sura {sura.number} was parsed")
+            logger.info(f'Sura {sura.number} was parsed')
 
 
-def run_parser():
+def run_parser() -> None:
     """Функция для удобного запуска парсера."""
     parser = AyatParser()
     parser.run()
