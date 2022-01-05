@@ -17,9 +17,9 @@ def admin_in_db():
 
 @pytest.fixture
 def admins_from_env():
-    load_dotenv(".env")
+    load_dotenv('.env')
     admins = [
-        int(chat_id) for chat_id in os.getenv("ADMINS").split(",")
+        int(chat_id) for chat_id in os.getenv('ADMINS').split(',')
     ]
     return admins
 

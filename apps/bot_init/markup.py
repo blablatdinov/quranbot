@@ -1,11 +1,13 @@
 """Модуль, содержащий классы и функции для создания клавиатур."""
+from typing import List, Tuple
+
 from telebot import types
 
 
 class InlineKeyboard:
     """Класс создающий клавиатуру над строкой ввода сообщений."""
 
-    def get_lines(self, buttons):
+    def get_lines(self, buttons: Tuple[Tuple[str, str]]) -> List[types.InlineKeyboardButton]:
         """Метод для получения строк."""
         for line in buttons:
             buttons_line = []
@@ -15,7 +17,7 @@ class InlineKeyboard:
             yield buttons_line
 
     @staticmethod
-    def get_buttons(button_text):
+    def get_buttons(button_text: str) -> types.InlineKeyboardButton:
         """Метод для получения кнопок."""
         if isinstance(button_text, str):
             button = types.InlineKeyboardButton(text=button_text, callback_data=button_text)
@@ -23,7 +25,7 @@ class InlineKeyboard:
             button = types.InlineKeyboardButton(text=button_text[0], callback_data=button_text[1])
         return button
 
-    def __init__(self, buttons):
+    def __init__(self, buttons: Tuple[Tuple[Tuple[str, str]]]) -> None:
         """Конструктор класса.
 
         example = (
@@ -44,7 +46,7 @@ class InlineKeyboard:
 class Keyboard:
     """Класс создающий клавиатуру под строкой ввода сообщений."""
 
-    def __init__(self, buttons):
+    def __init__(self, buttons: Tuple[Tuple[str]]) -> None:
         """Конструктор класса.
 
         example = (
@@ -57,7 +59,7 @@ class Keyboard:
         for line in lines:
             self.keyboard.add(*line)
 
-    def get_lines(self, buttons):
+    def get_lines(self, buttons: Tuple[str]) -> List[types.InlineKeyboardButton]:
         """Метод для получения строк."""
         for line in buttons:
             buttons_line = []
@@ -67,19 +69,19 @@ class Keyboard:
             yield buttons_line
 
     @staticmethod
-    def get_buttons(button_text):
+    def get_buttons(button_text: str) -> None:
         """Метод для получения кнопок."""
         button = types.KeyboardButton(button_text)
         return button
 
 
-def get_default_keyboard(additional_buttons=None):
+def get_default_keyboard(additional_buttons: List = None) -> types.InlineKeyboardMarkup:
     """Функция возвращает дефолтную клавиатуру."""
     if additional_buttons is None:
         additional_buttons = []
     buttons = [
-        ("🎧 Подкасты",),
-        ("🕋 Время намаза",),
-        ("🌟 Избранное", "🔍 Найти аят"),
+        ('🎧 Подкасты',),
+        ('🕋 Время намаза',),
+        ('🌟 Избранное', '🔍 Найти аят'),
     ] + additional_buttons
     return Keyboard(buttons).keyboard

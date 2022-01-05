@@ -1,20 +1,22 @@
-from django.http import HttpResponse
-from loguru import logger
 import traceback
+from typing import Any, Callable
+
+from django.http import HttpRequest, HttpResponse
+from loguru import logger
 
 from config.splitted_settings.boilerplate import DEBUG
 
 
-class DebugErrorMiddleware():
+class DebugErrorMiddleware:
 
-    def __init__(self, get_response):
+    def __init__(self, get_response: Callable) -> None:
         self._get_response = get_response
 
-    def __call__(self, request):
+    def __call__(self, request: HttpRequest) -> Any:
         return self._get_response(request)
 
-    def process_exception(self, request, exception):
-        print(traceback.format_exc())
+    def process_exception(self, request: HttpRequest, exception: Exception) -> HttpResponse:
+        logger.error(traceback.format_exc())
         return HttpResponse(traceback.format_exc().replace('\n', '<br>'), status=500)
 
 

@@ -1,5 +1,5 @@
-from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from apps.bot_init.service import send_message_to_admin
 

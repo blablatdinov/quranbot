@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
-from apps.content.models import MorningContent
 from apps.api.serializers.ayat_serializer import AyatSerializer
+from apps.content.models import MorningContent
 
 
 class MorningContentCreateSerializer(serializers.Serializer):
@@ -23,5 +23,5 @@ class MorningContentSerializer(serializers.ModelSerializer):
             'related_ayats',
         ]
 
-    def get_content_length(self, obj):
+    def get_content_length(self, obj: MorningContent) -> int:
         return len(obj.content_for_day())

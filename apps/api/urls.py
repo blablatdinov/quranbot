@@ -1,12 +1,9 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-)
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
-from apps.api.api_docs import api_docs_urls
 from apps.api import views
+from apps.api.api_docs import api_docs_urls
 
 router = DefaultRouter()
 router.register(r'ayats', views.AyatViewSet)

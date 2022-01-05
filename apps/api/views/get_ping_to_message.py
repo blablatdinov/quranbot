@@ -1,9 +1,9 @@
 from datetime import timedelta
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from django.utils import timezone
 from django.conf import settings
+from django.utils import timezone
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from apps.bot_init.models import Message
 

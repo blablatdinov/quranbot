@@ -1,12 +1,14 @@
 import os
 from collections import namedtuple
 
+import ddtrace
+import toml
 from loguru import logger
 from split_settings.tools import include
 
 from config.splitted_settings.environ import env
 
-import ddtrace
+CORS_ORIGIN_ALLOW_ALL = True
 
 include(
     'splitted_settings/boilerplate.py',
@@ -18,6 +20,7 @@ include(
     'splitted_settings/allowed_hosts.py',
     'splitted_settings/logger.py',
     'splitted_settings/middlewares.py',
+    'splitted_settings/templates.py',
 )
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -40,8 +43,6 @@ LANGUAGE_CODE = 'ru-ru'
 TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
-
-USE_L10N = True
 
 USE_TZ = True
 
@@ -67,10 +68,19 @@ CELERY_BROKER_URL = os.getenv('REDIS_CONNECTION')
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASKS_SERIALIZER = 'json'
 
-if DEBUG:
-    ddtrace.tracer.enabled = not DEBUG
+if DEBUG:  # noqa: F821
+    ddtrace.tracer.enabled = not DEBUG  # noqa: F821
     ddtrace.patch_all()
 
 RAMADAN_MODE = env('RAMADAN_MODE', bool, default=False)
 
+with open(f'{BASE_DIR}/pyproject.toml', 'r') as f:  # noqa: F821
+    PYPROJECT_FILE = toml.loads(f.read())
+
+VERSION = PYPROJECT_FILE['tool']['poetry']['version']
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+ENABLE_S3 = env('ENABLE_S3', bool, default=False)
+
+CSRF_TRUSTED_ORIGINS = ['https://quranbot.blablatdinov.ru']

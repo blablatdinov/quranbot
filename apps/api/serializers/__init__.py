@@ -1,6 +1,6 @@
-from .ayat_serializer import AyatSerializer, AyatListSerializer  # noqa
-from .morning_content_serializer import MorningContentSerializer, MorningContentCreateSerializer  # noqa
-from .mailing_serializer import MailingSerializer, MailingCreateSerializer
+from .ayat_serializer import AyatListSerializer, AyatSerializer  # noqa
+from .mailing_serializer import MailingCreateSerializer, MailingSerializer
+from .morning_content_serializer import MorningContentCreateSerializer, MorningContentSerializer  # noqa
 
 __all__ = [
     AyatSerializer,

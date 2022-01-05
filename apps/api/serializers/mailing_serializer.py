@@ -14,7 +14,7 @@ class MailingSerializer(serializers.ModelSerializer):
             'recipients_count',
         )
 
-    def get_recipients_count(self, mailing):
+    def get_recipients_count(self, mailing: Mailing) -> int:
         return mailing.messages.count()
 
 

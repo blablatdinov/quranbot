@@ -8,10 +8,10 @@ pytestmark = [pytest.mark.django_db]
 
 @pytest.fixture()
 def podcast():
-    return mixer.blend("content.Podcast")
+    return mixer.blend('content.Podcast')
 
 
 def test(podcast):
-    answer = text_message_service(24932804, "Подкасты")
+    answer = text_message_service(24932804, 'Подкасты')
 
     assert answer.text == podcast.audio.link_to_file
