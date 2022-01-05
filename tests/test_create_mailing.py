@@ -11,7 +11,7 @@ def subscriber(mixer):
 
 
 def test(client):
-    got = client.post('/api/v1/mailings/', data={
+    got = client.post('/api/v1/bot/mailings/', data={
         'text': 'some text',
     })
 

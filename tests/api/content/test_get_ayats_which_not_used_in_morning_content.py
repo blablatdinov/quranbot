@@ -16,7 +16,7 @@ def ayats():
 
 
 def test(client):
-    got = client.get('/api/v1/get-not-used-ayats/')
+    got = client.get('/api/v1/content/get-not-used-ayats/')
 
     assert got.status_code == 200
     assert len(got.json()['results']) == 3

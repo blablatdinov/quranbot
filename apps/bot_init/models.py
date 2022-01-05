@@ -19,6 +19,7 @@ class Mailing(models.Model):
     class Meta:
         verbose_name = 'Рассылка'
         verbose_name_plural = 'Рассылки'
+        ordering = ['-id']
 
     def __str__(self) -> str:
         """Строковое представление."""

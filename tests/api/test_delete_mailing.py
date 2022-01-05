@@ -15,7 +15,6 @@ def mailing_messages(mixer, mailing):
 
 def test(client, django_assert_max_num_queries, mailing):
     with django_assert_max_num_queries(3):
-        got = client.delete(f'/api/v1/mailings/{mailing.pk}/')
+        got = client.delete(f'/api/v1/bot/mailings/{mailing.pk}/')
 
     assert got.status_code == 204
-    mailing.refresh_from_db

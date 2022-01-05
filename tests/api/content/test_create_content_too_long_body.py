@@ -11,7 +11,7 @@ def ayat(mixer):
 
 
 def test(client, ayat):
-    got = client.post('/api/v1/morning-contents/', data={
+    got = client.post('/api/v1/content/morning-contents/', data={
         'day': 1,
         'ayats_ids': [ayat.pk],
     })
