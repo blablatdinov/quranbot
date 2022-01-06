@@ -63,7 +63,7 @@ class Answer:
                 'Передайте chat_id либо при инициализации класса Answer либо при вызове метода send',
             )
 
-    def send(self, chat_id: int = None) -> Message:
+    def send(self, chat_id: int = None) -> Optional[Message]:
         """Отправляем ответ пользователю.
 
         Функция может принять как единственный экземпляр класса Answer, так и список экземпляров.

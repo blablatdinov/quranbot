@@ -8,8 +8,6 @@ from split_settings.tools import include
 
 from config.splitted_settings.environ import env
 
-CORS_ORIGIN_ALLOW_ALL = True
-
 include(
     'splitted_settings/boilerplate.py',
     'splitted_settings/db.py',
@@ -21,6 +19,7 @@ include(
     'splitted_settings/logger.py',
     'splitted_settings/middlewares.py',
     'splitted_settings/templates.py',
+    'splitted_settings/cors.py',
 )
 
 AUTH_PASSWORD_VALIDATORS = [

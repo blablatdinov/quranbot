@@ -18,10 +18,14 @@ class GetDataForUsageGraphic(APIView):
 
     def get(self, request):
         dates_range = request.GET.get('dates_range')
-        start_date, end_date = [
-            pendulum.parse(x, tz='Europe/Moscow')
-            for x in dates_range.split(',')
-        ]
+        if not dates_range:
+            end_date = pendulum.now(tz=settings.TIME_ZONE)
+            start_date = end_date.subtract(days=7)
+        else:
+            start_date, end_date = [
+                pendulum.parse(x, tz=settings.TIME_ZONE)
+                for x in dates_range.split(',')
+            ]
         delta = datetime.timedelta(days=1)
         result = []
 
