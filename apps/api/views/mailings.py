@@ -15,6 +15,10 @@ class Mailings(generics.ListCreateAPIView):
         return Mailing.objects.all().prefetch_related('messages')
 
     def create(self, request):
+        """Создание рассылки.
+
+        TODO: Перенести на golang
+        """
         serializer = MailingCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         mailing = execute_mailing(serializer.data['text'])
@@ -26,5 +30,5 @@ class MailingDetail(APIView):
 
     def delete(self, request, pk):
         mailing = get_object_or_404(Mailing, pk=pk)
-        mailing.clean()
+        mailing.clean_messages()
         return Response(status=204)

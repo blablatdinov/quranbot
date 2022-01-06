@@ -8,6 +8,8 @@ def execute_mailing(text: str) -> Mailing:
     mailing = Mailing.objects.create()
     for subscriber in Subscriber.objects.filter(is_active=True):
         message_instance = Answer(text, chat_id=subscriber.tg_chat_id, keyboard=keyboard).send()
+        if not message_instance:
+            continue
         message_instance.mailing = mailing
         message_instance.save(update_fields=['mailing'])
 
