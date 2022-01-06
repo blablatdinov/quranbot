@@ -1,5 +1,3 @@
-import datetime
-
 import pendulum
 from django.conf import settings
 from rest_framework import serializers
@@ -26,25 +24,23 @@ class GetDataForUsageGraphic(APIView):
                 pendulum.parse(x, tz=settings.TIME_ZONE)
                 for x in dates_range.split(',')
             ]
-        delta = datetime.timedelta(days=1)
-        result = []
+        period = pendulum.period(start_date, end_date)
+        messages = (
+            Message.objects
+            .filter(date__range=(period.start, period.end))
+            .order_by('date')
+            .exclude(from_user_id=settings.TG_BOT.id)
+        )
 
-        while start_date <= end_date:
-            date_range = (
-                start_date,
-                start_date.add(days=1).subtract(seconds=1),
-            )
-            messages_count = (
-                Message.objects
-                .filter(date__range=date_range)
-                .exclude(from_user_id=settings.TG_BOT.id)
-                .count()
-            )
+        result = []
+        for dt in period.range('days'):
             result.append({
-                'date': start_date.format('YYYY-MM-DD'),
-                'message_count': messages_count,
+                'date': dt.format('YYYY-MM-DD'),
+                'message_count': len(tuple(filter(
+                    lambda mess: dt <= mess.date < dt.add(days=1), messages,
+                ))),
             })
-            start_date += delta
+
         return Response(
             result,
             status=200,
