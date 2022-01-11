@@ -8,20 +8,6 @@ from split_settings.tools import include
 
 from config.splitted_settings.environ import env
 
-MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware',
-]
-
-CORS_ORIGIN_ALLOW_ALL = True
-
 include(
     'splitted_settings/boilerplate.py',
     'splitted_settings/db.py',
@@ -31,7 +17,9 @@ include(
     'splitted_settings/rest_framework.py',
     'splitted_settings/allowed_hosts.py',
     'splitted_settings/logger.py',
+    'splitted_settings/middlewares.py',
     'splitted_settings/templates.py',
+    'splitted_settings/cors.py',
 )
 
 AUTH_PASSWORD_VALIDATORS = [

@@ -32,11 +32,3 @@ def client(anon, user):
 def http_mock():
     with requests_mock.Mocker() as m:
         yield m
-
-
-
-
-
-"""
-FAILED tests/bot_init/test_start_message_controller.py::test_start_message_with_referal_service
-"""

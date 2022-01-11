@@ -12,7 +12,7 @@ def ayats(mixer):
 
 def test(client, ayats):
     ayats_ids = [x.pk for x in ayats]
-    got = client.post('/api/v1/morning-contents/', data={
+    got = client.post('/api/v1/content/morning-contents/', data={
         'day': 1,
         'ayats_ids': ayats_ids,
     })

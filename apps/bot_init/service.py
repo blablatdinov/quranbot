@@ -1,12 +1,14 @@
 """Бизнес логика для взаимодействия с телеграмм."""
+import datetime
 import os
 from time import sleep
 from typing import List
 
 from django.conf import settings
+from django.utils import timezone
 from loguru import logger
 
-from apps.bot_init.models import Admin, AdminMessage, Message, Subscriber, SubscriberAction
+from apps.bot_init.models import Admin, AdminMessage, Mailing, Message, Subscriber, SubscriberAction
 from apps.bot_init.schemas import SUBSCRIBER_ACTIONS
 from apps.bot_init.services.answer_service import Answer, AnswersList
 from apps.bot_init.services.subscribers import get_subscriber_by_chat_id
@@ -22,6 +24,44 @@ tbot = get_tbot_instance()
 def delete_message_in_tg(chat_id: int, message_id: int) -> None:
     """Функция для удаления сообщения в телеграмм."""
     tbot.delete_message(chat_id, message_id)
+
+
+def clean_mailing(mailing: Mailing) -> None:
+    """Удаление сообщений у пользователей.
+
+    map(lambda message: message.delete_in_tg(), mailing.messages.all())
+    """
+    for message in mailing.messages.all():
+        message.delete_in_tg()
+    mailing.is_cleaned = True
+    mailing.save(update_fields=['is_cleaned'])
+
+
+def calculate_message_ping(start_date: datetime.datetime = None, end_date: datetime.datetime = None) -> int:
+    if not start_date or not end_date:
+        end_date = timezone.now()
+        start_date = timezone.now() - datetime.timedelta(days=7)
+
+    messages = (
+        Message.objects
+        .filter(date__range=(start_date, end_date), is_unknown=False, mailing__isnull=True)
+        .order_by('-message_id')
+    )
+
+    # Определяем сообщение с которого начнем подсчет
+    for index, mess in enumerate(messages):
+        if mess.from_user_id != settings.TG_BOT.id:
+            break
+
+    sum_time_ping = datetime.timedelta(0)
+    for i in range(0, messages.count(), 2):
+        bot_answer_message = messages[i]
+        subscriber_query_message = messages[i + 1]
+
+        delta = bot_answer_message.date - subscriber_query_message.date
+        sum_time_ping += delta
+
+    return (sum_time_ping / (messages.count() / 2)).seconds
 
 
 def get_admins_list() -> List[int]:
