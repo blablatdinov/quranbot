@@ -46,6 +46,7 @@ class MessageAdmin(admin.ModelAdmin):
         'get_mailing_or_source', 'date', 'message_id', 'get_message_text',
     )
     search_fields = ('text', 'from_user_id', 'chat_id')
+    
     exclude = ('json',)
     search_fields = ('text', 'from_user_id', 'chat_id')
     readonly_fields = (
