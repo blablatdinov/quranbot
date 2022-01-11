@@ -3,6 +3,7 @@ from .get_data_for_usage_graphic import GetDataForUsageGraphic  # noqa
 from .get_ping_to_message import GetPingToMessage  # noqa
 from .get_subscribers_count import GetSubscribersCount  # noqa
 from .mailings import MailingDetail, Mailings  # noqa
+from .messages import MessagesView
 from .morning_content_views import MorningContentView  # noqa
 from .send_message_to_admin import SendMessageToAdmin  # noqa
 
@@ -16,4 +17,5 @@ __all__ = [
     SendMessageToAdmin,
     Mailings,
     MailingDetail,
+    MessagesView,
 ]

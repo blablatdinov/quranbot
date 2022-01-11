@@ -42,6 +42,7 @@ class AyatSerializer(serializers.ModelSerializer):
 class AyatListSerializer(serializers.ModelSerializer):
     sura = serializers.SerializerMethodField()
     id = serializers.IntegerField(source='pk')
+    content = serializers.SerializerMethodField()
 
     class Meta:
         fields = [
@@ -54,3 +55,10 @@ class AyatListSerializer(serializers.ModelSerializer):
 
     def get_sura(self, obj: Ayat) -> int:
         return obj.sura.number
+
+    def get_content(self, obj: Ayat) -> str:
+        message_truncate_len = 20
+        if len(obj.content) > message_truncate_len:
+            return obj.content[:message_truncate_len] + '...'
+
+        return obj.content

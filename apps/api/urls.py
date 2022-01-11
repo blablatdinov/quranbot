@@ -23,6 +23,7 @@ urlpatterns = [
     path('v1/bot/send-message-to-admin/', views.SendMessageToAdmin.as_view()),
     path('v1/bot/mailings/<int:pk>/', views.MailingDetail.as_view()),
     path('v1/bot/mailings/', views.Mailings.as_view()),
+    path('v1/bot/messages/', views.MessagesView.as_view()),
 ]
 
 urlpatterns += api_docs_urls
