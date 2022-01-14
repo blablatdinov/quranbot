@@ -81,7 +81,7 @@ class AnswersList(list):
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super(AnswersList, self).__init__(args)
 
-    def send(self) -> None:
+    def send(self, chat_id: int = None) -> None:
         """Метод для отправки сообщений."""
         for elem in self:
-            elem.send()
+            elem.send(chat_id)

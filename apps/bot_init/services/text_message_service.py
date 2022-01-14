@@ -10,7 +10,7 @@ from apps.bot_init.exceptions import AyatDoesNotExists, SuraDoesNotExists, Unkno
 from apps.bot_init.markup import InlineKeyboard
 from apps.bot_init.models import AdminMessage, Mailing, Subscriber
 from apps.bot_init.service import get_admins_list
-from apps.bot_init.services.answer_service import Answer
+from apps.bot_init.services.answer_service import Answer, AnswersList
 from apps.bot_init.services.concourse import get_referal_link, get_referals_count
 from apps.bot_init.services.subscribers import get_subscriber_by_chat_id
 from apps.bot_init.utils import get_tbot_instance
@@ -115,7 +115,10 @@ def translate_ayat_into_answer(ayat: Ayat) -> List[Answer]:
         f'<a href="https://umma.ru{ayat.sura.link}">({ayat.sura.number}:{ayat.ayat})</a>\n{ayat.arab_text}\n\n'
         f'{ayat.content}\n\n<i>{ayat.trans}</i>\n\n',
     )
-    return [Answer(text=text, keyboard=get_keyboard_for_ayat(ayat)), get_audio_answer(ayat.audio)]
+    return AnswersList(
+        Answer(text=text, keyboard=get_keyboard_for_ayat(ayat)),
+        get_audio_answer(ayat.audio)
+    )
 
 
 def delete_messages_in_mailing(mailing_pk: int) -> None:
