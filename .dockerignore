@@ -1,0 +1,55 @@
+# redactors
+.idea/
+.vscode
+
+# system files
+.DS_Store
+
+# cache files
+*__pycache__/
+celerybeat*
+
+# pytest and coverage
+.coverage
+cov.xml
+.pytest_cache
+htmlcov/
+
+# database and dumps
+*.sql*
+db.sqlite3
+dumps/
+
+# environment
+venv/
+.venv/
+
+# static 
+static/
+
+# logs
+logs/
+
+# tmp files
+tmp*
+
+# bin files
+bin/
+
+docs
+renovate.json
+scripts
+setup.cfg
+tests
+README.md
+docker
+docker-compose.yml
+go_utils
+Dockerfile
+Makefile
+env_vars*
+.git
+.dockerignore
+.github
+.yaspellerrc
+.gitignore
