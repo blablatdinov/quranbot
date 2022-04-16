@@ -15,12 +15,14 @@ include(
     'splitted_settings/static.py',
     'splitted_settings/templates.py',
     'splitted_settings/rest_framework.py',
-    'splitted_settings/allowed_hosts.py',
     'splitted_settings/logger.py',
     'splitted_settings/middlewares.py',
     'splitted_settings/templates.py',
     'splitted_settings/cors.py',
 )
+
+ALLOWED_HOSTS = env('ALLOWED_HOSTS', list)
+HOST = env('HOST', str)
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -66,6 +68,7 @@ CELERY_BROKER_URL = os.getenv('REDIS_CONNECTION')
 
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASKS_SERIALIZER = 'json'
+print(ALLOWED_HOSTS)
 
 if DEBUG:  # noqa: F821
     ddtrace.tracer.enabled = not DEBUG  # noqa: F821

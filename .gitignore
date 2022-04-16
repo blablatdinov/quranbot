@@ -1,6 +1,7 @@
 # redactors
 .idea/
 .vscode
+*.swp
 
 # system files
 .DS_Store
