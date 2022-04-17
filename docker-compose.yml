@@ -16,3 +16,9 @@ services:
     command: celery -A config worker -B -l INFO
     env_file:
       - .env
+
+  qbot_go:
+    image: blablatdinov/quranbot-go
+    network_mode: "host"
+    env_file:
+      - .env

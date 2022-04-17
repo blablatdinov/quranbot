@@ -61,12 +61,12 @@ def get_ayat_by_sura_ayat(text: str) -> Ayat:
 
     Например: пользователь присылает 2:3, по базе ищется данный аят и возвращает 2:1-5
     """
-    sura_num, ayat_num = map(int, text.split(':'))
+    sura_num, _ = map(int, text.split(':'))
 
     if not 1 <= sura_num <= 114:
         raise SuraDoesNotExists
 
-    response = requests.get('http://localhost:8001/content/ayats/')
+    response = requests.get(f'http://localhost:8001/content/ayats/?q={text}')
 
     if response.status_code == 400:
         raise AyatDoesNotExists
