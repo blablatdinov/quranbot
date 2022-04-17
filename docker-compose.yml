@@ -9,3 +9,10 @@ services:
       - "127.0.0.1:8000:8000"
     env_file:
       - .env
+
+  qbot_worker:
+    image: blablatdinov/quranbot
+    network_mode: "host"
+    command: celery -A config worker -B -l INFO
+    env_file:
+      - .env
