@@ -66,7 +66,7 @@ def get_ayat_by_sura_ayat(text: str) -> Ayat:
     if not 1 <= sura_num <= 114:
         raise SuraDoesNotExists
 
-    response = requests.get('http://localhost:8001/content/ayats')
+    response = requests.get('http://localhost:8001/content/ayats/')
 
     if response.status_code == 400:
         raise AyatDoesNotExists
