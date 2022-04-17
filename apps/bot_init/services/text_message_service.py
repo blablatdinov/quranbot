@@ -1,6 +1,7 @@
 # TODO Здесь много логики, относящейся к контенту
 import re
 from typing import List
+import requests
 
 from django.conf import settings
 from loguru import logger
@@ -60,24 +61,18 @@ def get_ayat_by_sura_ayat(text: str) -> Ayat:
 
     Например: пользователь присылает 2:3, по базе ищется данный аят и возвращает 2:1-5
     """
-    sura_num, ayat_num = [int(x) for x in text.split(':')]
+    sura_num, _ = map(int, text.split(':'))
 
     if not 1 <= sura_num <= 114:
         raise SuraDoesNotExists
 
-    ayats_in_sura = Ayat.objects.filter(sura__number=sura_num)  # TODO разнести функцию, не читаемый код
-    for ayat in ayats_in_sura:
-        if '-' in str(ayat):
-            low_limit, up_limit = [int(x) for x in str(ayat).split(':')[1].split('-')]
-            if ayat_num in range(low_limit, up_limit + 1):
-                return ayat
-        elif ',' in str(ayat):
-            name = [int(x) for x in str(ayat).split(':')[1].split(',')]
-            if ayat_num in name:
-                return ayat
-        elif int(ayat.ayat) == ayat_num:
-            return ayat
-    raise AyatDoesNotExists
+    response = requests.get(f'http://localhost:8001/content/ayats/?q={text}')
+
+    if response.status_code == 400:
+        raise AyatDoesNotExists
+
+    ayat_id = response.json()['ayat_id']
+    return Ayat.objects.get(pk=ayat_id)
 
 
 def get_keyboard_for_ayat(ayat: Ayat) -> InlineKeyboardMarkup:

@@ -1,7 +1,6 @@
 # redactors
 .idea/
 .vscode
-*.swp
 
 # system files
 .DS_Store
@@ -24,7 +23,6 @@ dumps/
 # environment
 venv/
 .venv/
-.env
 
 # static 
 static/
@@ -37,3 +35,21 @@ tmp*
 
 # bin files
 bin/
+
+docs
+renovate.json
+scripts
+setup.cfg
+tests
+README.md
+docker
+docker-compose.yml
+go_utils
+Dockerfile
+Makefile
+env_vars*
+.git
+.dockerignore
+.github
+.yaspellerrc
+.gitignore
