@@ -1,4 +1,5 @@
 """Базовые модели для работы с телеграмм."""
+import uuid
 from django.conf import settings
 from django.db import models
 
@@ -156,3 +157,18 @@ class CallbackData(models.Model):
     def __str__(self) -> str:
         """Строковое представление."""
         return f'{self.chat_id} {self.text}'
+
+
+class Notification(models.Model):
+    """Модель для хранения уведомлений."""
+
+    uuid = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
+    text = models.TextField(verbose_name='Текст уведомления')
+    created_at = models.DateTimeField(verbose_name='Время создания уведомления', auto_now_add=True)
+    is_readed = models.BooleanField(verbose_name='Уведомление прочитано', default=False)
+    readed_at = models.DateTimeField(verbose_name='Время прочтения уведомления', null=True)
+
+    class Meta:
+        db_table = 'notifications'
+        verbose_name = 'Уведомление'
+        verbose_name_plural = 'Уведомления'
