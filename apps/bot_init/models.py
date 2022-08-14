@@ -50,7 +50,7 @@ class AdminMessage(models.Model):
 class Subscriber(models.Model):
     """Модель подписчика бота."""
 
-    tg_chat_id = models.IntegerField(verbose_name='Идентификатор подписчика', unique=True)
+    tg_chat_id = models.BigIntegerField(verbose_name='Идентификатор подписчика', unique=True)
     is_active = models.BooleanField(default=True, verbose_name='Подписан ли пользователь на бота')
     step = models.CharField(max_length=100, verbose_name='Шаг пользователя', blank=True, null=True)
     comment = models.TextField(null=True, blank=True, verbose_name='Комментарий к подписчику')
