@@ -1,17 +1,18 @@
 start:
-	python manage.py start
+	poetry run python manage.py start
 
 run:
-	python manage.py runserver
+	poetry run python manage.py runserver
 
 lint:
-	poetry run isort . && poetry run flake8 .
+	poetry run isort .
+	poetry run flakeheaven lint .
 
 yaspeller:
-	python scripts/lint.py --speller
+	poetry run python scripts/lint.py --speller
 
 test:
-	pytest -n 4
+	poetry run pytest -n 4
 
 cov:
-	pytest --cov=. --cov-report xml:cov.xml -n 4
+	poetry run pytest --cov=. --cov-report xml:cov.xml -n 4

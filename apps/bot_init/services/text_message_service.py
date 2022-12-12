@@ -1,8 +1,8 @@
 # TODO Здесь много логики, относящейся к контенту
 import re
 from typing import List
-import requests
 
+import requests
 from django.conf import settings
 from loguru import logger
 from telebot.types import InlineKeyboardMarkup

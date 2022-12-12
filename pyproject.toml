@@ -5,55 +5,77 @@ description = ""
 authors = ["Almaz <a.ilaletdinov@yandex.ru>"]
 
 [tool.poetry.dependencies]
-python = "^3.8"
-Django = "^4.0.0"
-pyTelegramBotAPI = "^4.1.1"
-celery = "<5.0.0"
-loguru = "^0.5.3"
-django-split-settings = "^1.1.0"
-django-environ = "^0.8.0"
-ddtrace = "^0.61.0"
-djangorestframework = "^3.12.4"
-drf-yasg = "^1.20.0"
-django-cors-headers = "^3.10.0"
-psycopg2-binary = "^2.9.1"
-geopy = "^2.2.0"
-djangorestframework-simplejwt = "^5.0.0"
-progressbar2 = "^3.55.0"
-beautifulsoup4 = "^4.10.0"
-lxml = "^4.6.3"
-ipython = "^7.28.0"
-gunicorn = "^20.1.0"
-boto3 = "^1.18.63"
-redis = "^4.0.0"
-hiredis = "^2.0.0"
-coreapi = "^2.3.3"
-toml = "^0.10.2"
-typer = "^0.7.0"
-GitPython = "^3.1.24"
-ujson = "^5.1.0"
-Jinja2 = "^3.0.3"
-pendulum = "^2.1.2"
+python = ">=3.10,<3.11"
+Django = "4.1.4"
+pyTelegramBotAPI = "4.8.0"
+celery = "4.4.7"
+loguru = "0.6.0"
+django-split-settings = "1.2.0"
+django-environ = "0.9.0"
+ddtrace = "1.6.3"
+djangorestframework = "3.14.0"
+drf-yasg = "1.21.4"
+django-cors-headers = "3.13.0"
+psycopg2-binary = "2.9.5"
+geopy = "2.3.0"
+djangorestframework-simplejwt = "5.2.2"
+beautifulsoup4 = "4.11.1"
+lxml = "4.9.1"
+ipython = "8.7.0"
+gunicorn = "20.1.0"
+boto3 = "1.26.27"
+redis = "4.4.0"
+hiredis = "2.0.0"
+coreapi = "2.3.3"
+toml = "0.10.2"
+typer = "0.7.0"
+GitPython = "3.1.29"
+ujson = "5.6.0"
+Jinja2 = "3.1.2"
+pendulum = "2.1.2"
 
 [tool.poetry.dev-dependencies]
-pytest = "^6.2.4"
-pytest-django = "^4.4.0"
-pytest-dotenv = "^0.5.2"
-pytest-freezegun = "^0.4.2"
-pytest-cov = "^3.0.0"
-flake8 = "^4.0.0"
-flake8-commas = "^2.0.0"
-flake8-isort = "^4.0.0"
-flake8-print = "^4.0.0"
-pytest-xdist = "^2.4.0"
-mixer = "^7.2.0"
-requests-mock = "^1.9.3"
-flake8-annotations = "^2.7.0"
-flake8-quotes = "^3.3.1"
-flake8-eradicate = "^1.2.0"
-isort = "^5.10.1"
-flake8-docstrings = "^1.6.0"
+pytest = "7.2.0"
+pytest-django = "4.5.2"
+pytest-dotenv = "0.5.2"
+pytest-freezegun = "0.4.2"
+pytest-cov = "4.0.0"
+pytest-xdist = "3.1.0"
+mixer = "7.2.2"
+requests-mock = "1.10.0"
+flake8-annotations = "2.9.1"
+isort = "5.10.1"
+flakeheaven = "3.2.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.flakeheaven]
+baseline = ".flakeheaven_baseline"
+format = "grouped"
+docstring_style = "sphinx"
+max_line_length = 120
+show_source = true
+statistics = false
+doctests = true
+enable_extensions = "G"
+accept_encodings = "utf-8"
+
+[tool.flakeheaven.plugins]
+"flake8-*" = ["+*"]
+mccabe = ["+*"]
+nitpick = ["+*"]
+"pep8-naming" = ["+*"]
+pycodestyle = ["+*"]
+pyflakes = ["+*"]
+"wemake-python-styleguide" = ["+*"]
+
+[tool.flakeheaven.exceptions."tests"]
+"flake8-bandit" = ["-S101"]
+"flake8-darglint" = ["-DAR101", "-DAR201"]
+"wemake-python-styleguide" = [
+    "-WPS442",  # using fixture as test param
+    "-WPS432",  # tests can countain magic numbers
+]
+
