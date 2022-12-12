@@ -4,6 +4,7 @@ import re
 from datetime import datetime
 from typing import Callable
 
+from asgiref.sync import sync_to_async
 from django.conf import settings
 from django.utils.timezone import make_aware
 from loguru import logger
@@ -35,6 +36,9 @@ def save_message(msg: types.Message) -> Message:
         json=json_text,
     )
     return message_instance
+
+
+async_save_message = sync_to_async(save_message)
 
 
 def get_tbot_instance() -> TeleBot:

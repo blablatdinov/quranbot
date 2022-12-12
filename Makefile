@@ -7,8 +7,6 @@ run:
 lint:
 	poetry run isort .
 	poetry run flakeheaven lint .
-
-yaspeller:
 	poetry run python scripts/lint.py --speller
 
 test:

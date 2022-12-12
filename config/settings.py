@@ -1,5 +1,6 @@
 import os
 from collections import namedtuple
+from typing import Final
 
 import ddtrace
 import toml
@@ -86,3 +87,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 ENABLE_S3 = env('ENABLE_S3', bool, default=False)
 
 CSRF_TRUSTED_ORIGINS = ['https://quranbot.blablatdinov.ru']
+
+NATS_HOST = env('NATS_HOST', str, default='localhost')
+DEFAULT_NATS_PORT: Final = 4222
+NATS_PORT = env('NATS_PORT', int, default=DEFAULT_NATS_PORT)
+NATS_TOKEN = env('NATS_TOKEN', str, default='')
