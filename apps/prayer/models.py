@@ -1,4 +1,6 @@
 """Модели для модуля намаза."""
+import uuid
+
 from django.db import models
 
 from apps.bot_init.models import Subscriber
@@ -16,6 +18,7 @@ class City(models.Model):
     link = models.CharField(max_length=500, verbose_name='Ссылка для скачивания csv файла с временами намазов')
     name = models.CharField(max_length=200, verbose_name='Название города')
     source = models.CharField('Источник для парсинга намазов', max_length=16, choices=ParsingSource.choices)
+    uuid = models.UUIDField(default=uuid.uuid4)
 
     class Meta:
         verbose_name = 'Город'
@@ -42,6 +45,8 @@ class Day(models.Model):
 
 class PrayerAtUserGroup(models.Model):
     """Модель для группировке намазов у пользователя."""
+
+    uuid = models.UUIDField(default=uuid.uuid4)
 
     class Meta:
         verbose_name = 'Группа времен намазов, привязанный к пользователю'

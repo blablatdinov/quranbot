@@ -1,4 +1,6 @@
 """Базовые модели для работы с телеграмм."""
+import uuid
+
 from django.conf import settings
 from django.db import models
 
@@ -49,7 +51,7 @@ class AdminMessage(models.Model):
 class Subscriber(models.Model):
     """Модель подписчика бота."""
 
-    tg_chat_id = models.IntegerField(verbose_name='Идентификатор подписчика', unique=True)
+    tg_chat_id = models.BigIntegerField(verbose_name='Идентификатор подписчика', unique=True)
     is_active = models.BooleanField(default=True, verbose_name='Подписан ли пользователь на бота')
     step = models.CharField(max_length=100, verbose_name='Шаг пользователя', blank=True, null=True)
     comment = models.TextField(null=True, blank=True, verbose_name='Комментарий к подписчику')
@@ -91,9 +93,9 @@ class Message(models.Model):
     """Модель для хранения сообщений."""
 
     date = models.DateTimeField(null=True, verbose_name='Дата отправки')
-    from_user_id = models.IntegerField(verbose_name='Идентификатор отправителя')
-    message_id = models.IntegerField(verbose_name='Идентификатор сообщения')
-    chat_id = models.IntegerField(verbose_name='Идентификатор чата, в котором идет общение')
+    from_user_id = models.BigIntegerField(verbose_name='Идентификатор отправителя')
+    message_id = models.BigIntegerField(verbose_name='Идентификатор сообщения')
+    chat_id = models.BigIntegerField(verbose_name='Идентификатор чата, в котором идет общение')
     text = models.TextField(null=True, blank=True, verbose_name='Текст сообщения')
     json = models.TextField()
     mailing = models.ForeignKey(Mailing, related_name='messages', on_delete=models.PROTECT, blank=True, null=True)
@@ -145,7 +147,7 @@ class CallbackData(models.Model):
 
     date = models.DateTimeField(null=True, verbose_name='Дата отправки')
     call_id = models.CharField(max_length=500, verbose_name='Идентификатор данных')
-    chat_id = models.IntegerField(verbose_name='Идентификатор чата из которого пришли данные')
+    chat_id = models.BigIntegerField(verbose_name='Идентификатор чата из которого пришли данные')
     text = models.TextField(null=True, blank=True, verbose_name='Текст сообщения')
     json = models.TextField()
 
@@ -156,3 +158,18 @@ class CallbackData(models.Model):
     def __str__(self) -> str:
         """Строковое представление."""
         return f'{self.chat_id} {self.text}'
+
+
+class Notification(models.Model):
+    """Модель для хранения уведомлений."""
+
+    uuid = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
+    text = models.TextField(verbose_name='Текст уведомления')
+    created_at = models.DateTimeField(verbose_name='Время создания уведомления', auto_now_add=True)
+    is_readed = models.BooleanField(verbose_name='Уведомление прочитано', default=False)
+    readed_at = models.DateTimeField(verbose_name='Время прочтения уведомления', null=True)
+
+    class Meta:
+        db_table = 'notifications'
+        verbose_name = 'Уведомление'
+        verbose_name_plural = 'Уведомления'

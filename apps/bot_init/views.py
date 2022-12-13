@@ -10,7 +10,7 @@ from apps.bot_init.services.commands_service import CommandService
 from apps.bot_init.services.handle_service import handle_query_service
 from apps.bot_init.services.inline_search_service import inline_query_service
 from apps.bot_init.services.text_message_service import text_message_service
-from apps.bot_init.utils import get_tbot_instance, save_callback_data, save_message, stop_retry
+from apps.bot_init.utils import get_tbot_instance, message_saved_event, save_callback_data, stop_retry
 from apps.prayer.services.geography import set_city_to_subscriber_by_location
 
 tbot = get_tbot_instance()
@@ -31,9 +31,12 @@ def bot(request):
 @tbot.message_handler(commands=['start', 'referal'])
 @stop_retry
 def start_handler(message):
-    """Обработчик команды /start."""
+    """Обработчик команды /start.
+
+    :param message: telebot.types.Message
+    """
     logger.info(f'Command handler. Subscriber={message.chat.id} text={message.text}')
-    save_message(message)
+    message_saved_event(message)
     answers = CommandService(message.chat.id, message.text)()
     answers.send()
 
@@ -41,9 +44,12 @@ def start_handler(message):
 @tbot.message_handler(content_types=['text'])
 @stop_retry
 def text_handler(message):
-    """Обработчик тестовых сообщений в т. ч. некоторых команд."""
+    """Обработчик тестовых сообщений в т. ч. некоторых команд.
+
+    :param message: telebot.types.Message
+    """
     logger.info(f'Text message handler. Subscriber={message.chat.id}, text={message.text}')
-    save_message(message)
+    message_saved_event(message)
     answer = text_message_service(message.chat.id, message.text, message.message_id)
     answer.send(message.chat.id)
 
@@ -70,9 +76,12 @@ def handle_query(call):
 
 @tbot.message_handler(content_types=['location'])
 def handle_location(message):
-    """Обработка геолокации."""
+    """Обработка геолокации.
+
+    :param message: telebot.types.Message
+    """
     logger.info('Geo location handler.')
-    save_message(message)
+    message_saved_event(message)
     answer = set_city_to_subscriber_by_location(
         (message.location.latitude, message.location.longitude),
         message.chat.id,

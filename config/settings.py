@@ -1,5 +1,6 @@
 import os
 from collections import namedtuple
+from typing import Final
 
 import ddtrace
 import toml
@@ -15,12 +16,14 @@ include(
     'splitted_settings/static.py',
     'splitted_settings/templates.py',
     'splitted_settings/rest_framework.py',
-    'splitted_settings/allowed_hosts.py',
     'splitted_settings/logger.py',
     'splitted_settings/middlewares.py',
     'splitted_settings/templates.py',
     'splitted_settings/cors.py',
 )
+
+ALLOWED_HOSTS = env('ALLOWED_HOSTS', list)
+HOST = env('HOST', str)
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -66,6 +69,7 @@ CELERY_BROKER_URL = os.getenv('REDIS_CONNECTION')
 
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASKS_SERIALIZER = 'json'
+print(ALLOWED_HOSTS)
 
 if DEBUG:  # noqa: F821
     ddtrace.tracer.enabled = not DEBUG  # noqa: F821
@@ -83,3 +87,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 ENABLE_S3 = env('ENABLE_S3', bool, default=False)
 
 CSRF_TRUSTED_ORIGINS = ['https://quranbot.blablatdinov.ru']
+
+NATS_HOST = env('NATS_HOST', str, default='localhost')
+DEFAULT_NATS_PORT: Final = 4222
+NATS_PORT = env('NATS_PORT', int, default=DEFAULT_NATS_PORT)
+NATS_TOKEN = env('NATS_TOKEN', str, default='')

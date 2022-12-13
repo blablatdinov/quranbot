@@ -7,3 +7,4 @@ DATABASES = {
     # read os.environ['DATABASE_URL'] and raises ImproperlyConfigured exception if not found
     'default': env.db(),
 }
+print(DATABASES)

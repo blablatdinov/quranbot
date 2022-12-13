@@ -1,4 +1,6 @@
 """Модели контента."""
+import uuid
+
 from django.db import models
 
 
@@ -30,6 +32,7 @@ class MorningContent(models.Model):
 class File(models.Model):
     """Модель файла."""
 
+    uuid = models.UUIDField(default=uuid.uuid4)
     name = models.CharField(max_length=128, blank=True, null=True, verbose_name='Имя файла')
     link_to_file = models.CharField(max_length=512, verbose_name='Ссылка на файл', blank=True, null=True)
     tg_file_id = models.CharField(

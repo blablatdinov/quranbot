@@ -1,7 +1,7 @@
 import os
 
+from django.conf import settings
 from django.core.management.base import BaseCommand
-from dotenv import load_dotenv
 
 from apps.bot_init.service import update_webhook
 
@@ -13,5 +13,4 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         """Entrypoint."""
-        load_dotenv('.env')
-        update_webhook(f'{os.getenv("HOST")}/bot_init/{os.getenv("BOT_TOKEN")}')
+        update_webhook(f'{settings.HOST}/bot_init/{settings.TG_BOT.token}')

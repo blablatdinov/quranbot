@@ -8,7 +8,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 ROOT_URLCONF = 'config.urls'
 
-SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = env('SECRET_KEY', str, default='asdf')
 
 # Disable built-in ./manage.py test command in favor of pytest
 
