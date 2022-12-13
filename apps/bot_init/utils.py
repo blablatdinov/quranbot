@@ -1,22 +1,28 @@
 """Утилиты для работы бота."""
-import uuid
 import json
 import re
+import uuid
 from datetime import datetime
 from typing import Callable
 
-from asgiref.sync import sync_to_async, async_to_sync
+import nats
+from asgiref.sync import async_to_sync, sync_to_async
 from django.conf import settings
 from django.utils.timezone import make_aware
 from loguru import logger
-from telebot import TeleBot, types
 from quranbot_schema_registry import validate_schema
-import nats
+from telebot import TeleBot, types
 
 from apps.bot_init.models import CallbackData, Message
 
 
-async def queue_sink(event_title, event_version, payload):
+async def queue_sink(event_title: str, event_version: int, payload: dict) -> None:
+    """Отправка событий в очередь.
+
+    :param event_title: str
+    :param event_version: int
+    :param payload: dict
+    """
     event = {
         'event_id': str(uuid.uuid4()),
         'event_version': event_version,
@@ -42,11 +48,15 @@ async def queue_sink(event_title, event_version, payload):
 sync_queue_sync = async_to_sync(queue_sink)
 
 
-def message_saved_event(msg: types.Message):
+def message_saved_event(msg: types.Message) -> None:
+    """Отправить событие о сохранении сообщения.
+
+    :param msg: types.Message
+    """
     sync_queue_sync(
         'Messages.Created',
         1,
-        {'messages': [str(msg)]}
+        {'messages': [str(msg)]},
     )
 
 
