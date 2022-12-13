@@ -45,16 +45,13 @@ class MessagesCreatedEvent(RecievedEventInterface):
         """
         print(event_data)
         for message in event_data['messages']:
-            try:
-                await async_save_message(
-                    types.Message.de_json(
-                        json.dumps(
-                            json.loads(message['message_json'])['message'],
-                        ),
+            await async_save_message(
+                types.Message.de_json(
+                    json.dumps(
+                        json.loads(message['message_json']),
                     ),
-                )
-            except Exception as err:
-                logger.error("Can't receive event {0}".format(err))
+                ),
+            )
 
 
 class Command(BaseCommand):
