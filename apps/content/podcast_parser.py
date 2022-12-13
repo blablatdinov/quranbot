@@ -7,7 +7,7 @@ from telebot import types
 
 from apps.bot_init.models import Subscriber
 from apps.bot_init.service import get_admins_list
-from apps.bot_init.utils import save_message
+from apps.bot_init.utils import message_saved_event
 from apps.bot_init.views import tbot
 from apps.content.models import File, Podcast
 from apps.content.parsers import get_html, get_soup
@@ -102,7 +102,7 @@ class PodcastParser:
         logger.info(f'file size={file_size / 1024 / 1024} MB')
         if file_size < 50 * 1024 * 1024:
             self.sending_audio_message_instance = self.send_audio_to_telegram(r.content, self.title)
-            save_message(self.sending_audio_message_instance)
+            message_saved_event(self.sending_audio_message_instance)
 
         is_sended = hasattr(self, 'sending_audio_message_instance')
         del r

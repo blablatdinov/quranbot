@@ -1,16 +1,63 @@
 """Утилиты для работы бота."""
 import json
 import re
+import uuid
 from datetime import datetime
 from typing import Callable
 
-from asgiref.sync import sync_to_async
+import nats
+from asgiref.sync import async_to_sync, sync_to_async
 from django.conf import settings
 from django.utils.timezone import make_aware
 from loguru import logger
+from quranbot_schema_registry import validate_schema
 from telebot import TeleBot, types
 
 from apps.bot_init.models import CallbackData, Message
+
+
+async def queue_sink(event_title: str, event_version: int, payload: dict) -> None:
+    """Отправка событий в очередь.
+
+    :param event_title: str
+    :param event_version: int
+    :param payload: dict
+    """
+    event = {
+        'event_id': str(uuid.uuid4()),
+        'event_version': event_version,
+        'event_name': event_title,
+        'event_time': str(datetime.now()),
+        'producer': 'quranbot-django',
+        'data': payload,
+    }
+    validate_schema(event, event_title, event_version)
+    nats_client = await nats.connect(
+        'nats://{0}:{1}'.format(settings.NATS_HOST, settings.NATS_PORT),
+        token=settings.NATS_TOKEN,
+    )
+    js = nats_client.jetstream()
+    queue_name = 'quranbot'
+    await js.add_stream(name=queue_name)
+    logger.info('Publishing to queue: {0}, event_id: {1}'.format(queue_name, event['event_id']))
+    await js.publish(queue_name, json.dumps(event).encode('utf-8'))
+    logger.info('Event: {0} to queue: {1} successful published'.format(event['event_id'], queue_name))
+    await nats_client.close()
+
+
+sync_queue_sync = async_to_sync(queue_sink)
+
+
+def message_saved_event(msg: types.Message) -> None:
+    """Отправить событие о сохранении сообщения.
+
+    :param msg: types.Message
+    """
+    sync_queue_sync(
+        'Messages.Created',
+        1,
+        {'messages': [msg.json]},
+    )
 
 
 def save_message(msg: types.Message) -> Message:

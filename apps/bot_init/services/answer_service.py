@@ -5,7 +5,7 @@ from telebot.apihelper import ApiException
 
 from apps.bot_init.markup import InlineKeyboard, Keyboard, get_default_keyboard
 from apps.bot_init.models import Message
-from apps.bot_init.utils import save_message
+from apps.bot_init.utils import message_saved_event
 
 
 class Answer:
@@ -42,7 +42,7 @@ class Answer:
                 msg = tbot.send_audio(self.chat_id, audio=self.tg_audio_id)
             else:
                 msg = tbot.send_message(self.chat_id, self.text, reply_markup=self.keyboard, parse_mode='HTML')
-            message_instance = save_message(msg)
+            message_instance = message_saved_event(msg)
             return message_instance
         except ApiException as e:
             if 'bot was blocked by the user' in str(e) or 'user is deactivated' in str(e) or 'chat not found' in str(e):
