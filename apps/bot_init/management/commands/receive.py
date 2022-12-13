@@ -43,7 +43,10 @@ class MessagesCreatedEvent(RecievedEventInterface):
 
         :param event_data: dict
         """
+        print(event_data)
         for message in event_data['messages']:
+            # from contextlib import suppress
+            # with suppress(Exception):
             await async_save_message(
                 types.Message.de_json(
                     json.dumps(
