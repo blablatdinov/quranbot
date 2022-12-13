@@ -56,7 +56,13 @@ def message_saved_event(msg: types.Message) -> None:
     sync_queue_sync(
         'Messages.Created',
         1,
-        {'messages': [{'message_json': json.dumps(msg.json)}]},
+        {'messages': [
+            {
+                'message_json': json.dumps(msg.json),
+                'is_unknown': False,
+                'trigger_message_id': 0,
+            }
+        ]},
     )
 
 
