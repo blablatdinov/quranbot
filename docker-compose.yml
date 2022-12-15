@@ -1,24 +1,16 @@
 version: "3.3"
-   
+
 services:
   qbot:
-    image: blablatdinov/quranbot
-    network_mode: "host"
-    command: gunicorn config.wsgi:application -c deploy/gunicorn.conf.py --reload
+    image: blablatdinov/quranbot:c90709d
+    command: .venv/bin/gunicorn config.wsgi:application -c deploy/gunicorn.conf.py --reload
     ports:
-      - "127.0.0.1:8000:8000"
+      - "127.0.0.1:8010:8000"
     env_file:
       - .env
 
   qbot_worker:
-    image: blablatdinov/quranbot
-    network_mode: "host"
-    command: celery -A config worker -B -l INFO
-    env_file:
-      - .env
-
-  qbot_go:
-    image: blablatdinov/quranbot-go
-    network_mode: "host"
+    image: blablatdinov/quranbot:c90709d
+    command: .venv/bin/celery -A config worker -B -l INFO
     env_file:
       - .env

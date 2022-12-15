@@ -1,40 +1,18 @@
-FROM python:3.9.9-slim-buster AS development_build
+FROM python:3.10 as base
+ENV PIP_DISABLE_PIP_VERSION_CHECK=1
+WORKDIR /app
 
-ARG DJANGO_ENV
+FROM base as poetry
+RUN pip install poetry==1.2.2
+COPY poetry.lock pyproject.toml /app/
+RUN poetry export --without dev -o requirements.txt
 
-ENV DJANGO_ENV=${DJANGO_ENV} \
-  # python:
-  PYTHONFAULTHANDLER=1 \
-  PYTHONUNBUFFERED=1 \
-  PYTHONHASHSEED=random \
-  # pip:
-  PIP_NO_CACHE_DIR=off \
-  PIP_DISABLE_PIP_VERSION_CHECK=on \
-  PIP_DEFAULT_TIMEOUT=100 \
-  # poetry:
-  POETRY_VERSION=1.0.5 \
-  POETRY_VIRTUALENVS_CREATE=false \
-  POETRY_CACHE_DIR='/var/cache/pypoetry'
-
-# System deps:
-RUN apt-get update \
-  && apt-get install --no-install-recommends -y \
-    bash \
-    build-essential \
-    curl \
-    gettext \
-    git \
-    libpq-dev \
-    wget \
-  # Cleaning cache:
-  && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/* \
-  && pip install "poetry==$POETRY_VERSION" && poetry --version
-
-# set work directory
-WORKDIR /code
-
-COPY pyproject.toml poetry.lock /code/
-
-# Install dependencies:
-RUN poetry install --no-dev
-COPY . .
+FROM base as runtime
+COPY --from=poetry /app/requirements.txt /tmp/requirements.txt
+RUN apt-get install gcc libffi-dev
+RUN cat /tmp/requirements.txt
+RUN python -m venv /app/.venv && \
+    /app/.venv/bin/pip install 'wheel==0.36.2' && \
+    /app/.venv/bin/pip install -r /tmp/requirements.txt
+# Creating folders, and files for a project:
+COPY . /app
