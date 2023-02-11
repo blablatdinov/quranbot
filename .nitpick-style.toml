@@ -1,0 +1,5 @@
+["setup.cfg".flake8]
+max-line-length = 120
+
+["setup.cfg".isort]
+line_length = 120
