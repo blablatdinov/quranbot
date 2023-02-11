@@ -8,11 +8,7 @@ import logging
 import socket
 
 from server.settings.components import config
-from server.settings.components.common import (
-    DATABASES,
-    INSTALLED_APPS,
-    MIDDLEWARE,
-)
+from server.settings.components.common import DATABASES, INSTALLED_APPS, MIDDLEWARE
 
 # Setting the development status:
 
