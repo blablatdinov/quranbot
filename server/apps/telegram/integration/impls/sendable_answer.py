@@ -20,7 +20,6 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-import json
 from typing import final
 from urllib import parse as url_parse
 
@@ -29,8 +28,8 @@ from loguru import logger
 
 from server.apps.telegram.integration.exceptions.internal import InternalBotError
 from server.apps.telegram.integration.interfaces.sendable import SendableInterface
-from server.apps.telegram.integration.interfaces.stringable import Stringable
 from server.apps.telegram.integration.interfaces.tg_answer import TgAnswer
+from server.apps.telegram.integration.interfaces.update import Update
 
 
 @final
@@ -44,10 +43,10 @@ class SendableAnswer(SendableInterface):
         """
         self._answer = answer
 
-    def send(self, update: Stringable) -> list[dict]:
+    def send(self, update: Update) -> list[str]:
         """Отправка.
 
-        :param update: Stringable
+        :param update: Update
         :return: list[str]
         :raises TelegramIntegrationsError: при невалидном ответе от API телеграмма
         """
@@ -60,4 +59,4 @@ class SendableAnswer(SendableInterface):
                 responses.append(resp.text)
                 if resp.status_code != success_status:
                     raise InternalBotError(resp.text)
-            return [json.loads(response) for response in responses]
+            return responses

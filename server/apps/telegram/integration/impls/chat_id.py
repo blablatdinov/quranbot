@@ -55,7 +55,7 @@ class TgChatId(Intable):
             return self._parse_id(chat_json_object)
         raise InternalBotError
 
-    def _parse_id(self, chat_json_object: re.Match) -> int:
+    def _parse_id(self, chat_json_object: re.Match[str]) -> int:
         chat_id_regex_result = re.search(r'id"(:|: )(\d+)', chat_json_object.group(2))
         if not chat_id_regex_result:
             raise InternalBotError

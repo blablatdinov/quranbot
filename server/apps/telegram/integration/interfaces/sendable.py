@@ -26,7 +26,7 @@ from typing import Protocol
 class SendableInterface(Protocol):
     """Интерфейс объекта, отправляющего ответы в API."""
 
-    def send(self, update) -> list[dict]:
+    def send(self, update) -> list[str]:
         """Отправка.
 
         :param update: Stringable
