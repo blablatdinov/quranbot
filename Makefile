@@ -1,3 +1,6 @@
+run:
+	poetry run python manage.py run
+
 lint:
 	poetry run isort .
 	poetry run flake8 .

@@ -18,6 +18,7 @@ from server.settings.components import BASE_DIR, config
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 SECRET_KEY = config('DJANGO_SECRET_KEY')
+API_TOKEN = config('API_TOKEN')
 
 # Application definition:
 
@@ -25,6 +26,7 @@ INSTALLED_APPS: Tuple[str, ...] = (
     # Your apps go here:
     'server.apps.main',
     'server.apps.accounts',
+    'server.apps.telegram',
 
     # Default django apps:
     'django.contrib.auth',

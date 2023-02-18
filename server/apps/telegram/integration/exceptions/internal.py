@@ -1,0 +1,2 @@
+class InternalBotError(Exception):
+    pass
