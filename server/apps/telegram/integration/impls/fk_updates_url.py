@@ -20,19 +20,23 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from hypothesis import given
-from hypothesis.extra import django
-
-from server.apps.main.models import BlogPost
+from server.apps.telegram.integration.interfaces.stringable import Stringable
+from server.apps.telegram.integration.interfaces.updates_url import UpdatesURLInterface
 
 
-class TestBlogPost(django.TestCase):
-    """This is a property-based test that ensures model correctness."""
+class FkUpdatesURL(UpdatesURLInterface):
+    """Интерфейс URL запроса для получения уведомлений."""
 
-    @given(django.from_model(BlogPost))
-    def test_model_properties(self, instance: BlogPost) -> None:
-        """Tests that instance can be saved and has correct representation."""
-        instance.save()
+    def __init__(self, updates_url: Stringable):
+        """Конструктор класса.
 
-        assert instance.id > 0
-        assert len(str(instance)) <= 20
+        :param updates_url: Stringable
+        """
+        self._updates_url = updates_url
+
+    def generate(self, update_id: int) -> str:
+        """Генерация.
+
+        :param update_id: int
+        """
+        return str(self._updates_url)

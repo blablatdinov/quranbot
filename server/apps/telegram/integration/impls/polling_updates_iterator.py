@@ -56,20 +56,19 @@ class PollingUpdatesIterator(UpdatesIteratorInterface):
 
         :return: list[Update]
         """
-        with httpx.Client() as client:
-            try:
-                resp = client.get(
-                    self._updates_url.generate(self._offset),
-                    timeout=int(self._updates_timeout),
-                )
-            except httpx.ReadTimeout:
-                return []
-            resp_content = resp.text
-            try:
-                parsed_result = json.loads(resp_content)['result']
-            except KeyError:
-                return []
-            if not parsed_result:
-                return []
-            self._offset = parsed_result[-1]['update_id'] + 1
-            return [json.dumps(elem, ensure_ascii=False) for elem in parsed_result]
+        try:
+            resp = httpx.get(
+                self._updates_url.generate(self._offset),
+                timeout=int(self._updates_timeout),
+            )
+        except httpx.ReadTimeout:
+            return []
+        resp_content = resp.text
+        try:
+            parsed_result = json.loads(resp_content)['result']
+        except KeyError:
+            return []
+        if not parsed_result:
+            return []
+        self._offset = parsed_result[-1]['update_id'] + 1
+        return [json.dumps(elem, ensure_ascii=False) for elem in parsed_result]
