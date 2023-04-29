@@ -16,7 +16,7 @@ django-csp = "3.7"
 django-health-check = "3.17.0"
 django-http-referrer-policy = "1.1.1"
 django-permissions-policy = "4.15.0"
-django-stubs-ext = "0.8.0"
+django-stubs-ext = "4.2.0"
 
 gunicorn = "20.1.0"
 python-decouple = "3.8"
@@ -36,7 +36,7 @@ wemake-python-styleguide = {git = "https://github.com/wemake-services/wemake-pyt
 flake8-pytest-style = "1.7.2"
 flake8-django = "1.2"
 flake8-logging-format = "0.9.0"
-nitpick = "0.32"
+nitpick = "0.33.1"
 doc8 = "1.1.1"
 
 pytest = "7.3.1"
@@ -49,7 +49,7 @@ django-test-migrations = "1.2"
 hypothesis = "6.72.1"
 
 mypy = "1.2.0"
-django-stubs = "1.16.0"
+django-stubs = "4.2.0"
 
 yamllint = "1.31.0"
 safety = "2.3.5"

@@ -37,7 +37,7 @@ class EchoAnswer(TgAnswer):
         return TgTextAnswer(
             TgAnswerToSender(
                 TgMessageAnswer(
-                    TgEmptyAnswer(settings.API_TOKEN),
+                    TgEmptyAnswer(settings.API_TOKEN),  # type: ignore[misc]
                 ),
             ),
             'hello',

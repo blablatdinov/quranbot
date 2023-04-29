@@ -834,38 +834,38 @@ files = [
 
 [[package]]
 name = "django-stubs"
-version = "1.16.0"
+version = "4.2.0"
 description = "Mypy stubs for Django"
 category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "django-stubs-1.16.0.tar.gz", hash = "sha256:1bd96207576cd220221a0e615f0259f13d453d515a80f576c1246e0fb547f561"},
-    {file = "django_stubs-1.16.0-py3-none-any.whl", hash = "sha256:c95f948e2bfc565f3147e969ff361ef033841a0b8a51cac974a6cc6d0486732c"},
+    {file = "django-stubs-4.2.0.tar.gz", hash = "sha256:93baff824f0a056e71036b423b942a74f07b909e45e3fa38185b910f597c5c08"},
+    {file = "django_stubs-4.2.0-py3-none-any.whl", hash = "sha256:d2c671989efb3f7b0fa91e461909ad5a5a52155fe7fe6d1f2058cb88e3afb123"},
 ]
 
 [package.dependencies]
 django = "*"
-django-stubs-ext = ">=0.8.0"
+django-stubs-ext = ">=4.2.0"
 mypy = ">=0.980"
-tomli = "*"
+tomli = {version = "*", markers = "python_version < \"3.11\""}
 types-pytz = "*"
 types-PyYAML = "*"
 typing-extensions = "*"
 
 [package.extras]
-compatible-mypy = ["mypy (>=1.1.1,<1.2)"]
+compatible-mypy = ["mypy (>=1.2.0,<1.3)"]
 
 [[package]]
 name = "django-stubs-ext"
-version = "0.8.0"
+version = "4.2.0"
 description = "Monkey-patching and extensions for django-stubs"
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "django-stubs-ext-0.8.0.tar.gz", hash = "sha256:9a9ba9e2808737949de96a0fce8b054f12d38e461011d77ebc074ffe8c43dfcb"},
-    {file = "django_stubs_ext-0.8.0-py3-none-any.whl", hash = "sha256:a454d349d19c26d6c50c4c6dbc1e8af4a9cda4ce1dc4104e3dd4c0330510cc56"},
+    {file = "django-stubs-ext-4.2.0.tar.gz", hash = "sha256:7789f0caeca7152fef07ad6b94dec7310a05d0b8dab77f7979e19db0037b5127"},
+    {file = "django_stubs_ext-4.2.0-py3-none-any.whl", hash = "sha256:55b2e3077f883e0131a7596f8ff8b19f8fc3ca325a3318ccacf5331acb2601e4"},
 ]
 
 [package.dependencies]
@@ -1902,14 +1902,14 @@ files = [
 
 [[package]]
 name = "nitpick"
-version = "0.32.0"
+version = "0.33.1"
 description = "Enforce the same settings across multiple language-independent projects"
 category = "dev"
 optional = false
 python-versions = ">=3.7,<4.0"
 files = [
-    {file = "nitpick-0.32.0-py3-none-any.whl", hash = "sha256:a2befd6371f8726846d4c127b80b4bc2cc510f97ee8d1a698d879e9d20a95a89"},
-    {file = "nitpick-0.32.0.tar.gz", hash = "sha256:9df66107d9dfc5f8631ee5af1c3a1050ef9db0549e04873bef91bf6681a55b61"},
+    {file = "nitpick-0.33.1-py3-none-any.whl", hash = "sha256:bc0fe670f77111b6205cc16d23ef541f087dd317e8b3c941f83f7913643d06cb"},
+    {file = "nitpick-0.33.1.tar.gz", hash = "sha256:859f7e1ab119d9d9405106f42872f17214f3f0030b76ea50d19fff3411ffc46e"},
 ]
 
 [package.dependencies]
@@ -1931,7 +1931,7 @@ more-itertools = "*"
 pluggy = "*"
 python-slugify = "*"
 requests = "*"
-requests-cache = "*"
+requests-cache = ">=1.0.0"
 "ruamel.yaml" = "*"
 sortedcontainers = "*"
 StrEnum = "*"
@@ -3263,4 +3263,4 @@ dev = ["doc8", "flake8", "flake8-import-order", "rstcheck[sphinx]", "sphinx"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.11"
-content-hash = "99f0ae656c0068c89adbef02dcbd583488e10f30e28abc391936fcec8b979861"
+content-hash = "a72cddd02f7c478a2bbbecc52b75fd90c12466a0ebfef3a63f4f9d72776971a3"

@@ -46,7 +46,7 @@ class Command(BaseCommand):
             PollingUpdatesIterator(
                 UpdatesLongPollingURL(
                     UpdatesWithOffsetURL(
-                        UpdatesURL(settings.API_TOKEN),
+                        UpdatesURL(settings.API_TOKEN),  # type: ignore[misc]
                     ),
                     5,
                 ),

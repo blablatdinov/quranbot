@@ -21,55 +21,15 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import json
-from functools import reduce
-from operator import truediv
 from typing import Final, Iterable
 
 import httpx
 import pytest
-from django.conf import settings
 
 from server.apps.telegram.integration.impls.fk_updates_url import FkUpdatesURL
 from server.apps.telegram.integration.impls.polling_updates_iterator import PollingUpdatesIterator
 
 FAKE_GET_UPDATES_URL: Final[str] = 'https://api.telegram.org/bot_token/getUpdates'
-
-
-@pytest.fixture()
-def _updates_empty_mock(respx_mock):
-    """Пустой список обновлений."""
-    respx_mock.get(
-        FAKE_GET_UPDATES_URL,
-    ).mock(return_value=httpx.Response(200, json={'ok': True, 'result': []}))
-
-
-@pytest.fixture()
-def updates_mock(respx_mock):
-    """Список с обновлением."""
-    response = json.loads(
-        reduce(
-            truediv, [
-                settings.BASE_DIR,
-                'tests',
-                'test_apps',
-                'test_telegram',
-                'fixtures',
-                'updates.json',
-            ],
-        ).read_text(),
-    )
-    respx_mock.get(
-        FAKE_GET_UPDATES_URL,
-    ).mock(return_value=httpx.Response(200, json=response))
-    return response
-
-
-@pytest.fixture()
-def _updates_invalid_key(respx_mock):
-    """Невалидный json."""
-    respx_mock.get(
-        FAKE_GET_UPDATES_URL,
-    ).mock(return_value=httpx.Response(200, json={'list': []}))
 
 
 def _raising_timeout(*args):
