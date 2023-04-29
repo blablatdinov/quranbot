@@ -1,5 +1,7 @@
 ["setup.cfg".flake8]
 max-line-length = 120
+ignore = "D106,D401,X100,W504,RST303,RST304,DAR103,DAR203,W503"
+
 
 ["setup.cfg".isort]
 line_length = 120

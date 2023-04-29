@@ -1,0 +1,28 @@
+{
+  "ok":true,
+  "result":[
+    {
+      "update_id":637463452,
+      "message":{
+        "message_id":23009,
+        "from":{
+          "id":358610865,
+          "is_bot":false,
+          "first_name":"Алмаз",
+          "last_name":"Илалетдинов",
+          "username":"ilaletdinov",
+          "language_code":"ru"
+        },
+        "chat":{
+          "id":358610865,
+          "first_name":"Алмаз",
+          "last_name":"Илалетдинов",
+          "username":"ilaletdinov",
+          "type":"private"
+        },
+        "date":1676801705,
+        "text":"waef"
+      }
+    }
+  ]
+}
