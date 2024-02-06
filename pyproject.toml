@@ -45,7 +45,7 @@ pytest-xdist = "3.1.0"
 mixer = "7.2.2"
 requests-mock = "1.10.0"
 flake8-annotations = "2.9.1"
-isort = "5.10.1"
+isort = "5.13.2"
 flakeheaven = "3.2.1"
 
 [build-system]
