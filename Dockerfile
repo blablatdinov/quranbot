@@ -1,4 +1,4 @@
-FROM python:3.10 as base
+FROM python:3.13 as base
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1
 WORKDIR /app
 
